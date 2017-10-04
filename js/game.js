@@ -3,6 +3,7 @@ CoopCommander.Game = {
         game.load.image('grass', 'assets/grass00.png');
 		game.load.spritesheet('player', 'assets/player.png', 64, 64);
 		game.load.spritesheet('rat00', 'assets/rat00.png', 32, 32);
+		game.load.spritesheet('chicken00', 'assets/chicken00.png', 48, 48);
         
         game.scale.scaleMode = Phaser.ScaleManager.NONE; // SHOW_ALL
         game.scale.pageAlignHorizontally = true;
@@ -36,6 +37,17 @@ CoopCommander.Game = {
 		rat.animations.add('left', [3, 4, 5], 10, true);
 		rat.animations.add('right', [6, 7, 8], 10, true);
 		rat.animations.add('up', [9, 10, 11], 10, true);
+		
+		chicken = game.add.sprite(100, 300, 'chicken00');
+		
+		game.physics.arcade.enable(chicken);
+		
+		chicken.animations.add('down', [0, 1, 2], 10, true);
+		chicken.animations.add('left', [3, 4, 5], 10, true);
+		chicken.animations.add('right', [6, 7, 8], 10, true);
+		chicken.animations.add('up', [9, 10, 11], 10, true);
+		
+		
     },    
     update: function() {
         player.body.velocity.x = 0;
@@ -58,6 +70,7 @@ CoopCommander.Game = {
         }
 
         rat.animations.play('right');
+		chicken.animations.play('right');
 
     }
 };
