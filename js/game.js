@@ -137,36 +137,26 @@ function drawFence(x, y, width, height, group) {
     for (var i = 0; i < width; i++) {
         for (var j = 0; j < height; j++) {
             if (i == 0 || j == 0 || i == (width - 1) || j == (height - 1)) {
-                var index = 0;
-                // 0: Horizontal, no post
-                // 1: Vertical
-                // 2: Vertical post
-                // 3: Horizontal, post
-                // 4: Left upper corner
-                // 5: Right upper corner
-
+                var spriteIndex = 0;
                 if (i == 0 && j == 0) {
-                    index = 4;
+                    spriteIndex = 6;
                 } else if (j == 0 && i == (width - 1)) {
-                    index = 5;
+                    spriteIndex = 9;
                 } else if (i == 0 && j == (height - 1)) {
-                    index = 4;
+                    spriteIndex = 7;
                 } else if (i == (width - 1) && j == (height - 1)) {
-                    index = 5;
+                    spriteIndex = 10;
                 } else if (i == 0 || i == (width - 1)) {
-                    index = 1;
+                    spriteIndex = j % 2 == 0 ? 2 : 3;
                 } else if (j == 0 || j == (height - 1)) {
-                    index = i % 2 == 0 ? 0 : 3;
+                    spriteIndex = i % 2 == 0 ? 0 : 1;
                 } 
 
-                var f = game.add.sprite(x + (i * spriteWidth), y + (j * spriteHeight), 'fence00', index);
+                var f = game.add.sprite(x + (i * spriteWidth), y + (j * spriteHeight), 'fence00', spriteIndex);
                 group.add(f);
             }
         }
     }
-
-    // fence = game.add.sprite(200, 200, 'fence00');
-    // fence.scale.setTo(2, 2);
 }
 
 CoopCommander.Game = {preload: preload, create: create, update: update};
