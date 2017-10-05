@@ -107,6 +107,8 @@ function moveChicken(chicken, rect) {
         var newY = chicken.y + yDiff;
         return [newX, newY, xDiff, yDiff];
     }
+
+    var dest = chooseDestination();
     
     var newX = dest[0];
     var newY = dest[1];
