@@ -3,20 +3,9 @@ ChickenStates = {
     MOVING_TO_POINT: 1
 }
 
-CoopCommander.Game = {};
-
 var pen = new Phaser.Rectangle(720, 120, 8 * 48, 10 * 48);
 
 function preload() {
-    game.load.image('grass', 'assets/grass00.png');
-    game.load.spritesheet('player', 'assets/player.png', 64, 64);
-    game.load.spritesheet('rat00', 'assets/rat00.png', 32, 32);
-    game.load.spritesheet('chicken00', 'assets/chicken00.png', 48, 48);
-    game.load.spritesheet('fence00', 'assets/fence00.png', 48, 48);
-    
-    game.scale.scaleMode = Phaser.ScaleManager.NONE; // SHOW_ALL
-    game.scale.pageAlignHorizontally = true;
-    game.scale.pageAlignVertically = true;
 }
 
 function create() {
