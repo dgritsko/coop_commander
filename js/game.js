@@ -1,6 +1,7 @@
 ChickenStates = {
     STOPPED: 0,
-    MOVING_TO_POINT: 1
+    MOVING_TO_POINT: 1,
+    WAITING: 2
 }
 
 var pen = new Phaser.Rectangle(720, 120, 8 * 48, 10 * 48);
@@ -10,6 +11,8 @@ function preload() {
 
 function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
+
+    game.stage.disableVisibilityChange = true;
     
     for (var x = 0; x < game.width; x += 100) {
         for (var y = 0; y < game.height; y += 100) {
@@ -70,28 +73,35 @@ function update() {
         var chicken = flock.children[i];
         
         if (chicken.state == ChickenStates.STOPPED) {
-            chicken.state = ChickenStates.MOVING_TO_POINT;
+            chicken.state = ChickenStates.WAITING;
 
             function createClosure(c) {
                 return function() {
-                    moveChicken(c, pen);
+                    moveChicken(c);
                 }
             }
 
-            game.time.events.add(Phaser.Timer.SECOND * 3, createClosure(chicken), this);
+            var waitDuration = (Phaser.Timer.SECOND * 2) + (Phaser.Timer.SECOND * 8 * Math.random());
+            game.time.events.add(waitDuration, createClosure(chicken), this);
+        } else if (chicken.state == ChickenStates.MOVING_TO_POINT && game.physics.arcade.distanceToXY(chicken, chicken.dest[0], chicken.dest[1]) < 1) {
+            stopChicken(chicken);
         }
     }
 
     game.physics.arcade.collide(fence, flock, function(fenceSegment, chicken) {
-        stopChicken(chicken);
+        if (chicken.state == ChickenStates.MOVING_TO_POINT) {
+            stopChicken(chicken);
+        }
     });
 }
 
-function moveChicken(chicken, rect) {
-    // TODO: Ensure that destination is within the bounds of the fence
+function moveChicken(chicken) {
     function chooseDestination() {
-        var xDiff = (Math.random() - 0.5) * 200;
-        var yDiff = (Math.random() - 0.5) * 200;
+        var xMult = Math.random() < 0.5 ? -1 : 1;
+        var yMult = Math.random() < 0.5 ? -1 : 1;
+
+        var xDiff = (10 + Math.random() * 80) * xMult;
+        var yDiff = (10 + Math.random() * 80) * yMult;
         var newX = chicken.x + xDiff;
         var newY = chicken.y + yDiff;
         return [newX, newY, xDiff, yDiff];
@@ -104,13 +114,9 @@ function moveChicken(chicken, rect) {
     var xDiff = dest[2];
     var yDiff = dest[3];
 
-    var duration = (game.physics.arcade.distanceToXY(chicken, newX, newY) / 90) * 1000;
-    
-    var tween = game.add.tween(chicken).to({ x: newX, y: newY }, duration, Phaser.Easing.Linear.None, true);
+    game.physics.arcade.moveToXY(chicken, newX, newY);
 
-    tween.onComplete.add(function() { stopChicken(chicken); }, this);
-
-    chicken.tween = tween;
+    chicken.dest = dest;
 
     if (xDiff < 0 && Math.abs(yDiff) < Math.abs(xDiff)) {
         chicken.animations.play('left');
@@ -121,6 +127,8 @@ function moveChicken(chicken, rect) {
     } else {
         chicken.animations.play('down');
     }
+
+    chicken.state = ChickenStates.MOVING_TO_POINT;
 }
 
 function drawFence(rect, group) {
@@ -148,7 +156,11 @@ function drawFence(rect, group) {
 
                 var f = game.add.sprite(rect.x + (i * spriteSize), rect.y + (j * spriteSize), 'fence00', spriteIndex);
 
+                f.anchor.setTo(0.5, 0.5);
+
                 game.physics.arcade.enable(f);
+
+                f.body.moves = false;
 
                 group.add(f);
             }
@@ -157,11 +169,11 @@ function drawFence(rect, group) {
 }
 
 function createChickens(rect, group) {
-    for (var i = 0; i < 1; i++) {
+    for (var i = 0; i < 10; i++) {
         var chicken = game.add.sprite(rect.x + rect.width / 2, rect.y + rect.height / 2, 'chicken00');
         
         chicken.anchor.setTo(0.5, 0.5);
-        chicken.scale.setTo(2, 2);
+        chicken.scale.setTo(1.5, 1.5);
         
         game.physics.arcade.enable(chicken);
         
@@ -171,13 +183,15 @@ function createChickens(rect, group) {
         chicken.animations.add('up', [9, 10, 11], 10, true);
         
         chicken.state = ChickenStates.STOPPED;
-
+        chicken.dest = [0, 0];
         group.add(chicken);
     }
 }
 
 function stopChicken(chicken) {
-    chicken.tween.stop();
+    chicken.dest = [0, 0];
+    chicken.body.velocity.x = 0;
+    chicken.body.velocity.y = 0;
     chicken.animations.stop();
     chicken.state = ChickenStates.STOPPED;
 }
