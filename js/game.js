@@ -5,6 +5,8 @@ ChickenStates = {
 
 CoopCommander.Game = {};
 
+var pen = new Phaser.Rectangle(720, 120, 8 * 48, 10 * 48);
+
 function preload() {
     game.load.image('grass', 'assets/grass00.png');
     game.load.spritesheet('player', 'assets/player.png', 64, 64);
@@ -45,24 +47,12 @@ function create() {
     rat.animations.add('left', [3, 4, 5], 10, true);
     rat.animations.add('right', [6, 7, 8], 10, true);
     rat.animations.add('up', [9, 10, 11], 10, true);
-    
-    chicken = game.add.sprite(300, 300, 'chicken00');
-    
-    chicken.anchor.setTo(0.5, 0.5);
-    chicken.scale.setTo(2, 2);
-    
-    game.physics.arcade.enable(chicken);
-    
-    chicken.animations.add('down', [0, 1, 2], 10, true);
-    chicken.animations.add('left', [3, 4, 5], 10, true);
-    chicken.animations.add('right', [6, 7, 8], 10, true);
-    chicken.animations.add('up', [9, 10, 11], 10, true);
-    
-    chicken.state = ChickenStates.STOPPED;
-    chicken.destination = [0, 0];
+
+    flock = game.add.group();
+    createChickens(pen, flock);
 
     fence = game.add.group();
-    drawFence(700, 120, 8, 10, fence);
+    drawFence(pen, fence);
 }
 
 function update() {
@@ -87,35 +77,49 @@ function update() {
 
     rat.animations.play('right');
 
-    if (chicken.state == ChickenStates.STOPPED) {
-        chicken.state = ChickenStates.MOVING_TO_POINT;
-        game.time.events.add(Phaser.Timer.SECOND * 3, moveChicken, this);
+    for (var i = 0; i < flock.children.length; i++) {
+        var chicken = flock.children[i];
+        
+        if (chicken.state == ChickenStates.STOPPED) {
+            chicken.state = ChickenStates.MOVING_TO_POINT;
+
+            function createClosure(c) {
+                return function() {
+                    moveChicken(c, pen);
+                }
+            }
+
+            game.time.events.add(Phaser.Timer.SECOND * 3, createClosure(chicken), this);
+        }
     }
 
-    //console.log(game.physics.arcade.distanceToXY(chicken, chicken.destination[0], chicken.destination[1]));
-    //console.log(chicken.state, chicken.destination)
+    game.physics.arcade.collide(fence, flock, function(fenceSegment, chicken) {
+        stopChicken(chicken);
+    });
 }
 
-function moveChicken() {
-    var xDiff = (Math.random() - 0.5) * 200;
-    var yDiff = (Math.random() - 0.5) * 200;
-    var newX = chicken.x + xDiff;
-    var newY = chicken.y + yDiff;
+function moveChicken(chicken, rect) {
+    // TODO: Ensure that destination is within the bounds of the fence
+    function chooseDestination() {
+        var xDiff = (Math.random() - 0.5) * 200;
+        var yDiff = (Math.random() - 0.5) * 200;
+        var newX = chicken.x + xDiff;
+        var newY = chicken.y + yDiff;
+        return [newX, newY, xDiff, yDiff];
+    }
     
+    var newX = dest[0];
+    var newY = dest[1];
+    var xDiff = dest[2];
+    var yDiff = dest[3];
+
     var duration = (game.physics.arcade.distanceToXY(chicken, newX, newY) / 90) * 1000;
     
-    function doSomething() {
-        chicken.animations.stop();
-        chicken.state = ChickenStates.STOPPED;
-    };
-
     var tween = game.add.tween(chicken).to({ x: newX, y: newY }, duration, Phaser.Easing.Linear.None, true);
 
-    tween.onComplete.add(doSomething, this);
+    tween.onComplete.add(function() { stopChicken(chicken); }, this);
 
-    // chicken.destination = [newX, newY];
-
-    // game.physics.arcade.moveToXY(chicken, newX, newY);
+    chicken.tween = tween;
 
     if (xDiff < 0 && Math.abs(yDiff) < Math.abs(xDiff)) {
         chicken.animations.play('left');
@@ -126,13 +130,12 @@ function moveChicken() {
     } else {
         chicken.animations.play('down');
     }
-
-    // console.log(game.physics.arcade.distanceToXY(chicken, newX, newY));
 }
 
-function drawFence(x, y, width, height, group) {
-    var spriteWidth = 48;
-    var spriteHeight = 48;
+function drawFence(rect, group) {
+    var spriteSize = 48;
+    var width = rect.width / spriteSize;
+    var height = rect.height / spriteSize;
 
     for (var i = 0; i < width; i++) {
         for (var j = 0; j < height; j++) {
@@ -152,11 +155,40 @@ function drawFence(x, y, width, height, group) {
                     spriteIndex = i % 2 == 0 ? 0 : 1;
                 } 
 
-                var f = game.add.sprite(x + (i * spriteWidth), y + (j * spriteHeight), 'fence00', spriteIndex);
+                var f = game.add.sprite(rect.x + (i * spriteSize), rect.y + (j * spriteSize), 'fence00', spriteIndex);
+
+                game.physics.arcade.enable(f);
+
                 group.add(f);
             }
         }
     }
+}
+
+function createChickens(rect, group) {
+    for (var i = 0; i < 1; i++) {
+        var chicken = game.add.sprite(rect.x + rect.width / 2, rect.y + rect.height / 2, 'chicken00');
+        
+        chicken.anchor.setTo(0.5, 0.5);
+        chicken.scale.setTo(2, 2);
+        
+        game.physics.arcade.enable(chicken);
+        
+        chicken.animations.add('down', [0, 1, 2], 10, true);
+        chicken.animations.add('left', [3, 4, 5], 10, true);
+        chicken.animations.add('right', [6, 7, 8], 10, true);
+        chicken.animations.add('up', [9, 10, 11], 10, true);
+        
+        chicken.state = ChickenStates.STOPPED;
+
+        group.add(chicken);
+    }
+}
+
+function stopChicken(chicken) {
+    chicken.tween.stop();
+    chicken.animations.stop();
+    chicken.state = ChickenStates.STOPPED;
 }
 
 CoopCommander.Game = {preload: preload, create: create, update: update};
