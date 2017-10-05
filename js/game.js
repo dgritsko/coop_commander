@@ -10,6 +10,7 @@ function preload() {
     game.load.spritesheet('player', 'assets/player.png', 64, 64);
     game.load.spritesheet('rat00', 'assets/rat00.png', 32, 32);
     game.load.spritesheet('chicken00', 'assets/chicken00.png', 48, 48);
+    game.load.spritesheet('fence00', 'assets/fence00.png', 48, 48);
     
     game.scale.scaleMode = Phaser.ScaleManager.NONE; // SHOW_ALL
     game.scale.pageAlignHorizontally = true;
@@ -59,6 +60,9 @@ function create() {
     
     chicken.state = ChickenStates.STOPPED;
     chicken.destination = [0, 0];
+
+    fence = game.add.group();
+    drawFence(700, 120, 8, 10, fence);
 }
 
 function update() {
@@ -124,6 +128,45 @@ function moveChicken() {
     }
 
     // console.log(game.physics.arcade.distanceToXY(chicken, newX, newY));
+}
+
+function drawFence(x, y, width, height, group) {
+    var spriteWidth = 48;
+    var spriteHeight = 48;
+
+    for (var i = 0; i < width; i++) {
+        for (var j = 0; j < height; j++) {
+            if (i == 0 || j == 0 || i == (width - 1) || j == (height - 1)) {
+                var index = 0;
+                // 0: Horizontal, no post
+                // 1: Vertical
+                // 2: Vertical post
+                // 3: Horizontal, post
+                // 4: Left upper corner
+                // 5: Right upper corner
+
+                if (i == 0 && j == 0) {
+                    index = 4;
+                } else if (j == 0 && i == (width - 1)) {
+                    index = 5;
+                } else if (i == 0 && j == (height - 1)) {
+                    index = 4;
+                } else if (i == (width - 1) && j == (height - 1)) {
+                    index = 5;
+                } else if (i == 0 || i == (width - 1)) {
+                    index = 1;
+                } else if (j == 0 || j == (height - 1)) {
+                    index = i % 2 == 0 ? 0 : 3;
+                } 
+
+                var f = game.add.sprite(x + (i * spriteWidth), y + (j * spriteHeight), 'fence00', index);
+                group.add(f);
+            }
+        }
+    }
+
+    // fence = game.add.sprite(200, 200, 'fence00');
+    // fence.scale.setTo(2, 2);
 }
 
 CoopCommander.Game = {preload: preload, create: create, update: update};
