@@ -7,6 +7,7 @@ function preload() {
     game.load.spritesheet('rat00', 'assets/rat00.png', 32, 32);
     game.load.spritesheet('chicken00', 'assets/chicken00.png', 48, 48);
     game.load.spritesheet('fence00', 'assets/fence00.png', 48, 48);
+    game.load.spritesheet('food', 'assets/food.png', 16, 16);
 }
 
 function create() {

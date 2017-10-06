@@ -40,11 +40,14 @@ function create() {
     rat.animations.add('right', [6, 7, 8], 10, true);
     rat.animations.add('up', [9, 10, 11], 10, true);
 
-    flock = game.add.group();
-    createChickens(pen, flock);
-
     fence = game.add.group();
     drawFence(pen, fence);
+
+    food = game.add.group();
+    createFood(pen, food);
+
+    flock = game.add.group();
+    createChickens(pen, flock);
 }
 
 function update() {
@@ -168,9 +171,24 @@ function drawFence(rect, group) {
     }
 }
 
+function createFood(rect, group) {
+    for (var i = 0; i < 5; i++) {
+        var x = rect.x + 8 + (Math.random() * (rect.width - 96));
+        var y = rect.y + 8 + (Math.random() * (rect.height - 96));
+
+        var f = game.add.sprite(x, y, 'food', Math.floor(Math.random() * 64))
+        f.scale.setTo(2, 2);
+        
+        group.add(f);
+    }
+}
+
 function createChickens(rect, group) {
     for (var i = 0; i < 10; i++) {
-        var chicken = game.add.sprite(rect.x + rect.width / 2, rect.y + rect.height / 2, 'chicken00');
+        var x = rect.x + (rect.width / 4) + (Math.random() * (rect.width / 2));
+        var y = rect.y + (rect.height / 4) + (Math.random() * (rect.height / 2));
+
+        var chicken = game.add.sprite(x, y, 'chicken00');
         
         chicken.anchor.setTo(0.5, 0.5);
         chicken.scale.setTo(1.5, 1.5);
