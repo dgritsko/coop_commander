@@ -6,7 +6,8 @@ ChickenStates = {
 
 RodentStates = {
     STOPPED: 0,
-    HUNGRY: 1
+    HUNGRY: 1,
+    RETREATING: 2
 };
 
 var pen = new Phaser.Rectangle(720, 120, 8 * 48, 10 * 48);
@@ -37,7 +38,7 @@ function create() {
     cursors = game.input.keyboard.createCursorKeys();
     
     rodents = game.add.group();
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 2; i++) {
         createRodent(rodents);
     }
 
@@ -83,7 +84,22 @@ function update() {
             moveRodent(rodent, targets);
         }
 
-        rodent.animations.play('right');        
+        if (rodent.state == RodentStates.HUNGRY) {
+            rodent.animations.play('right');        
+        }
+
+        if (rodent.state == RodentStates.RETREATING) {
+            rodent.animations.play('left');
+        }
+
+        if (!rodent.inCamera) {
+            rodent.kill();
+            rodents.remove(rodent);
+        }
+    }
+
+    if (rodents.children.length < 2) {
+        createRodent(rodents);
     }
 
     for (var i = 0; i < flock.children.length; i++) {
@@ -110,10 +126,26 @@ function update() {
             stopChicken(chicken);
         }
     });
+
+    game.physics.arcade.collide(rodents, food, function(rodent, foodItem) {
+        
+    }, function(rodent, foodItem) {
+        if (rodent.state != RodentStates.HUNGRY) {
+            return false;
+        }
+
+        rodent.state = RodentStates.RETREATING;
+        foodItem.kill();
+        rodent.body.velocity.x *= -1;
+        rodent.body.velocity.y *= 0.25;        
+        return false;
+    });
 }
 
 function createRodent(group) {
-    var rat = game.add.sprite(0, Math.random() * game.world.height, 'rat00');
+    var width = game.cache.getImage('rat00').width;
+
+    var rat = game.add.sprite(game.camera.bounds.x - (width / 10), Math.random() * game.world.height, 'rat00');
     
     game.physics.arcade.enable(rat);
     
@@ -127,7 +159,7 @@ function createRodent(group) {
 }
 
 function moveRodent(rodent, targets) {
-    var speed = 1;
+    var speed = 3;
 
     var target = targets[Math.floor(Math.random() * targets.length)];
     rodent.state = RodentStates.HUNGRY;
@@ -213,9 +245,12 @@ function drawFence(rect, group) {
 function createFood(rect, group) {
     var x = rect.x + 8 + (Math.random() * (rect.width - 96));
     var y = rect.y + 8 + (Math.random() * (rect.height - 96));
-
+    
     var f = game.add.sprite(x, y, 'food', Math.floor(Math.random() * 64))
     f.scale.setTo(2, 2);
+
+    game.physics.arcade.enable(f); 
+    f.body.moves = false;
     
     group.add(f);
 }
