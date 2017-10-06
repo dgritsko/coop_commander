@@ -98,10 +98,6 @@ function update() {
         }
     }
 
-    if (rodents.children.length < 2) {
-        createRodent(rodents);
-    }
-
     for (var i = 0; i < flock.children.length; i++) {
         var chicken = flock.children[i];
         
@@ -136,10 +132,19 @@ function update() {
 
         rodent.state = RodentStates.RETREATING;
         foodItem.kill();
+        food.remove(foodItem);
         rodent.body.velocity.x *= -1;
         rodent.body.velocity.y *= 0.25;        
         return false;
     });
+
+    if (rodents.children.length < 2) {
+        createRodent(rodents);
+    }
+
+    if (food.children.length == 0) {
+        console.log('no more food');
+    }
 }
 
 function createRodent(group) {
@@ -159,7 +164,11 @@ function createRodent(group) {
 }
 
 function moveRodent(rodent, targets) {
-    var speed = 3;
+    if (targets.length == 0) {
+        return;
+    }
+
+    var speed = 10;
 
     var target = targets[Math.floor(Math.random() * targets.length)];
     rodent.state = RodentStates.HUNGRY;
