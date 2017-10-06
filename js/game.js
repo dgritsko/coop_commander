@@ -2,7 +2,12 @@ ChickenStates = {
     STOPPED: 0,
     MOVING_TO_POINT: 1,
     WAITING: 2
-}
+};
+
+RodentStates = {
+    STOPPED: 0,
+    HUNGRY: 1
+};
 
 var pen = new Phaser.Rectangle(720, 120, 8 * 48, 10 * 48);
 
@@ -31,23 +36,23 @@ function create() {
 
     cursors = game.input.keyboard.createCursorKeys();
     
-    rat = game.add.sprite(100, 200, 'rat00');
-    
-    game.physics.arcade.enable(rat);
-    
-    rat.animations.add('down', [0, 1, 2], 10, true);
-    rat.animations.add('left', [3, 4, 5], 10, true);
-    rat.animations.add('right', [6, 7, 8], 10, true);
-    rat.animations.add('up', [9, 10, 11], 10, true);
+    rodents = game.add.group();
+    for (var i = 0; i < 10; i++) {
+        createRodent(rodents);
+    }
 
     fence = game.add.group();
     drawFence(pen, fence);
 
     food = game.add.group();
-    createFood(pen, food);
+    for (var i = 0; i < 10; i++) {
+        createFood(pen, food);
+    }
 
     flock = game.add.group();
-    createChickens(pen, flock);
+    for (var i = 0; i < 10; i++) {
+        createChickens(pen, flock);
+    }
 }
 
 function update() {
@@ -70,7 +75,16 @@ function update() {
         player.animations.stop();
     }
 
-    rat.animations.play('right');
+    var targets = food.children.map(function(item) { return [item.x, item.y]; });
+    for (var i = 0; i < rodents.children.length; i++) {
+        var rodent = rodents.children[i];
+
+        if (rodent.state == RodentStates.STOPPED) {
+            moveRodent(rodent, targets);
+        }
+
+        rodent.animations.play('right');        
+    }
 
     for (var i = 0; i < flock.children.length; i++) {
         var chicken = flock.children[i];
@@ -96,6 +110,31 @@ function update() {
             stopChicken(chicken);
         }
     });
+}
+
+function createRodent(group) {
+    var rat = game.add.sprite(0, Math.random() * game.world.height, 'rat00');
+    
+    game.physics.arcade.enable(rat);
+    
+    rat.animations.add('down', [0, 1, 2], 10, true);
+    rat.animations.add('left', [3, 4, 5], 10, true);
+    rat.animations.add('right', [6, 7, 8], 10, true);
+    rat.animations.add('up', [9, 10, 11], 10, true);
+
+    rat.state = RodentStates.STOPPED;
+    group.add(rat);
+}
+
+function moveRodent(rodent, targets) {
+    var speed = 1;
+
+    var target = targets[Math.floor(Math.random() * targets.length)];
+    rodent.state = RodentStates.HUNGRY;
+    game.physics.arcade.moveToXY(rodent, target[0], target[1]);
+
+    rodent.body.velocity.x *= speed;
+    rodent.body.velocity.y *= speed;
 }
 
 function moveChicken(chicken) {
@@ -172,38 +211,34 @@ function drawFence(rect, group) {
 }
 
 function createFood(rect, group) {
-    for (var i = 0; i < 5; i++) {
-        var x = rect.x + 8 + (Math.random() * (rect.width - 96));
-        var y = rect.y + 8 + (Math.random() * (rect.height - 96));
+    var x = rect.x + 8 + (Math.random() * (rect.width - 96));
+    var y = rect.y + 8 + (Math.random() * (rect.height - 96));
 
-        var f = game.add.sprite(x, y, 'food', Math.floor(Math.random() * 64))
-        f.scale.setTo(2, 2);
-        
-        group.add(f);
-    }
+    var f = game.add.sprite(x, y, 'food', Math.floor(Math.random() * 64))
+    f.scale.setTo(2, 2);
+    
+    group.add(f);
 }
 
 function createChickens(rect, group) {
-    for (var i = 0; i < 10; i++) {
-        var x = rect.x + (rect.width / 4) + (Math.random() * (rect.width / 2));
-        var y = rect.y + (rect.height / 4) + (Math.random() * (rect.height / 2));
+    var x = rect.x + (rect.width / 4) + (Math.random() * (rect.width / 2));
+    var y = rect.y + (rect.height / 4) + (Math.random() * (rect.height / 2));
 
-        var chicken = game.add.sprite(x, y, 'chicken00');
-        
-        chicken.anchor.setTo(0.5, 0.5);
-        chicken.scale.setTo(1.5, 1.5);
-        
-        game.physics.arcade.enable(chicken);
-        
-        chicken.animations.add('down', [0, 1, 2], 10, true);
-        chicken.animations.add('left', [3, 4, 5], 10, true);
-        chicken.animations.add('right', [6, 7, 8], 10, true);
-        chicken.animations.add('up', [9, 10, 11], 10, true);
-        
-        chicken.state = ChickenStates.STOPPED;
-        chicken.dest = [0, 0];
-        group.add(chicken);
-    }
+    var chicken = game.add.sprite(x, y, 'chicken00');
+    
+    chicken.anchor.setTo(0.5, 0.5);
+    chicken.scale.setTo(1.5, 1.5);
+    
+    game.physics.arcade.enable(chicken);
+    
+    chicken.animations.add('down', [0, 1, 2], 10, true);
+    chicken.animations.add('left', [3, 4, 5], 10, true);
+    chicken.animations.add('right', [6, 7, 8], 10, true);
+    chicken.animations.add('up', [9, 10, 11], 10, true);
+    
+    chicken.state = ChickenStates.STOPPED;
+    chicken.dest = [0, 0];
+    group.add(chicken);
 }
 
 function stopChicken(chicken) {
