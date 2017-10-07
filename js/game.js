@@ -46,7 +46,7 @@ function create() {
     drawFence(pen, fence);
 
     food = game.add.group();
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 2; i++) {
         createFood(pen, food);
     }
 
@@ -143,7 +143,7 @@ function update() {
     }
 
     if (food.children.length == 0) {
-        console.log('no more food');
+        game.state.start('Score', true, false, { foodCount: 0 });
     }
 }
 

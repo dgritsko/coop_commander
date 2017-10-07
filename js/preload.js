@@ -11,7 +11,7 @@ function preload() {
 }
 
 function create() {
-    game.state.start('Game');
+    game.state.start('Menu');
 }
 
 CoopCommander.Preload = {preload: preload, create: create};
