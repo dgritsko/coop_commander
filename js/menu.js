@@ -11,13 +11,54 @@ function preload() {
 function create() {
     var args = CoopCommander.Menu.args;
 
-    start_label = game.add.text(200, 200, 'Start', { font: '24px Arial', fill: '#fff'})
-    start_label.inputEnabled = true;
-    start_label.events.onInputUp.add(function() {
+    menuItems = game.add.group();
+
+    addMenuItem('Start', menuItems, function() {
         startGame();
     });
+
+    addMenuItem('Help', menuItems, function() {
+
+    });
+
+    menuArrow = game.add.sprite(200 - 24, 0, 'menu_arrow');
+    menuArrow.anchor.setTo(0.5, 0.5);
+
+    selectedIndex = 0
+
+    upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+    upKey.onDown.add(function() { 
+        selectedIndex = selectedIndex == 0 ? menuItems.children.length - 1 : selectedIndex-1;
+        highlightIndex(selectedIndex) 
+    }, this);
+
+    downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+    downKey.onDown.add(function() { 
+        selectedIndex = selectedIndex < menuItems.children.length - 1 ? selectedIndex+1 : 0;
+        highlightIndex(selectedIndex) 
+    }, this);
+
+    enterKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
+    enterKey.onDown.add(function() { 
+        menuItems.children[selectedIndex].events.onInputUp.dispatch();
+    }, this);
+
+    highlightIndex(selectedIndex);
 }
 
+function highlightIndex(index) {
+    menuArrow.y = 200 + index * 24 + 12;
+}
+
+function addMenuItem(text, items, callback) {
+    var fontSize = 24;
+
+    var label = game.add.text(200, 200 + items.children.length * fontSize, text, { font: fontSize + 'px Arial', fill: '#fff'})
+    label.inputEnabled = true;
+    label.events.onInputUp.add(callback);
+
+    items.add(label);
+}
 
 function startGame() {
     game.state.start('Game');//, true, false, {});
