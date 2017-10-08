@@ -9,6 +9,8 @@ function preload() {
 }
 
 function create() {
+    game.camera.flash(0x000000, 250);
+
     var args = CoopCommander.Menu.args;
 
     menuItems = game.add.group();
@@ -61,7 +63,11 @@ function addMenuItem(text, items, callback) {
 }
 
 function startGame() {
-    game.state.start('Game');//, true, false, {});
+    //game.music.stop();    
+    game.camera.fade('#000000', 250);
+    game.camera.onFadeComplete.add(function() { 
+        game.state.start('Game');//, true, false, {});        
+    }, this);
 }
 
 CoopCommander.Menu = {init: init, preload: preload, create: create};

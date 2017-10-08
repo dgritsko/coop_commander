@@ -147,7 +147,7 @@ function update() {
     }
 }
 
-function createRodent(group) {
+function createRodent(group) {    
     var width = game.cache.getImage('rat00').width;
 
     var rat = game.add.sprite(game.camera.bounds.x - (width / 10), Math.random() * game.world.height, 'rat00');
