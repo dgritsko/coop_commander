@@ -8,8 +8,9 @@ function preload() {
     game.load.spritesheet('chicken00', 'assets/chicken00.png', 48, 48);
     game.load.spritesheet('fence00', 'assets/fence00.png', 48, 48);
     game.load.spritesheet('food', 'assets/food.png', 16, 16);
-
     game.load.image('menu_arrow', 'assets/menu_arrow.png');
+
+    game.load.bitmapFont('blackOpsOne', 'assets/fonts/BlackOpsOne.png', 'assets/fonts/BlackOpsOne.fnt');
 }
 
 function create() {

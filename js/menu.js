@@ -55,9 +55,10 @@ function highlightIndex(index) {
 }
 
 function addMenuItem(text, items, callback) {
-    var fontSize = 24;
+    var fontSize = 28;
 
-    var label = game.add.text(200, 200 + items.children.length * fontSize, text, { font: fontSize + 'px Arial', fill: '#fff'})
+    var label = game.add.bitmapText(200, 200 + items.children.length * fontSize, 'blackOpsOne', text, 28);
+
     label.inputEnabled = true;
     label.events.onInputUp.add(callback);
 
@@ -107,7 +108,7 @@ function showQuote() {
 
     quoteText = '"' + quoteText + '"\n         - Papa G';
     
-    game.add.text(150, 450, quoteText, { font: '24px Arial', fill: '#fff'});
+    game.add.bitmapText(150, 450, 'blackOpsOne', quoteText, 28);
 }
 
 CoopCommander.Menu = {init: init, preload: preload, create: create};
