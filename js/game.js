@@ -57,24 +57,7 @@ function create() {
 }
 
 function update() {
-    player.body.velocity.x = 0;
-    player.body.velocity.y = 0;
-
-    if (cursors.up.isDown) {
-        player.body.velocity.y -= 100;
-        player.animations.play('up');
-    } else if (cursors.down.isDown) {
-        player.body.velocity.y += 100;
-        player.animations.play('down');
-    } else if (cursors.left.isDown) {
-        player.body.velocity.x = -100;
-        player.animations.play('left');
-    } else if (cursors.right.isDown) {
-        player.body.velocity.x += 100;
-        player.animations.play('right');
-    } else {
-        player.animations.stop();
-    }
+    movePlayer();
 
     var targets = food.children.map(function(item) { return [item.x, item.y]; });
     for (var i = 0; i < rodents.children.length; i++) {
@@ -147,6 +130,60 @@ function update() {
     }
 }
 
+function movePlayer() {
+    player.body.velocity.x = 0;
+    player.body.velocity.y = 0;
+
+    var speedFactor = 100;
+
+    var diagonalVelocity = 0.70710678118; // 1/sqrt(2)
+
+    var xVelocity = 0;
+    var yVelocity = 0;
+    var animation = '';
+
+    // TODO: Play the animation corresponding to the last directional key pressed...
+
+    if (cursors.left.isDown) {
+        animation = 'left';
+        if (cursors.up.isDown) {
+            xVelocity = -diagonalVelocity;
+            yVelocity = -diagonalVelocity;
+        } else if (cursors.down.isDown) {
+            xVelocity = -diagonalVelocity;
+            yVelocity = diagonalVelocity;
+        } else {
+            xVelocity = -1;
+        }
+    } else if (cursors.right.isDown) {
+        animation = 'right';
+        if (cursors.up.isDown) {
+            xVelocity = diagonalVelocity;
+            yVelocity = -diagonalVelocity;
+        } else if (cursors.down.isDown) {
+            xVelocity = diagonalVelocity;
+            yVelocity = diagonalVelocity;
+        } else {
+            xVelocity = 1;
+        }
+    } else if (cursors.up.isDown) {
+        yVelocity = -1;
+        animation = 'up';
+    } else if (cursors.down.isDown) {
+        yVelocity = 1;
+        animation = 'down';
+    }
+
+    player.body.velocity.x += (xVelocity * speedFactor);    
+    player.body.velocity.y += (yVelocity * speedFactor);
+
+    if (animation) {
+        player.animations.play(animation);
+    } else {
+        player.animations.stop();
+    }
+}
+
 function createRodent(group) {    
     var width = game.cache.getImage('rat00').width;
 
@@ -168,7 +205,7 @@ function moveRodent(rodent, targets) {
         return;
     }
 
-    var speed = 10;
+    var speed = 1;
 
     var target = targets[Math.floor(Math.random() * targets.length)];
     rodent.state = RodentStates.HUNGRY;
