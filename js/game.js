@@ -28,12 +28,15 @@ function create() {
 
     player = game.add.sprite(100, 100, 'player');
 
+    player.scale.setTo(2, 2);
+    player.anchor.setTo(0.5, 0.5);
+
     game.physics.arcade.enable(player);
 
-    player.animations.add('up', [0, 1, 2, 3, 4, 5, 6, 7, 8], 20, true);
-    player.animations.add('left', [9, 10, 11, 12, 13, 14, 15, 16, 17], 20, true);
-    player.animations.add('down', [18, 19, 20, 21, 22, 23, 24, 25, 26], 20, true);
-    player.animations.add('right', [27, 28, 29, 30, 31, 32, 33, 34, 35], 20, true);
+    player.animations.add('up', [0, 1, 2, 3, 4, 5, 6, 7, 8], 10, true);
+    player.animations.add('left', [9, 10, 11, 12, 13, 14, 15, 16, 17], 10, true);
+    player.animations.add('down', [18, 19, 20, 21, 22, 23, 24, 25, 26], 10, true);
+    player.animations.add('right', [27, 28, 29, 30, 31, 32, 33, 34, 35], 10, true);
 
     setupInput();
 
@@ -46,7 +49,7 @@ function create() {
     drawFence(pen, fence);
 
     food = game.add.group();
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < 10; i++) {
         createFood(pen, food);
     }
 
@@ -134,7 +137,7 @@ function movePlayer() {
     player.body.velocity.x = 0;
     player.body.velocity.y = 0;
 
-    var speedFactor = 100;
+    var speedFactor = 150;
 
     var diagonalVelocity = 0.70710678118; // 1/sqrt(2)
 
@@ -142,22 +145,8 @@ function movePlayer() {
     var yVelocity = 0;
     var animation = '';
 
-    // TODO: Play the animation corresponding to the last directional key pressed...
-    var lastKey = CoopCommander.Game.input.lastKey[CoopCommander.Game.input.lastKey.length - 1];
-
-    if (cursors.left.isDown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown) {
-        if (lastKey == Phaser.Keyboard.UP) {
-            animation = 'up';
-        } else if (lastKey == Phaser.Keyboard.DOWN) {
-            animation = 'down';
-        } else if (lastKey == Phaser.Keyboard.LEFT) {
-            animation = 'left';
-        } else if (lastKey == Phaser.Keyboard.RIGHT) {
-            animation = 'right';
-        }
-    }
-
     if (cursors.left.isDown) {
+        animation = 'left';
         if (cursors.up.isDown) {
             xVelocity = -diagonalVelocity;
             yVelocity = -diagonalVelocity;
@@ -168,6 +157,7 @@ function movePlayer() {
             xVelocity = -1;
         }
     } else if (cursors.right.isDown) {
+        animation = 'right';
         if (cursors.up.isDown) {
             xVelocity = diagonalVelocity;
             yVelocity = -diagonalVelocity;
@@ -178,8 +168,10 @@ function movePlayer() {
             xVelocity = 1;
         }
     } else if (cursors.up.isDown) {
+        animation = 'up';
         yVelocity = -1;
     } else if (cursors.down.isDown) {
+        animation = 'down';
         yVelocity = 1;
     }
 
@@ -195,22 +187,15 @@ function movePlayer() {
 
 function setupInput() {
     cursors = game.input.keyboard.createCursorKeys();
-    
-    CoopCommander.Game.input = { lastKey: [] };
-    
-    function configureKey(key, id) {
-        key.onDown.add(function() { CoopCommander.Game.input.lastKey.push(id); })
-        key.onUp.add(function() { CoopCommander.Game.input.lastKey.pop(); })
-    }
 
-    configureKey(cursors.up, Phaser.Keyboard.UP);
-    configureKey(cursors.down, Phaser.Keyboard.DOWN);
-    configureKey(cursors.left, Phaser.Keyboard.LEFT);
-    configureKey(cursors.right, Phaser.Keyboard.RIGHT);
-
-    spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     spaceKey.onDown.add(function() { 
         game.camera.flash(0xFFFFFF, 100);
+    }, this);
+
+    var ctrlKey = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
+    ctrlKey.onDown.add(function() {
+        console.log('ctrl pressed');
     }, this);
 }
 
