@@ -13,7 +13,7 @@ function preload() {
 }
 
 function create() {
-    pauseDuration = game.time.now + 2000;
+    pauseDuration = game.time.now + 250;
 }
 
 function update() {

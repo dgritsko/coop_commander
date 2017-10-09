@@ -35,8 +35,8 @@ function create() {
     player.animations.add('down', [18, 19, 20, 21, 22, 23, 24, 25, 26], 20, true);
     player.animations.add('right', [27, 28, 29, 30, 31, 32, 33, 34, 35], 20, true);
 
-    cursors = game.input.keyboard.createCursorKeys();
-    
+    setupInput();
+
     rodents = game.add.group();
     for (var i = 0; i < 2; i++) {
         createRodent(rodents);
@@ -143,9 +143,21 @@ function movePlayer() {
     var animation = '';
 
     // TODO: Play the animation corresponding to the last directional key pressed...
+    var lastKey = CoopCommander.Game.input.lastKey[CoopCommander.Game.input.lastKey.length - 1];
+
+    if (cursors.left.isDown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown) {
+        if (lastKey == Phaser.Keyboard.UP) {
+            animation = 'up';
+        } else if (lastKey == Phaser.Keyboard.DOWN) {
+            animation = 'down';
+        } else if (lastKey == Phaser.Keyboard.LEFT) {
+            animation = 'left';
+        } else if (lastKey == Phaser.Keyboard.RIGHT) {
+            animation = 'right';
+        }
+    }
 
     if (cursors.left.isDown) {
-        animation = 'left';
         if (cursors.up.isDown) {
             xVelocity = -diagonalVelocity;
             yVelocity = -diagonalVelocity;
@@ -156,7 +168,6 @@ function movePlayer() {
             xVelocity = -1;
         }
     } else if (cursors.right.isDown) {
-        animation = 'right';
         if (cursors.up.isDown) {
             xVelocity = diagonalVelocity;
             yVelocity = -diagonalVelocity;
@@ -168,10 +179,8 @@ function movePlayer() {
         }
     } else if (cursors.up.isDown) {
         yVelocity = -1;
-        animation = 'up';
     } else if (cursors.down.isDown) {
         yVelocity = 1;
-        animation = 'down';
     }
 
     player.body.velocity.x += (xVelocity * speedFactor);    
@@ -182,6 +191,27 @@ function movePlayer() {
     } else {
         player.animations.stop();
     }
+}
+
+function setupInput() {
+    cursors = game.input.keyboard.createCursorKeys();
+    
+    CoopCommander.Game.input = { lastKey: [] };
+    
+    function configureKey(key, id) {
+        key.onDown.add(function() { CoopCommander.Game.input.lastKey.push(id); })
+        key.onUp.add(function() { CoopCommander.Game.input.lastKey.pop(); })
+    }
+
+    configureKey(cursors.up, Phaser.Keyboard.UP);
+    configureKey(cursors.down, Phaser.Keyboard.DOWN);
+    configureKey(cursors.left, Phaser.Keyboard.LEFT);
+    configureKey(cursors.right, Phaser.Keyboard.RIGHT);
+
+    spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    spaceKey.onDown.add(function() { 
+        game.camera.flash(0xFFFFFF, 100);
+    }, this);
 }
 
 function createRodent(group) {    
