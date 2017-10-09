@@ -13,7 +13,16 @@ function preload() {
 }
 
 function create() {
-    game.state.start('Menu');
+    pauseDuration = game.time.now + 2000;
 }
 
-CoopCommander.Preload = {preload: preload, create: create};
+function update() {
+    if (game.time.now > pauseDuration) {
+        game.camera.fade('#000000', 250);
+        game.camera.onFadeComplete.add(function() { 
+            game.state.start('Menu');   
+        }, this);
+    }
+}
+
+CoopCommander.Preload = {preload: preload, create: create, update: update};
