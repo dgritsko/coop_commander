@@ -5,9 +5,14 @@ function preload() {
 }
 
 function create() {
+    game.stage.disableVisibilityChange = true;
+
     sunrise();
+    //sunset();
 
     // predator();
+
+    drawGrass();
 }
 
 function update() {
@@ -27,23 +32,62 @@ function predator() {
 }
 
 function sunrise() {
-    // Sky color.
-    backgroundColor(0x001933, 0xfb9fa4, 5000, Phaser.Easing.Cubic.InOut, function() { 
-        backgroundColor(0xfb9fa4, 0xa7d9ff, 10000, Phaser.Easing.Quartic.Out, function() {
+    // Sky color
+    var t1 = backgroundColor(0x001933, 0xfb9fa4, 500, Phaser.Easing.Cubic.InOut);
+    var t2 = backgroundColor(0xfb9fa4, 0xa7d9ff, 1000, Phaser.Easing.Quartic.Out);
 
-        })
-    });
+    t1.chain(t2);
+    t1.start();
 
-    var sun = game.add.sprite(500, 500, 'chicken00');
+    var sun = game.add.sprite(500, 500, 'sun');
     sun.anchor.setTo(0.5, 0.5);
 
-    //moveAlongArc(sprite1, 3.14, -3.14 * 2, 100, 1000)
-    //moveAlongArc(sprite1, -45, 45, 500, 2000);
-    moveAlongArc(sun, 270, 180, 300, 15000);
-    //moveAlongArc(sprite1, 0, 360, 100, 2000);
+    // Sun tint
+    var t3 = tweenColor(0xD55446, 0x00ffffff, 750, Phaser.Easing.Linear.None, function(color) {
+        sun.tint = fromRgb(color);
+    });
+    t3.start();
+
+    // Sun position
+    var t4 = moveAlongArc(sun, 270, 180, 300, 1500, Phaser.Easing.Bounce.Out);//Phaser.Easing.Cubic.Out);    
+    t4.start();
 }
 
-function moveAlongArc(sprite, startAngle, endAngle, radius, duration, onCompleteCallback) {
+function sunset() {
+    // Sky color
+    var t1 = backgroundColor(0xa7d9ff, 0xfb9fa4, 1000, Phaser.Easing.Cubic.Out);
+    var t2 = backgroundColor(0xfb9fa4, 0x001933, 500, Phaser.Easing.Quartic.InOut);
+
+    t1.chain(t2);
+    t1.start();
+
+    var sun = game.add.sprite(500, 500, 'sun');
+    sun.anchor.setTo(0.5, 0.5);
+
+    // Sun tint
+    var t3 = tweenColor(0x00ffffff, 0xD55446, 750, Phaser.Easing.Linear.None, function(color) {
+        sun.tint = fromRgb(color);
+    });
+    t3.start();
+
+    // Sun position
+    var t4 = moveAlongArc(sun, 180, 90, 300, 1500, Phaser.Easing.Cubic.Out);//Phaser.Easing.Cubic.Out);    
+    t4.start();
+}
+
+function drawGrass() {
+    var grassSprite = 'grass00';
+
+    var grassSize = game.cache.getImage(grassSprite).width;
+    
+     for (var x = 0; x < game.width; x += grassSize) {
+         for (var y = 450; y < game.height; y += grassSize) {
+             game.add.sprite(x, y, grassSprite);
+         }
+     }
+}
+
+function moveAlongArc(sprite, startAngle, endAngle, radius, duration, easing) {
     startAngle = startAngle / (180 / Math.PI);
     endAngle = endAngle / (180 / Math.PI);
 
@@ -55,7 +99,7 @@ function moveAlongArc(sprite, startAngle, endAngle, radius, duration, onComplete
 
     var rotationState = { angle: startAngle };
 
-    var tween = game.add.tween(rotationState).to({ angle: endAngle }, duration, Phaser.Easing.Linear.None);
+    var tween = game.add.tween(rotationState).to({ angle: endAngle }, duration, easing);
     tween.onUpdateCallback(function() {
         var newX = Math.sin(rotationState.angle) * radius;
         var newY = Math.cos(rotationState.angle) * radius;
@@ -64,14 +108,10 @@ function moveAlongArc(sprite, startAngle, endAngle, radius, duration, onComplete
         sprite.y = centerY + newY;
     }, this);
 
-    if (onCompleteCallback) {
-        tween.onComplete.add(onCompleteCallback);
-    }
-
-    tween.start();
+    return tween;
 }
 
-function backgroundColor(startColor, endColor, duration, easing, onCompleteCallback) {
+function tweenColor(startColor, endColor, duration, easing, onUpdateCallback) {
     var colorState = {percent : 0};
     
     var tween = game.add.tween(colorState).to({ percent: 100 }, duration, easing);
@@ -84,16 +124,18 @@ function backgroundColor(startColor, endColor, duration, easing, onCompleteCallb
             return Math.round(rgbStart[index] + ((rgbEnd[index] - rgbStart[index]) / 100) * colorState.percent);
         }
 
-        var backgroundColor = toColor([ interp(0), interp(1), interp(2) ]);
-
-        game.stage.backgroundColor = backgroundColor;
+        var color = [ interp(0), interp(1), interp(2) ];
+        onUpdateCallback(color);
     }, this);
 
-    if (onCompleteCallback) {
-        tween.onComplete.add(onCompleteCallback);
-    }
+    return tween;
+}
 
-    tween.start();
+function backgroundColor(startColor, endColor, duration, easing) {
+    return tweenColor(startColor, endColor, duration, easing, function(color) {
+        var backgroundColor = toColor(color);
+        game.stage.backgroundColor = backgroundColor;
+    });
 }
 
 function toRgb(color) {

@@ -17,14 +17,10 @@ function preload() {
 
 function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
-
+    
     game.stage.disableVisibilityChange = true;
     
-    for (var x = 0; x < game.width; x += 100) {
-        for (var y = 0; y < game.height; y += 100) {
-            game.add.sprite(x, y, 'grass');
-        }
-    }
+    drawGameGrass();
 
     player = game.add.sprite(100, 100, 'player');
 
@@ -183,6 +179,18 @@ function movePlayer() {
     } else {
         player.animations.stop();
     }
+}
+
+function drawGameGrass() {
+    var grassSprite = 'grass00';
+
+    var grassSize = game.cache.getImage(grassSprite).width;
+    
+     for (var x = 0; x < game.width; x += grassSize) {
+         for (var y = 0; y < game.height; y += grassSize) {
+             game.add.sprite(x, y, grassSprite);
+         }
+     }
 }
 
 function setupInput() {
