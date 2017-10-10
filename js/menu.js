@@ -83,7 +83,7 @@ function showQuote() {
         'I learned a few years ago that mammals, like raccoons, skunks, etc. live where \nthere is water, food and shelter. They also learn where food is as each season changes.',
         'We created my science experiment because the cat food kept getting left out on the \nporch and so I started trapping and moving possums, raccoons, etc. far away. \nThat said, we had several generations of critters that kept looking for food on our porch.',
         'The rats are the same. They need food water and shelter - and \nwe kind of have the perfect thing for them in the duck and chicken pen.',
-        'Although rats are everywhere. You rarely see them. You all have them also. But back to here.',
+        'Although rats are everywhere. You rarely see them. You all have them also. \nBut back to here.',
         'We only started to notice them a little over 2 years ago. But for sure we had them all \nalong but weren\'t realizing it.',
         'So I started trapping them. Started doing a much better job with the food, etc. But \n that said. We were way behind the 8 ball.',
         'It took me really like a year or two to learn not just to trap, but how to trap, \nwhich traps worked better, where to put a trap. It took time to learn all this.',
