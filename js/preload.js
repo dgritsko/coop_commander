@@ -31,7 +31,7 @@
         loadingBar.anchor.setTo(0.5, 0.5);
         loadingBar.animations.add('default', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 24, true);
 
-        var label = game.add.bitmapText(game.world.centerX, 610, 'blackOpsOne', 'Loading...', 28);
+        var label = game.add.bitmapText(game.world.centerX, 650, 'blackOpsOne', 'Loading...', 28);
         label.anchor.setTo(0.5, 0.5);
 
         // TODO: Show artwork
