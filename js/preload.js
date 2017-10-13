@@ -1,5 +1,8 @@
 (function() {
     function preload() {
+        // Fonts
+        game.load.bitmapFont('blackOpsOne', 'assets/fonts/BlackOpsOne.png', 'assets/fonts/BlackOpsOne.fnt');
+
         // Sprites
         game.load.image('grass00', 'assets/grass00.png');
         game.load.image('grass01', 'assets/grass01.png');
@@ -24,8 +27,10 @@
     function create() {
         pauseDuration = game.time.now + 1000;
 
-        var loading = game.add.sprite(game.world.centerX, game.world.centerY, 'loading');
-        loading.anchor.setTo(0.5, 0.5);
+        var titleLabel = game.add.bitmapText(game.world.centerX, 60, 'blackOpsOne', 'Papa G\'s Coop Commando', 64);
+        titleLabel.anchor.setTo(0.5, 0.5);
+
+        
 
         loadingBar = game.add.sprite(game.world.centerX, 650, 'loading_bar');
         loadingBar.anchor.setTo(0.5, 0.5);

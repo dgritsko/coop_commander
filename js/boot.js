@@ -1,7 +1,6 @@
 (function() {
     function preload() {
         // TODO: Load artwork for Preload screen
-        game.load.image('loading', 'assets/loading.png');
         game.load.spritesheet('loading_bar', 'assets/loading_bar.png', 256, 64);
     }
 

@@ -12,6 +12,9 @@
 
         var args = CoopCommander.Menu.args;
 
+        var titleLabel = game.add.bitmapText(game.world.centerX, 60, 'blackOpsOne', 'Papa G\'s Coop Commando', 64);
+        titleLabel.anchor.setTo(0.5, 0.5);
+        
         menuItems = game.add.group();
 
         addMenuItem('Start', menuItems, function() {
@@ -22,7 +25,8 @@
 
         });
 
-        menuArrow = game.add.sprite(200 - 24, 0, 'menu_arrow');
+        menuArrow = game.add.sprite(200 - 16, 0, 'menu_arrow');
+        menuArrow.scale.setTo(0.5, 0.5);
         menuArrow.anchor.setTo(0.5, 0.5);
 
         selectedIndex = 0
@@ -50,7 +54,7 @@
     }
 
     function highlightIndex(index) {
-        menuArrow.y = 200 + index * 24 + 12;
+        menuArrow.y = 200 + index * 28 + 14;
     }
 
     function addMenuItem(text, items, callback) {
