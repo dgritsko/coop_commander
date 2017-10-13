@@ -13,6 +13,15 @@
 
     var pen = new Phaser.Rectangle(720, 120, 8 * 48, 10 * 48);
 
+    var instance = {};
+
+    function init() {
+        instance.level = 1;
+        instance.flashlights = 3;
+        instance.food = 10;
+        instance.score = 0;
+    }
+
     function preload() {
     }
 
@@ -23,17 +32,7 @@
         
         drawGrass();
 
-        player = game.add.sprite(100, 100, 'player');
-
-        player.scale.setTo(2, 2);
-        player.anchor.setTo(0.5, 0.5);
-
-        game.physics.arcade.enable(player);
-
-        player.animations.add('up', [0, 1, 2, 3, 4, 5, 6, 7, 8], 10, true);
-        player.animations.add('left', [9, 10, 11, 12, 13, 14, 15, 16, 17], 10, true);
-        player.animations.add('down', [18, 19, 20, 21, 22, 23, 24, 25, 26], 10, true);
-        player.animations.add('right', [27, 28, 29, 30, 31, 32, 33, 34, 35], 10, true);
+        setupPlayer();
 
         setupInput();
 
@@ -54,6 +53,8 @@
         for (var i = 0; i < 10; i++) {
             createChickens(pen, flock);
         }
+
+        drawHud();
     }
 
     function update() {
@@ -194,6 +195,22 @@
         }
     }
 
+    function setupPlayer() {
+        player = game.add.sprite(100, 100, 'player');
+        
+        player.scale.setTo(2, 2);
+        player.anchor.setTo(0.5, 0.5);
+
+        game.physics.arcade.enable(player);
+
+        player.body.collideWorldBounds = true;
+
+        player.animations.add('up', [0, 1, 2, 3, 4, 5, 6, 7, 8], 10, true);
+        player.animations.add('left', [9, 10, 11, 12, 13, 14, 15, 16, 17], 10, true);
+        player.animations.add('down', [18, 19, 20, 21, 22, 23, 24, 25, 26], 10, true);
+        player.animations.add('right', [27, 28, 29, 30, 31, 32, 33, 34, 35], 10, true);
+    }
+
     function setupInput() {
         cursors = game.input.keyboard.createCursorKeys();
 
@@ -206,6 +223,38 @@
         ctrlKey.onDown.add(function() {
             console.log('ctrl pressed');
         }, this);
+    }
+
+    function drawHud() {
+        function addText(x, y, text) {
+            return game.add.bitmapText(x, y, 'blackOpsOne', text + '', 24);
+        }
+        
+        var levelText = addText(10, 10, 'Level ' + instance.level);
+
+        var flashlightText = addText(10, 40, instance.flashlights);
+
+        for (var i = 0; i < instance.flashlights; i++) {
+            var f = game.add.sprite(44 + i * 30, 40, 'flashlight');
+            f.scale.setTo(1/3.8, 1/3.8);
+        }
+
+        var foodText = addText(10, 70, instance.food);
+
+        for (var i = 0; i < instance.food; i++) {
+            console.log('TODO: draw food');
+        }
+
+        var scoreText = addText(10, 100, instance.score);
+
+        // instance.level = 1;
+        // instance.flashlights = 3;
+        // instance.food = 10;
+        // instance.score = 0;
+    }
+
+    function updateHud() {
+        // TODO
     }
 
     function createRodent(group) {    
@@ -354,5 +403,5 @@
         chicken.state = ChickenStates.STOPPED;
     }
 
-    CoopCommander.Game = {preload: preload, create: create, update: update};
+    CoopCommander.Game = {init: init, preload: preload, create: create, update: update};
 })();

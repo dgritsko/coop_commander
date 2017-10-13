@@ -13,10 +13,8 @@
         game.load.spritesheet('food', 'assets/food.png', 16, 16);
         game.load.image('menu_arrow', 'assets/menu_arrow.png');
         game.load.image('sun', 'assets/sun.png');
-
-        // Fonts
-        game.load.bitmapFont('blackOpsOne', 'assets/fonts/BlackOpsOne.png', 'assets/fonts/BlackOpsOne.fnt');
-
+        game.load.image('flashlight', 'assets/flashlight.png');
+        
         // Sounds
         // TODO
         
