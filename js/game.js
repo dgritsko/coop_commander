@@ -14,6 +14,10 @@
     var rats = [];
 
     function init() {
+        instance = [];
+        hud = {};
+        rats = [];
+
         instance.level = 1;
         instance.flashlights = 3;
         instance.food = 10;
@@ -44,7 +48,7 @@
         drawFence(pen, fence);
 
         food = game.add.group();
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < instance.food; i++) {
             createFood(pen, food);
         }
 

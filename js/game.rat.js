@@ -23,6 +23,8 @@ class Rat {
         this.sprite.animations.add('up', [9, 10, 11], 10, true);
 
         group.add(this.sprite);
+
+        this.speed = 5;
     }
 }
 
@@ -31,14 +33,12 @@ Rat.prototype.move = function(targets) {
         return;
     }
 
-    var speed = 1;
-
     var target = targets[Math.floor(Math.random() * targets.length)];
     this.state = RatStates.HUNGRY;
     game.physics.arcade.moveToXY(this.sprite, target[0], target[1]);
 
-    this.sprite.body.velocity.x *= speed;
-    this.sprite.body.velocity.y *= speed;
+    this.sprite.body.velocity.x *= this.speed;
+    this.sprite.body.velocity.y *= this.speed;
 }
 
 Rat.prototype.update = function(targets) {
