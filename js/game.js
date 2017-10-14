@@ -5,21 +5,20 @@
         WAITING: 2
     };
 
-    RodentStates = {
-        STOPPED: 0,
-        HUNGRY: 1,
-        RETREATING: 2
-    };
-
     var pen = new Phaser.Rectangle(720, 120, 8 * 48, 10 * 48);
 
     var instance = {};
+
+    var hud = {};
+
+    var rats = [];
 
     function init() {
         instance.level = 1;
         instance.flashlights = 3;
         instance.food = 10;
         instance.score = 0;
+        instance.upgradePoints = 0;
     }
 
     function preload() {
@@ -38,7 +37,7 @@
 
         rodents = game.add.group();
         for (var i = 0; i < 2; i++) {
-            createRodent(rodents);
+            createRat();
         }
 
         fence = game.add.group();
@@ -61,25 +60,8 @@
         movePlayer();
 
         var targets = food.children.map(function(item) { return [item.x, item.y]; });
-        for (var i = 0; i < rodents.children.length; i++) {
-            var rodent = rodents.children[i];
-
-            if (rodent.state == RodentStates.STOPPED) {
-                moveRodent(rodent, targets);
-            }
-
-            if (rodent.state == RodentStates.HUNGRY) {
-                rodent.animations.play('right');        
-            }
-
-            if (rodent.state == RodentStates.RETREATING) {
-                rodent.animations.play('left');
-            }
-
-            if (!rodent.inCamera) {
-                rodent.kill();
-                rodents.remove(rodent);
-            }
+        for (var i = 0; i < rats.length; i++) {
+            rats[i].update(targets);
         }
 
         for (var i = 0; i < flock.children.length; i++) {
@@ -110,25 +92,30 @@
         game.physics.arcade.collide(rodents, food, function(rodent, foodItem) {
             
         }, function(rodent, foodItem) {
-            if (rodent.state != RodentStates.HUNGRY) {
-                return false;
+            var rat = _.find(rats, function(r) { return r.id == rodent.id; });
+
+            if (rat && rat.shouldEat()) {
+                rat.eat();
+                foodItem.kill();
+                food.remove(foodItem);
             }
 
-            rodent.state = RodentStates.RETREATING;
-            foodItem.kill();
-            food.remove(foodItem);
-            rodent.body.velocity.x *= -1;
-            rodent.body.velocity.y *= 0.25;        
             return false;
         });
 
         if (rodents.children.length < 2) {
-            createRodent(rodents);
+            createRat();
         }
 
         if (food.children.length == 0) {
             game.state.start('Score', true, false, { foodCount: 0 });
         }
+
+        updateHud();
+    }
+
+    function createRat() {
+        rats.push(new Rat(rodents, rats.length));
     }
 
     function movePlayer() {
@@ -216,7 +203,7 @@
 
         var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(function() { 
-            game.camera.flash(0xFFFFFF, 100);
+            useFlashlight();
         }, this);
 
         var ctrlKey = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
@@ -225,67 +212,57 @@
         }, this);
     }
 
+    function useFlashlight() {
+        if (instance.flashlights <= 0) {
+            return;
+        }
+
+        instance.flashlights -= 1;
+
+        game.camera.flash(0xFFFFFF, 100);
+
+        var removed = hud.flashlights.splice(-1);
+
+        removed[0].destroy();
+
+        console.log('TODO: Kill all rats');
+    }
+
     function drawHud() {
         function addText(x, y, text) {
             return game.add.bitmapText(x, y, 'blackOpsOne', text + '', 24);
         }
         
-        var levelText = addText(10, 10, 'Level ' + instance.level);
+        hud.levelText = addText(10, 10, 'Level ' + instance.level);
 
-        var flashlightText = addText(10, 40, instance.flashlights);
+        hud.flashlightText = addText(10, 40, instance.flashlights);
+
+        hud.flashlights = [];
 
         for (var i = 0; i < instance.flashlights; i++) {
             var f = game.add.sprite(44 + i * 30, 40, 'flashlight');
             f.scale.setTo(1/3.8, 1/3.8);
+            hud.flashlights.push(f);
         }
 
-        var foodText = addText(10, 70, instance.food);
+        hud.foodText = addText(10, 70, instance.food);
+
+        hud.food = [];
 
         for (var i = 0; i < instance.food; i++) {
             console.log('TODO: draw food');
         }
 
-        var scoreText = addText(10, 100, instance.score);
+        hud.scoreText = addText(10, 100, instance.score);
 
-        // instance.level = 1;
-        // instance.flashlights = 3;
-        // instance.food = 10;
-        // instance.score = 0;
+        hud.upgradePointText = addText(10, 130, instance.upgradePoints);
     }
 
     function updateHud() {
-        // TODO
-    }
-
-    function createRodent(group) {    
-        var width = game.cache.getImage('rat00').width;
-
-        var rat = game.add.sprite(game.camera.bounds.x - (width / 10), Math.random() * game.world.height, 'rat00');
-        
-        game.physics.arcade.enable(rat);
-        
-        rat.animations.add('down', [0, 1, 2], 10, true);
-        rat.animations.add('left', [3, 4, 5], 10, true);
-        rat.animations.add('right', [6, 7, 8], 10, true);
-        rat.animations.add('up', [9, 10, 11], 10, true);
-
-        rat.state = RodentStates.STOPPED;
-        group.add(rat);
-    }
-
-    function moveRodent(rodent, targets) {
-        if (targets.length == 0) {
-            return;
-        }
-
-        var speed = 1;
-
-        var target = targets[Math.floor(Math.random() * targets.length)];
-        rodent.state = RodentStates.HUNGRY;
-        game.physics.arcade.moveToXY(rodent, target[0], target[1]);
-
-        rodent.body.velocity.x *= speed;
-        rodent.body.velocity.y *= speed;
+        hud.flashlightText.setText(instance.flashlights);
+        hud.foodText.setText(instance.food);
+        hud.scoreText.setText(instance.score);
+        hud.upgradePointText.setText(instance.upgradePoints);
     }
 
     function moveChicken(chicken) {
@@ -403,5 +380,9 @@
         chicken.state = ChickenStates.STOPPED;
     }
 
-    CoopCommander.Game = {init: init, preload: preload, create: create, update: update};
+    function shutdown() {
+        console.log('TODO: Call .destroy() on anything that we still have a reference too so as not to cause memory leaks');
+    }
+
+    CoopCommander.Game = {init: init, preload: preload, create: create, update: update, shutdown: shutdown};
 })();
