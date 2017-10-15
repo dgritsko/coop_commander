@@ -1,6 +1,10 @@
 (function() {
     function init(args) {
+        args = args || {};
+
         CoopCommander.Menu.args = args;
+        
+        args.nextRatSpawn = game.time.now;
     }
 
     function preload() {
@@ -9,6 +13,8 @@
 
     function create() {
         game.camera.flash(0x000000, 250);
+
+        rats = game.add.group();
 
         var args = CoopCommander.Menu.args;
 
@@ -51,6 +57,10 @@
         highlightIndex(selectedIndex);
 
         showQuote();
+    }
+
+    function update() {
+        updateBackgroundRats();
     }
 
     function highlightIndex(index) {
@@ -114,5 +124,46 @@
         game.add.bitmapText(150, 450, 'blackOpsOne', quoteText, 28);
     }
 
-    CoopCommander.Menu = {init: init, preload: preload, create: create};
+    function updateBackgroundRats() {
+        if (CoopCommander.Menu.args.nextRatSpawn < game.time.now) {
+            CoopCommander.Menu.args.nextRatSpawn = game.time.now + 1000 + Math.random() * 3000;
+
+            var distance = 0.5 + Math.random() * 2;
+
+            var y = 470 + 150 * distance;
+
+            var r = game.add.sprite(0, y, 'rat00');
+
+            r.scale.setTo(distance, distance);
+
+            game.physics.arcade.enable(r);
+            game.physics.arcade.moveToXY(r, game.world.width, y);
+
+            r.animations.add('right', [6, 7, 8], 10, true);
+            
+            var speed = 2 * distance;
+
+            r.body.velocity.x *= speed;
+            r.body.velocity.y *= speed;
+
+            r.alpha = 0.3;
+
+            rats.add(r);
+        }
+        
+        for (var i = 0; i < rats.children.length; i++) {
+            var rat = rats.children[i];
+            rat.animations.play('right');
+        }
+
+        for (var i = 0; i < rats.children.length; i++) {
+            var rat = rats.children[i];
+            if (!rat.inCamera) {
+                rat.kill();
+                rats.remove(rat);
+            }
+        }
+    }
+
+    CoopCommander.Menu = {init: init, preload: preload, create: create, update: update};
 })();
