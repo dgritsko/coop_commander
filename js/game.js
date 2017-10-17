@@ -57,6 +57,10 @@
     }
 
     function update() {
+        // TODO: Update the shovel swinging animation
+        var swingSpeed = 15;
+        shovel.angle += 1 * swingSpeed;
+
         movePlayer();
 
         var targets = food.children.map(function(item) { return [item.x, item.y]; });
@@ -175,6 +179,12 @@
 
     function setupPlayer() {
         player = game.add.sprite(100, 100, 'player');
+
+        shovel = game.make.sprite(0, 0, 'shovel');
+        shovel.scale.setTo(0.5, 0.5);
+        shovel.anchor.setTo(0.5, 0);
+
+        player.addChild(shovel);
         
         player.scale.setTo(2, 2);
         player.anchor.setTo(0.5, 0.5);
