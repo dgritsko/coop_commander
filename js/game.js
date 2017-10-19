@@ -57,9 +57,10 @@
     }
 
     function update() {
+        //game.debug.body(shovel);
         // TODO: Update the shovel swinging animation
         var swingSpeed = 15;
-        shovel.angle += 1 * swingSpeed;
+        //shovel.angle += 1 * swingSpeed;
 
         movePlayer();
 
@@ -94,6 +95,14 @@
             return false;
         });
 
+        game.physics.arcade.collide(rodents, shovelHead, function(rodent, weapon) {
+
+        }, function(rodent, weapon) {
+            console.log('hit');
+            fxHit.play();
+            return false;
+        });
+
         if (rodents.children.length < 2) {
             createRat();
         }
@@ -107,6 +116,7 @@
 
     function createRat() {
         rats.push(new Rat(rodents, rats.length));
+        fxSqueak.play();
     }
 
     function createChicken() {
@@ -155,6 +165,14 @@
             yVelocity = 1;
         }
 
+        if (xVelocity || yVelocity) {
+            if (!fxFootsteps.isPlaying) {
+                fxFootsteps.play();
+            }
+        } else {
+            fxFootsteps.stop();
+        }
+
         player.body.velocity.x += (xVelocity * speedFactor);    
         player.body.velocity.y += (yVelocity * speedFactor);
 
@@ -184,10 +202,21 @@
         shovel.scale.setTo(0.5, 0.5);
         shovel.anchor.setTo(0.5, 0);
 
+
+
+        //shovel.body.height = 64;
+
         player.addChild(shovel);
+
+        shovelHead = game.make.sprite(0, 64, 'test');
+        shovelHead.anchor.setTo(0.5, 0.5);
+        shovel.addChild(shovelHead);
         
         player.scale.setTo(2, 2);
         player.anchor.setTo(0.5, 0.5);
+
+        game.physics.arcade.enable(shovel);
+        game.physics.arcade.enable(shovelHead);
 
         game.physics.arcade.enable(player);
 
@@ -197,6 +226,15 @@
         player.animations.add('left', [9, 10, 11, 12, 13, 14, 15, 16, 17], 10, true);
         player.animations.add('down', [18, 19, 20, 21, 22, 23, 24, 25, 26], 10, true);
         player.animations.add('right', [27, 28, 29, 30, 31, 32, 33, 34, 35], 10, true);
+
+        fxWhoosh = game.add.sound('whoosh00');
+        fxWhoosh.allowMultiple = true;
+        fxFootsteps = game.add.sound('footsteps00');
+        fxFootsteps.loop = true;
+        fxFootsteps.volume = 0.2;
+        fxSqueak = game.add.sound('squeak00');
+        fxHit = game.add.sound('bang00');
+        fxHit.allowMultiple = true;
     }
 
     function setupInput() {
@@ -209,7 +247,21 @@
 
         var ctrlKey = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
         ctrlKey.onDown.add(function() {
-            console.log('ctrl pressed');
+            
+            var shovelState = {percent : 0};
+            
+            var tween = game.add.tween(shovelState).to({ percent: 100 }, 250, Phaser.Easing.Quartic.In);
+            
+            tween.onUpdateCallback(function() {
+                var angle = shovelState.percent;
+        
+                shovel.angle = angle;
+
+                //console.log(shovel.getBounds());
+            }, this);
+        
+            tween.start();
+            fxWhoosh.play();
         }, this);
     }
 
@@ -317,7 +369,7 @@
     }
 
     function shutdown() {
-        console.log('TODO: Call .destroy() on anything that we still have a reference too so as not to cause memory leaks');
+        console.log('TODO: Call .destroy() on anything that we still have a reference to so as not to cause memory leaks');
     }
 
     CoopCommander.Game = {init: init, preload: preload, create: create, update: update, shutdown: shutdown};

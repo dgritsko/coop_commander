@@ -12,6 +12,13 @@
     }
 
     function create() {
+        game.stage.disableVisibilityChange = true;
+        
+        fxClick = game.add.sound('click00');
+        menuMusic = game.add.sound('music00');
+        menuMusic.loop = true;
+        menuMusic.play();        
+
         game.camera.flash(0x000000, 250);
 
         rats = game.add.group();
@@ -40,13 +47,15 @@
         upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
         upKey.onDown.add(function() { 
             selectedIndex = selectedIndex == 0 ? menuItems.children.length - 1 : selectedIndex-1;
-            highlightIndex(selectedIndex) 
+            highlightIndex(selectedIndex);
+            fxClick.play();
         }, this);
 
         downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
         downKey.onDown.add(function() { 
             selectedIndex = selectedIndex < menuItems.children.length - 1 ? selectedIndex+1 : 0;
-            highlightIndex(selectedIndex) 
+            highlightIndex(selectedIndex);
+            fxClick.play();
         }, this);
 
         enterKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
@@ -79,7 +88,8 @@
     }
 
     function startGame() {
-        //game.music.stop();    
+        menuMusic.stop();
+
         game.camera.fade('#000000', 250);
         game.camera.onFadeComplete.add(function() { 
             game.state.start('Game');//, true, false, {});        

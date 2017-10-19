@@ -15,12 +15,22 @@
         game.load.image('sun', 'assets/sun.png');
         game.load.image('flashlight', 'assets/flashlight.png');
         game.load.image('shovel', 'assets/shovel.png');
+        game.load.image('test', 'assets/test.png');
         
         // Sounds
-        // TODO
+        game.load.audio('whoosh00', 'assets/sound/fx/whoosh00.mp3');
+        game.load.audio('click00', 'assets/sound/fx/click00.wav');
+        game.load.audio('footsteps00', 'assets/sound/fx/footsteps00.wav');
+        game.load.audio('squeak00', 'assets/sound/fx/squeak00.wav');
+        game.load.audio('cluck00', 'assets/sound/fx/cluck00.wav');
+        game.load.audio('eating00', 'assets/sound/fx/eating00.wav');
+        game.load.audio('bang00', 'assets/sound/fx/bang00.wav');
+        game.load.audio('smack00', 'assets/sound/fx/smack00.wav');
+        game.load.audio('smack01', 'assets/sound/fx/smack01.flac');
         
         // Music
-        // TODO
+        game.load.audio('music00', 'assets/sound/music/Rolemusic_-_Keiken_soku.mp3');
+        game.load.audio('music01', 'assets/sound/music/sawsquarenoise_-_01_-_Interstellar.mp3');
     }
 
     function create() {
