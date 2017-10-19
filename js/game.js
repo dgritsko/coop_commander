@@ -16,11 +16,23 @@
 
         instance.level = 1;
         instance.flashlights = 3;
-        instance.food = 10;
+        instance.foodCount = 10;
         instance.score = 0;
         instance.upgradePoints = 0;
 
+        instance.initialRats = 2;
+        instance.maxActiveRats = 2;
+
+        instance.chickens = 10;
+
         instance.swingCount = 0;
+
+        instance.playerSpeed = 200;
+
+        instance.totalRats = 10;
+        instance.ratsKilled = 0;
+        instance.ratsTrapped = 0;
+        instance.ratsScared = 0;
     }
 
     function preload() {
@@ -38,7 +50,7 @@
         setupInput();
 
         rodents = game.add.group();
-        for (var i = 0; i < 2; i++) {
+        for (var i = 0; i < instance.initialRats; i++) {
             createRat();
         }
 
@@ -46,12 +58,12 @@
         drawFence(pen, fence);
 
         food = game.add.group();
-        for (var i = 0; i < instance.food; i++) {
+        for (var i = 0; i < instance.foodCount; i++) {
             createFood(pen, food);
         }
 
         flock = game.add.group();
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < instance.chickens; i++) {
             createChicken();
         }
 
@@ -92,32 +104,53 @@
             return false;
         });
 
-        game.physics.arcade.collide(rodents, shovelHead, function(rodent, weapon) {
+        game.physics.arcade.collide(rodents, shovelHead, function(weapon, rodent) {
 
-        }, function(rodent, weapon) {
+        }, function(weapon, rodent) {
+            var rat = _.find(rats, function(r) { return r.id == rodent.id; });
+
             if (rodent.hitBySwing && rodent.hitBySwing >= instance.swingCount) {
                 return false;
             }
 
             // Keep track of the last swing index that hit the rat... this seems like a crummy way to do this but it works
             rodent.hitBySwing = instance.swingCount;
-            console.log('hit');
             fxHit.play();
-
-            // TODO: Kill/injure rat appropriately
+            // TODO: Maybe we should just injure the rat?
+            killRat(rat);
 
             return false;         
         });
 
-        if (rodents.children.length < 2) {
+        var remainingRats = getRemainingRats();
+
+        // TODO: Account for "dead" rats?        
+        if (rodents.children.length < instance.maxActiveRats && remainingRats > 0) {
             createRat();
         }
 
-        if (food.children.length == 0) {
-            game.state.start('Score', true, false, { foodCount: 0 });
+        if (food.children.length == 0 || remainingRats <= 0) {
+            var state = { 
+                foodCount: food.children.length,
+                level: instance.level,
+                flashlights: instance.flashlights,
+                score: instance.score,
+                upgradePoints: instance.upgradePoints,
+                swingCount: instance.swingCount,
+                totalRats: instance.totalRats,
+                ratsKilled: instance.ratsKilled,
+                ratsTrapped: instance.ratsTrapped,
+                ratsScared: instance.ratsScared
+            };
+
+            game.state.start('Score', true, false, state);
         }
 
         updateHud();
+    }
+
+    function getRemainingRats() {
+        return instance.totalRats - (instance.ratsKilled + instance.ratsTrapped + instance.ratsScared);
     }
 
     function createRat() {
@@ -132,8 +165,6 @@
     function movePlayer() {
         player.body.velocity.x = 0;
         player.body.velocity.y = 0;
-
-        var speedFactor = 150;
 
         var diagonalVelocity = 0.70710678118; // 1/sqrt(2)
 
@@ -183,8 +214,8 @@
             fxFootsteps.stop();
         }
 
-        player.body.velocity.x += (xVelocity * speedFactor);    
-        player.body.velocity.y += (yVelocity * speedFactor);
+        player.body.velocity.x += (xVelocity * instance.playerSpeed);    
+        player.body.velocity.y += (yVelocity * instance.playerSpeed);
 
         if (animation) {
             player.animations.play(animation);
@@ -219,7 +250,7 @@
         player.addChild(shovel);
 
         shovelHead = game.make.sprite(0, 64, 'hitbox00');
-        shovelHead.alpha = 1;
+        shovelHead.alpha = 0;
         shovelHead.anchor.setTo(0.5, 0.5);
         shovel.addChild(shovelHead);
         
@@ -315,13 +346,27 @@
 
         instance.flashlights -= 1;
 
-        game.camera.flash(0xFFFFFF, 100);
+        game.camera.flash(0xFFFFFF, 250);
 
         var removed = hud.flashlights.splice(-1);
 
         removed[0].destroy();
 
-        console.log('TODO: Kill all rats');
+        console.log(rodents.children);
+
+        for (var i = rodents.children.length - 1; i >= 0; i--) {
+            var rodent = rodents.children[i];
+            var rat = _.find(rats, function(r) { return r.id == rodent.id; });
+            killRat(rat);
+        }
+    }
+
+    function killRat(rat) {
+        rat.kill();
+        instance.ratsKilled += 1;
+        instance.score += 10;
+
+        console.log('Rats remaining: ' + getRemainingRats());
     }
 
     function drawHud() {
@@ -341,11 +386,11 @@
             hud.flashlights.push(f);
         }
 
-        hud.foodText = addText(10, 70, instance.food);
+        hud.foodText = addText(10, 70, instance.foodCount);
 
         hud.food = [];
 
-        for (var i = 0; i < instance.food; i++) {
+        for (var i = 0; i < instance.foodCount; i++) {
             console.log('TODO: draw food in HUD');
         }
 
@@ -356,7 +401,7 @@
 
     function updateHud() {
         hud.flashlightText.setText(instance.flashlights);
-        hud.foodText.setText(instance.food);
+        hud.foodText.setText(instance.foodCount);
         hud.scoreText.setText(instance.score);
         hud.upgradePointText.setText(instance.upgradePoints);
     }
@@ -415,6 +460,9 @@
         console.log('TODO: Call .destroy() on anything that we still have a reference to so as not to cause memory leaks');
 
         fxFootsteps.stop();
+        fxHit.stop();
+        fxScream.stop();
+        fxWhoosh.stop();
     }
 
     CoopCommander.Game = {init: init, preload: preload, create: create, update: update, shutdown: shutdown};

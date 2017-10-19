@@ -14,7 +14,6 @@
 
         var foodText = game.add.text(200, 200, 'Food: ' + args.foodCount, { fontSize: '20px', fill: '#fff' })
 
-
         var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(function() {
             showMenu();

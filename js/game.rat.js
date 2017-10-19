@@ -55,9 +55,13 @@ Rat.prototype.update = function(targets) {
     }
 
     if (!this.sprite.inCamera) {
-        this.sprite.kill();
-        this.group.remove(this.sprite);
+        this.kill();
     }
+}
+
+Rat.prototype.kill = function() {
+    this.sprite.kill();
+    this.group.remove(this.sprite);
 }
 
 Rat.prototype.shouldEat = function() {
