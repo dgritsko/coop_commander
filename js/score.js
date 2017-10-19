@@ -13,15 +13,25 @@
         var args = CoopCommander.Score.args;
 
         var foodText = game.add.text(200, 200, 'Food: ' + args.foodCount, { fontSize: '20px', fill: '#fff' })
+
+
+        var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        spaceKey.onDown.add(function() {
+            showMenu();
+        }, this);
     }
 
     function update() {
         if (game.input.activePointer.isDown) {
-            game.camera.fade('#000000', 250);
-            game.camera.onFadeComplete.add(function() { 
-                game.state.start('Menu');
-            }, this);
+            showMenu();
         }
+    }
+
+    function showMenu() {
+        game.camera.fade('#000000', 250);
+        game.camera.onFadeComplete.add(function() { 
+            game.state.start('Menu');
+        }, this);
     }
 
     CoopCommander.Score = {init: init, preload: preload, create: create, update: update};

@@ -232,6 +232,7 @@
         fxSqueak = game.add.sound('squeak00');
         fxHit = game.add.sound('bang00');
         fxHit.allowMultiple = true;
+        fxScream = game.add.sound('scream00');
     }
 
     function setupInput() {
@@ -269,6 +270,18 @@
         var ctrlKey = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
         ctrlKey.onDown.add(function() {
             useFlashlight();
+        }, this);
+
+        var shiftKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
+        shiftKey.onDown.add(function() {
+            fxScream.play();
+            console.log('todo: yell');
+        }, this);
+
+        var pauseKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
+        pauseKey.onDown.add(function() {
+            console.log('todo: pause menu');
+            game.paused = !game.paused;
         }, this);
     }
 

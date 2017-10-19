@@ -26,7 +26,7 @@
         game.load.audio('eating00', 'assets/sound/fx/eating00.wav');
         game.load.audio('bang00', 'assets/sound/fx/bang00.wav');
         game.load.audio('smack00', 'assets/sound/fx/smack00.wav');
-        game.load.audio('smack01', 'assets/sound/fx/smack01.flac');
+        game.load.audio('scream00', 'assets/sound/fx/scream00.wav');
         
         // Music
         game.load.audio('music00', 'assets/sound/music/Rolemusic_-_Keiken_soku.mp3');
