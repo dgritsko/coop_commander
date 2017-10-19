@@ -19,6 +19,8 @@
         instance.food = 10;
         instance.score = 0;
         instance.upgradePoints = 0;
+
+        instance.swingCount = 0;
     }
 
     function preload() {
@@ -93,9 +95,18 @@
         game.physics.arcade.collide(rodents, shovelHead, function(rodent, weapon) {
 
         }, function(rodent, weapon) {
+            if (rodent.hitBySwing && rodent.hitBySwing >= instance.swingCount) {
+                return false;
+            }
+
+            // Keep track of the last swing index that hit the rat... this seems like a crummy way to do this but it works
+            rodent.hitBySwing = instance.swingCount;
             console.log('hit');
             fxHit.play();
-            return false;
+
+            // TODO: Kill/injure rat appropriately
+
+            return false;         
         });
 
         if (rodents.children.length < 2) {
@@ -197,6 +208,9 @@
     function setupPlayer() {
         player = game.add.sprite(100, 100, 'player');
 
+        // TODO: Add shovel to group so that we can set the z-index correctly
+
+        // TODO: Adjust the scaling so that it's the appropriate size for the player
         shovel = game.make.sprite(0, 0, 'shovel');
         shovel.alpha = 0;
         shovel.scale.setTo(0.5, 0.5);
@@ -240,10 +254,19 @@
 
         var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(function() { 
+            instance.swingCount += 1;
+
             // TODO: Cancel previous tween so that it doesn't kill the shovel mid-swing
+
+            // TODO: Appropriate direction swing if player is not moving
 
             if (player.body.velocity.x == 0) {
                 // TODO: Wat do about vertical-only swings?
+                if (player.body.velocity.y > 0) {
+
+                } else {
+                    
+                }
             } else {            
                 if (player.body.velocity.x > 0) {
                     startAngle = 180;
@@ -275,7 +298,7 @@
         var shiftKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
         shiftKey.onDown.add(function() {
             fxScream.play();
-            console.log('todo: yell');
+            console.log('todo: yell (scare nearby rats)');
         }, this);
 
         var pauseKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
@@ -323,7 +346,7 @@
         hud.food = [];
 
         for (var i = 0; i < instance.food; i++) {
-            console.log('TODO: draw food');
+            console.log('TODO: draw food in HUD');
         }
 
         hud.scoreText = addText(10, 100, instance.score);
@@ -390,6 +413,8 @@
 
     function shutdown() {
         console.log('TODO: Call .destroy() on anything that we still have a reference to so as not to cause memory leaks');
+
+        fxFootsteps.stop();
     }
 
     CoopCommander.Game = {init: init, preload: preload, create: create, update: update, shutdown: shutdown};
