@@ -15,7 +15,7 @@
         game.load.image('sun', 'assets/sun.png');
         game.load.image('flashlight', 'assets/flashlight.png');
         game.load.image('shovel', 'assets/shovel.png');
-        game.load.image('test', 'assets/test.png');
+        game.load.image('hitbox00', 'assets/hitbox00.png');
         
         // Sounds
         game.load.audio('whoosh00', 'assets/sound/fx/whoosh00.mp3');

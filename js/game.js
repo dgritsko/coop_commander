@@ -57,11 +57,6 @@
     }
 
     function update() {
-        //game.debug.body(shovel);
-        // TODO: Update the shovel swinging animation
-        var swingSpeed = 15;
-        //shovel.angle += 1 * swingSpeed;
-
         movePlayer();
 
         var targets = food.children.map(function(item) { return [item.x, item.y]; });
@@ -144,6 +139,8 @@
                 xVelocity = -diagonalVelocity;
                 yVelocity = diagonalVelocity;
             } else {
+                shovel.x = -8;
+                shovel.y = 8;
                 xVelocity = -1;
             }
         } else if (cursors.right.isDown) {
@@ -155,6 +152,8 @@
                 xVelocity = diagonalVelocity;
                 yVelocity = diagonalVelocity;
             } else {
+                shovel.x = 8;
+                shovel.y = 8;
                 xVelocity = 1;
             }
         } else if (cursors.up.isDown) {
@@ -199,16 +198,14 @@
         player = game.add.sprite(100, 100, 'player');
 
         shovel = game.make.sprite(0, 0, 'shovel');
+        shovel.alpha = 0;
         shovel.scale.setTo(0.5, 0.5);
         shovel.anchor.setTo(0.5, 0);
-
-
-
-        //shovel.body.height = 64;
-
+        
         player.addChild(shovel);
 
-        shovelHead = game.make.sprite(0, 64, 'test');
+        shovelHead = game.make.sprite(0, 64, 'hitbox00');
+        shovelHead.alpha = 1;
         shovelHead.anchor.setTo(0.5, 0.5);
         shovel.addChild(shovelHead);
         
@@ -242,26 +239,36 @@
 
         var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(function() { 
-            useFlashlight();
+            // TODO: Cancel previous tween so that it doesn't kill the shovel mid-swing
+
+            if (player.body.velocity.x == 0) {
+                // TODO: Wat do about vertical-only swings?
+            } else {            
+                if (player.body.velocity.x > 0) {
+                    startAngle = 180;
+                    endAngle = 0;
+                } else {
+                    startAngle = 179;
+                    endAngle = 0;
+                }            
+            }
+
+            shovel.alpha = 1;
+            shovel.angle = startAngle;
+            var tween = game.add.tween(shovel).to({ angle: endAngle }, 200, Phaser.Easing.Quartic.InOut);
+            
+            tween.onComplete.add(function() {
+                shovel.alpha = 0;
+            });
+        
+            tween.start();
+            fxWhoosh.play();
+            
         }, this);
 
         var ctrlKey = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
         ctrlKey.onDown.add(function() {
-            
-            var shovelState = {percent : 0};
-            
-            var tween = game.add.tween(shovelState).to({ percent: 100 }, 250, Phaser.Easing.Quartic.In);
-            
-            tween.onUpdateCallback(function() {
-                var angle = shovelState.percent;
-        
-                shovel.angle = angle;
-
-                //console.log(shovel.getBounds());
-            }, this);
-        
-            tween.start();
-            fxWhoosh.play();
+            useFlashlight();
         }, this);
     }
 
