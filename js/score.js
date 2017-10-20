@@ -18,6 +18,12 @@
         spaceKey.onDown.add(function() {
             showMenu();
         }, this);
+
+        
+        enterKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
+        enterKey.onDown.add(function() { 
+            showMenu();
+        }, this);
     }
 
     function update() {

@@ -1,38 +1,39 @@
 (function() {
     var pen = new Phaser.Rectangle(720, 120, 8 * 48, 10 * 48);
 
-    var instance = {};
+    var gameState = {};
 
     var hud = {};
 
     var rats = [];
     var chickens = [];
 
-    function init() {
-        instance = [];
+    function init(args) {
         hud = {};
         rats = [];
         chickens = [];
 
-        instance.level = 1;
-        instance.flashlights = 3;
-        instance.foodCount = 10;
-        instance.score = 0;
-        instance.upgradePoints = 0;
+        gameState = {
+            playerSpeed: 200,
+            maxActiveRats: 2
+        };
 
-        instance.initialRats = 2;
-        instance.maxActiveRats = 2;
-
-        instance.chickens = 10;
-
-        instance.swingCount = 0;
-
-        instance.playerSpeed = 200;
-
-        instance.totalRats = 10;
-        instance.ratsKilled = 0;
-        instance.ratsTrapped = 0;
-        instance.ratsScared = 0;
+        if (args) {
+            _.extend(gameState, args);
+        } else {
+            gameState.level = 1;
+            gameState.flashlights = 3;
+            gameState.foodCount = 10;
+            gameState.score = 0;
+            gameState.upgradePoints = 0;
+            gameState.initialRats = 2;            
+            gameState.chickens = 10;
+            gameState.swingCount = 0;            
+            gameState.totalRats = 10;
+            gameState.ratsKilled = 0;
+            gameState.ratsTrapped = 0;
+            gameState.ratsScared = 0;
+        }
     }
 
     function preload() {
@@ -50,7 +51,7 @@
         setupInput();
 
         rodents = game.add.group();
-        for (var i = 0; i < instance.initialRats; i++) {
+        for (var i = 0; i < gameState.initialRats; i++) {
             createRat();
         }
 
@@ -58,12 +59,12 @@
         drawFence(pen, fence);
 
         food = game.add.group();
-        for (var i = 0; i < instance.foodCount; i++) {
+        for (var i = 0; i < gameState.foodCount; i++) {
             createFood(pen, food);
         }
 
         flock = game.add.group();
-        for (var i = 0; i < instance.chickens; i++) {
+        for (var i = 0; i < gameState.chickens; i++) {
             createChicken();
         }
 
@@ -99,7 +100,7 @@
                 rat.eat();
                 foodItem.kill();
                 food.remove(foodItem);
-                instance.foodCount -= 1;
+                gameState.foodCount -= 1;
                 fxChomp.play();
             }
 
@@ -111,12 +112,12 @@
         }, function(weapon, rodent) {
             var rat = _.find(rats, function(r) { return r.id == rodent.id; });
 
-            if (rodent.hitBySwing && rodent.hitBySwing >= instance.swingCount) {
+            if (rodent.hitBySwing && rodent.hitBySwing >= gameState.swingCount) {
                 return false;
             }
 
             // Keep track of the last swing index that hit the rat... this seems like a crummy way to do this but it works
-            rodent.hitBySwing = instance.swingCount;
+            rodent.hitBySwing = gameState.swingCount;
             fxHit.play();
             // TODO: Maybe we should just injure the rat?
             killRat(rat);
@@ -127,32 +128,41 @@
         var remainingRats = getRemainingRats();
 
         // TODO: Account for "dead" rats?        
-        if (rodents.children.length < instance.maxActiveRats && remainingRats > 0) {
+        if (rodents.children.length < gameState.maxActiveRats && remainingRats > 0) {
             createRat();
         }
 
-        if (food.children.length == 0 || remainingRats <= 0) {
-            var state = { 
-                foodCount: food.children.length,
-                level: instance.level,
-                flashlights: instance.flashlights,
-                score: instance.score,
-                upgradePoints: instance.upgradePoints,
-                swingCount: instance.swingCount,
-                totalRats: instance.totalRats,
-                ratsKilled: instance.ratsKilled,
-                ratsTrapped: instance.ratsTrapped,
-                ratsScared: instance.ratsScared
-            };
+        var gameOver = food.children.length == 0;
+        var levelComplete = remainingRats <= 0;
 
+        var state = { 
+            foodCount: food.children.length,
+            level: gameState.level,
+            flashlights: gameState.flashlights,
+            score: gameState.score,
+            upgradePoints: gameState.upgradePoints,
+            swingCount: gameState.swingCount,
+            totalRats: gameState.totalRats,
+            ratsKilled: gameState.ratsKilled,
+            ratsTrapped: gameState.ratsTrapped,
+            ratsScared: gameState.ratsScared
+        };
+
+        if (gameOver) {
             game.state.start('Score', true, false, state);
+            return;
+        }
+
+        if (levelComplete) {
+            game.state.start('Cutscene', true, false, state);
+            return;
         }
 
         updateHud();
     }
 
     function getRemainingRats() {
-        return instance.totalRats - (instance.ratsKilled + instance.ratsTrapped + instance.ratsScared);
+        return gameState.totalRats - (gameState.ratsKilled + gameState.ratsTrapped + gameState.ratsScared);
     }
 
     function createRat() {
@@ -216,8 +226,8 @@
             fxFootsteps.stop();
         }
 
-        player.body.velocity.x += (xVelocity * instance.playerSpeed);    
-        player.body.velocity.y += (yVelocity * instance.playerSpeed);
+        player.body.velocity.x += (xVelocity * gameState.playerSpeed);    
+        player.body.velocity.y += (yVelocity * gameState.playerSpeed);
 
         if (animation) {
             player.animations.play(animation);
@@ -288,7 +298,7 @@
 
         var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(function() { 
-            instance.swingCount += 1;
+            gameState.swingCount += 1;
 
             // TODO: Cancel previous tween so that it doesn't kill the shovel mid-swing
 
@@ -343,11 +353,11 @@
     }
 
     function useFlashlight() {
-        if (instance.flashlights <= 0) {
+        if (gameState.flashlights <= 0) {
             return;
         }
 
-        instance.flashlights -= 1;
+        gameState.flashlights -= 1;
 
         game.camera.flash(0xFFFFFF, 250);
 
@@ -366,8 +376,8 @@
 
     function killRat(rat) {
         rat.kill();
-        instance.ratsKilled += 1;
-        instance.score += 10;
+        gameState.ratsKilled += 1;
+        gameState.score += 10;
 
         console.log('Rats remaining: ' + getRemainingRats());
     }
@@ -377,36 +387,36 @@
             return game.add.bitmapText(x, y, 'blackOpsOne', text + '', 24);
         }
         
-        hud.levelText = addText(10, 10, 'Level ' + instance.level);
+        hud.levelText = addText(10, 10, 'Level ' + gameState.level);
 
-        hud.flashlightText = addText(10, 40, instance.flashlights);
+        hud.flashlightText = addText(10, 40, gameState.flashlights);
 
         hud.flashlights = [];
 
-        for (var i = 0; i < instance.flashlights; i++) {
+        for (var i = 0; i < gameState.flashlights; i++) {
             var f = game.add.sprite(44 + i * 30, 40, 'flashlight');
             f.scale.setTo(1/3.8, 1/3.8);
             hud.flashlights.push(f);
         }
 
-        hud.foodText = addText(10, 70, instance.foodCount);
+        hud.foodText = addText(10, 70, gameState.foodCount);
 
         hud.food = [];
 
-        for (var i = 0; i < instance.foodCount; i++) {
+        for (var i = 0; i < gameState.foodCount; i++) {
             console.log('TODO: draw food in HUD');
         }
 
-        hud.scoreText = addText(10, 100, instance.score);
+        hud.scoreText = addText(10, 100, gameState.score);
 
-        hud.upgradePointText = addText(10, 130, instance.upgradePoints);
+        hud.upgradePointText = addText(10, 130, gameState.upgradePoints);
     }
 
     function updateHud() {
-        hud.flashlightText.setText(instance.flashlights);
-        hud.foodText.setText(instance.foodCount);
-        hud.scoreText.setText(instance.score);
-        hud.upgradePointText.setText(instance.upgradePoints);
+        hud.flashlightText.setText(gameState.flashlights);
+        hud.foodText.setText(gameState.foodCount);
+        hud.scoreText.setText(gameState.score);
+        hud.upgradePointText.setText(gameState.upgradePoints);
     }
 
     function drawFence(rect, group) {

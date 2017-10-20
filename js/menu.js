@@ -92,7 +92,7 @@
 
         game.camera.fade('#000000', 250);
         game.camera.onFadeComplete.add(function() { 
-            game.state.start('Game');//, true, false, {});        
+            game.state.start('Game');
         }, this);
     }
 
