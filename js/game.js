@@ -99,6 +99,8 @@
                 rat.eat();
                 foodItem.kill();
                 food.remove(foodItem);
+                instance.foodCount -= 1;
+                fxChomp.play();
             }
 
             return false;
@@ -278,6 +280,7 @@
         fxHit = game.add.sound('bang00');
         fxHit.allowMultiple = true;
         fxScream = game.add.sound('scream00');
+        fxChomp = game.add.sound('chomp00');
     }
 
     function setupInput() {
