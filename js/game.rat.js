@@ -24,7 +24,7 @@ class Rat {
 
         group.add(this.sprite);
 
-        this.speed = 5;
+        this.speed = 2;
     }
 }
 
@@ -52,10 +52,6 @@ Rat.prototype.update = function(targets) {
 
     if (this.state == RatStates.RETREATING) {
         this.sprite.animations.play('left');
-    }
-
-    if (!this.sprite.inCamera) {
-        this.kill();
     }
 }
 

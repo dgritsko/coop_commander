@@ -15,11 +15,17 @@
 
         gameState = {
             playerSpeed: 200,
-            maxActiveRats: 2
+            maxActiveRats: 4
         };
 
         if (args) {
             _.extend(gameState, args);
+
+            gameState.level += 1;
+            gameState.totalRats = 3;
+            gameState.ratsKilled = 0;
+            gameState.ratsTrapped = 0;
+            gameState.ratsRetreated = 0;            
         } else {
             gameState.level = 1;
             gameState.flashlights = 3;
@@ -27,13 +33,14 @@
             gameState.score = 0;
             gameState.upgradePoints = 0;
             gameState.initialRats = 2;            
-            gameState.chickens = 10;
             gameState.swingCount = 0;            
-            gameState.totalRats = 10;
+            gameState.totalRats = 3;
             gameState.ratsKilled = 0;
             gameState.ratsTrapped = 0;
-            gameState.ratsScared = 0;
+            gameState.ratsRetreated = 0;
         }
+
+        console.log(gameState);
     }
 
     function preload() {
@@ -59,12 +66,9 @@
         drawFence(pen, fence);
 
         food = game.add.group();
+        flock = game.add.group();
         for (var i = 0; i < gameState.foodCount; i++) {
             createFood(pen, food);
-        }
-
-        flock = game.add.group();
-        for (var i = 0; i < gameState.chickens; i++) {
             createChicken();
         }
 
@@ -76,7 +80,14 @@
 
         var targets = food.children.map(function(item) { return [item.x, item.y]; });
         for (var i = 0; i < rats.length; i++) {
-            rats[i].update(targets);
+            var rat = rats[i];
+            rat.update(targets);
+
+            if (rat.sprite.alive && !rat.sprite.inCamera) {
+                rat.kill();
+                // TODO: Distinguish between "scared" vs. "not scared"?
+                gameState.ratsRetreated += 1;
+            }
         }
 
         for (var i = 0; i < chickens.length; i++) {
@@ -128,7 +139,7 @@
         var remainingRats = getRemainingRats();
 
         // TODO: Account for "dead" rats?        
-        if (rodents.children.length < gameState.maxActiveRats && remainingRats > 0) {
+        if (rodents.children.length < gameState.maxActiveRats && remainingRats > 0 && rodents.children.length < remainingRats) {
             createRat();
         }
 
@@ -145,7 +156,7 @@
             totalRats: gameState.totalRats,
             ratsKilled: gameState.ratsKilled,
             ratsTrapped: gameState.ratsTrapped,
-            ratsScared: gameState.ratsScared
+            ratsRetreated: gameState.ratsRetreated
         };
 
         if (gameOver) {
@@ -162,7 +173,7 @@
     }
 
     function getRemainingRats() {
-        return gameState.totalRats - (gameState.ratsKilled + gameState.ratsTrapped + gameState.ratsScared);
+        return gameState.totalRats - (gameState.ratsKilled + gameState.ratsTrapped + gameState.ratsRetreated);
     }
 
     function createRat() {
@@ -364,8 +375,6 @@
         var removed = hud.flashlights.splice(-1);
 
         removed[0].destroy();
-
-        console.log(rodents.children);
 
         for (var i = rodents.children.length - 1; i >= 0; i--) {
             var rodent = rodents.children[i];

@@ -1,8 +1,15 @@
 (function() {
+    var Scenes = {
+        InProgress: -1,
+        Score: 0,
+        Sunrise: 1
+    }
+
     var gameState = {};
 
     function init(args) {
         gameState = args;
+        scene = Scenes.InProgress;
     }
 
     function preload() {
@@ -10,6 +17,7 @@
 
     function create() {
         game.stage.disableVisibilityChange = true;
+        game.stage.backgroundColor = '#000000';
 
         fxSuccess = game.add.sound('success00');
 
@@ -19,6 +27,8 @@
         // predator();
 
         //drawGrass();
+
+        // TODO: Clouds and stuff
 
         levelComplete();
 
@@ -40,10 +50,21 @@
     }
 
     function advanceScene() {
-        game.camera.fade('#000000', 250);
-        game.camera.onFadeComplete.add(function() { 
-            game.state.start('Game', true, false, gameState);
-        }, this);        
+        if (scene == Scenes.InProgress) {
+            return;
+        }
+
+        if (scene == Scenes.Score) {
+            scene = Scenes.InProgress;
+            drawGrass();
+            sunrise();
+        } else if (scene == Scenes.Sunrise) {
+            scene = Scenes.InProgress;
+            game.camera.fade('#000000', 250);
+            game.camera.onFadeComplete.add(function() { 
+                game.state.start('Game', true, false, gameState);
+            }, this);        
+        }
     }
 
     function levelComplete() {
@@ -55,6 +76,11 @@
 
         var tween = game.add.tween(label).to({ alpha: 1 }, 300, Phaser.Easing.Linear.None);
         tween.delay(300);
+
+        tween.onComplete.add(function() {
+            scene = Scenes.Score;
+        });        
+
         tween.start();
     }
 
@@ -89,7 +115,12 @@
 
         // Sun position
         var t4 = moveAlongArc(sun, 270, 180, 300, 1500, Phaser.Easing.Bounce.Out);//Phaser.Easing.Cubic.Out);    
-        t4.start();
+
+        t4.onComplete.add(function() {
+            scene = Scenes.Sunrise;
+        });
+
+        t4.start();        
     }
 
     function sunset() {
