@@ -76,8 +76,18 @@
     }
 
     function update() {
-        movePlayer();
+        placeTraps();
 
+        playGame();
+    }
+
+    function placeTraps() {
+        // TODO: Place traps...
+    }
+
+    function playGame() {
+        movePlayer();
+        
         var targets = food.children.map(function(item) { return [item.x, item.y]; });
         for (var i = 0; i < rats.length; i++) {
             var rat = rats[i];
