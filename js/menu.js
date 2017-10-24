@@ -38,6 +38,10 @@
 
         });
 
+        addMenuItem('Debug', menuItems, function() {
+            debug();
+        });
+
         menuArrow = game.add.sprite(200 - 16, 0, 'menu_arrow');
         menuArrow.scale.setTo(0.5, 0.5);
         menuArrow.anchor.setTo(0.5, 0.5);
@@ -94,6 +98,12 @@
         game.camera.onFadeComplete.add(function() { 
             game.state.start('Game');
         }, this);
+    }
+
+    function debug() {
+        // Put any debug code here...
+        menuMusic.stop();
+        game.state.start('Cutscene', true, false, {});
     }
 
     function showQuote() {

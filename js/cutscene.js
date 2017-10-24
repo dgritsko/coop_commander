@@ -6,10 +6,12 @@
     }
 
     var gameState = {};
+    var updateCallbacks = [];
 
     function init(args) {
+        updateCallbacks = [];
         gameState = args;
-        scene = Scenes.InProgress;
+        scene = Scenes.InProgress;        
     }
 
     function preload() {
@@ -46,6 +48,10 @@
     function update() {
         if (game.input.activePointer.isDown) {
             advanceScene();
+        }
+
+        for (var i = 0; i < updateCallbacks.length; i++) {
+            updateCallbacks[i]();
         }
     }
 
@@ -155,6 +161,35 @@
                 game.add.sprite(x, y, grassSprite);
             }
         }
+    }
+
+    function drawRats(numRats) {
+        game.physics.startSystem(Phaser.Physics.ARCADE);
+        emitter = game.add.emitter(game.world.centerX, 150);
+        emitter.bounce.setTo(0.5, 0.5);
+        emitter.setXSpeed(-50, 50);
+        emitter.setYSpeed(-50, 50);
+        emitter.gravity = new Phaser.Point(0, 400);
+        emitter.particleDrag = new Phaser.Point(10, 10);
+        emitter.angularDrag = 25;
+        emitter.makeParticles('rat00', [0,1,2,3,4,5,6,7,8,9,10,11], numRats, true, true);
+        emitter.forEach(function (p) {
+            p.body.setSize(10, 10, 10, 10);
+            // p.body.setCircle(15);
+        }, this);
+        emitter.start(false, 0, 100);
+
+        updateCallbacks.push(function() {
+            game.physics.arcade.collide(emitter, emitter);
+            game.physics.arcade.collide(emitter, emitter, function(a, b) {
+                a.body.angularVelocity *= 0.9; 
+                b.body.angularVelocity *= 0.9;
+            });
+    
+            emitter.forEach(function (p) {
+                game.debug.body(p);
+            }, this);
+        });
     }
 
     function moveAlongArc(sprite, startAngle, endAngle, radius, duration, easing) {
