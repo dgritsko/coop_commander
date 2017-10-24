@@ -118,23 +118,9 @@
             return false;
         });
 
-        game.physics.arcade.collide(rodents, shovelHead, function(weapon, rodent) {
-
-        }, function(weapon, rodent) {
-            var rat = _.find(rats, function(r) { return r.id == rodent.id; });
-
-            if (rodent.hitBySwing && rodent.hitBySwing >= gameState.swingCount) {
-                return false;
-            }
-
-            // Keep track of the last swing index that hit the rat... this seems like a crummy way to do this but it works
-            rodent.hitBySwing = gameState.swingCount;
-            fxHit.play();
-            // TODO: Maybe we should just injure the rat?
-            killRat(rat);
-
-            return false;         
-        });
+        if (shovel.alpha) {
+            handleAttacks();
+        }
 
         var remainingRats = getRemainingRats();
 
@@ -170,6 +156,26 @@
         }
 
         updateHud();
+    }
+
+    function handleAttacks() {
+        game.physics.arcade.collide(rodents, shovelHead, function(weapon, rodent) {
+            
+        }, function(weapon, rodent) {
+            var rat = _.find(rats, function(r) { return r.id == rodent.id; });
+
+            if (rodent.hitBySwing && rodent.hitBySwing >= gameState.swingCount) {
+                return false;
+            }
+
+            // Keep track of the last swing index that hit the rat... this seems like a crummy way to do this but it works
+            rodent.hitBySwing = gameState.swingCount;
+            fxHit.play();
+            // TODO: Maybe we should just injure the rat?
+            killRat(rat);
+
+            return false;         
+        });
     }
 
     function getRemainingRats() {
