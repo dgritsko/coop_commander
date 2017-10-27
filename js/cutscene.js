@@ -88,6 +88,8 @@
         });        
 
         tween.start();
+
+        drawRats(gameState.ratsKilled);
     }
 
     function predator() {
@@ -187,7 +189,7 @@
             });
     
             emitter.forEach(function (p) {
-                game.debug.body(p);
+                //game.debug.body(p);
             }, this);
         });
     }

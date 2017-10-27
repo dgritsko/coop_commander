@@ -5,7 +5,7 @@ RatStates = {
 };
 
 class Rat {
-    constructor(group, id) {
+    constructor(group, id, speed) {
         this.id = id;
         this.state = RatStates.STOPPED;
         this.group = group;
@@ -24,7 +24,7 @@ class Rat {
 
         group.add(this.sprite);
 
-        this.speed = 2;
+        this.speed = speed;
     }
 }
 

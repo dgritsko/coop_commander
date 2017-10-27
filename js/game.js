@@ -22,14 +22,20 @@
 
         gameState = {
             playerSpeed: 200,
-            maxActiveRats: 4
+            maxActiveRats: 2,
+            ratSpeed: 2,
+            nextRatSpawn: 0
         };
 
         if (args) {
+            console.log('Args: ', args);
+
             _.extend(gameState, args);
 
             gameState.level += 1;
-            gameState.totalRats = 3;
+            gameState.totalRats = 3 * gameState.level;
+            gameState.maxActiveRats = 2 + gameState.level;
+            gameState.ratSpeed = 2 + gameState.level * 0.5;
             gameState.ratsKilled = 0;
             gameState.ratsTrapped = 0;
             gameState.ratsRetreated = 0;            
@@ -139,8 +145,6 @@
     }    
 
     function update() {
-        console.log(game.time.now);
-        
         if (mode == Modes.Setup) {
             placeTraps();
         }        
@@ -206,7 +210,10 @@
 
         // TODO: Account for "dead" rats?        
         if (rodents.children.length < gameState.maxActiveRats && remainingRats > 0 && rodents.children.length < remainingRats) {
-            createRat();
+            if (gameState.nextRatSpawn < game.time.now) {
+                gameState.nextRatSpawn = game.time.now + Phaser.Timer.SECOND * Math.random() * 2;
+                createRat();
+            }            
         }
 
         var gameOver = food.children.length == 0;
@@ -263,7 +270,7 @@
     }
 
     function createRat() {
-        rats.push(new Rat(rodents, rats.length));
+        rats.push(new Rat(rodents, rats.length, gameState.ratSpeed));
         fxSqueak.play();
     }
 
@@ -414,6 +421,16 @@
         var pauseKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
         pauseKey.onDown.add(function() {
             console.log('todo: pause menu');
+            if (game.paused) {
+                gameState.pauseEnded = game.time.now;
+
+                var pauseDuration = gameState.pauseEnded - gameState.pauseBegan;
+                gameState.nextRatSpawn += pauseDuration;
+                console.log('pause duration: ', pauseDuration);
+            } else {
+                gameState.pauseBegan = game.time.now;
+            }
+            
             game.paused = !game.paused;
         }, this);
     }

@@ -8,11 +8,14 @@
     }
 
     function create() {
+        game.stage.backgroundColor = '#000000';
+
         game.camera.flash(0x000000, 250);
 
         var args = CoopCommander.Score.args;
 
-        var foodText = game.add.text(200, 200, 'Food: ' + args.foodCount, { fontSize: '20px', fill: '#fff' })
+        var gameOverText = game.add.bitmapText(game.world.centerX, game.world.centerY, 'blackOpsOne', 'Game Over', 28);
+        gameOverText.anchor.setTo(0.5, 0.5);
 
         var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(function() {
