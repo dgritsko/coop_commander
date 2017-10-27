@@ -104,8 +104,8 @@
 
     function sunrise() {
         // Sky color
-        var t1 = backgroundColor(0x001933, 0xfb9fa4, 500, Phaser.Easing.Cubic.InOut);
-        var t2 = backgroundColor(0xfb9fa4, 0xa7d9ff, 1000, Phaser.Easing.Quartic.Out);
+        var t1 = backgroundColor(0x001933, 0xfb9fa4, 250, Phaser.Easing.Cubic.InOut);
+        var t2 = backgroundColor(0xfb9fa4, 0xa7d9ff, 500, Phaser.Easing.Quartic.Out);
 
         t1.chain(t2);
         t1.start();
@@ -120,7 +120,7 @@
         t3.start();
 
         // Sun position
-        var t4 = moveAlongArc(sun, 270, 180, 300, 1500, Phaser.Easing.Bounce.Out);//Phaser.Easing.Cubic.Out);    
+        var t4 = moveAlongArc(sun, 270, 180, 300, 750, Phaser.Easing.Bounce.Out);//Phaser.Easing.Cubic.Out);    
 
         t4.onComplete.add(function() {
             scene = Scenes.Sunrise;

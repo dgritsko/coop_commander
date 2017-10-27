@@ -16,6 +16,8 @@
         game.load.image('flashlight', 'assets/flashlight.png');
         game.load.image('shovel', 'assets/shovel.png');
         game.load.image('hitbox00', 'assets/hitbox00.png');
+        game.load.spritesheet('trap00', 'assets/simpletrap.png', 48, 48);
+        game.load.image('trap01', 'assets/ratpoison.png');
         
         // Sounds
         game.load.audio('whoosh00', 'assets/sound/fx/whoosh00.mp3');

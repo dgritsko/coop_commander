@@ -1,4 +1,9 @@
 (function() {
+    var Modes = {
+        Setup: 0,
+        Play: 1
+    };
+
     var pen = new Phaser.Rectangle(720, 120, 8 * 48, 10 * 48);
 
     var gameState = {};
@@ -7,6 +12,8 @@
 
     var rats = [];
     var chickens = [];
+
+    var mode = Modes.Setup;
 
     function init(args) {
         hud = {};
@@ -32,7 +39,6 @@
             gameState.foodCount = 10;
             gameState.score = 0;
             gameState.upgradePoints = 0;
-            gameState.initialRats = 2;            
             gameState.swingCount = 0;            
             gameState.totalRats = 3;
             gameState.ratsKilled = 0;
@@ -41,6 +47,8 @@
         }
 
         console.log(gameState);
+
+        mode = Modes.Setup;
     }
 
     function preload() {
@@ -50,21 +58,31 @@
         game.physics.startSystem(Phaser.Physics.ARCADE);
         
         game.stage.disableVisibilityChange = true;
+
+        setupSounds();
+
+        beginStage();
         
-        drawGrass();
-
-        setupPlayer();
-
-        setupInput();
-
-        rodents = game.add.group();
-        for (var i = 0; i < gameState.initialRats; i++) {
-            createRat();
+        drawHud();
+        
+        if (mode == Modes.Setup) {
+            beginSetup();
         }
 
+        if (mode == Modes.Play) {
+            beginGame();
+        }        
+    }
+
+    function beginStage() {
+        drawGrass();
+        
         fence = game.add.group();
         drawFence(pen, fence);
+    }
 
+    function beginGame() {
+        rodents = game.add.group();
         food = game.add.group();
         flock = game.add.group();
         for (var i = 0; i < gameState.foodCount; i++) {
@@ -72,17 +90,69 @@
             createChicken();
         }
 
-        drawHud();
+        setupPlayer();
+        
+        setupInput();
+
+        mode = Modes.Play;
     }
 
-    function update() {
-        placeTraps();
+    function beginSetup() {
+        var selection = game.add.graphics(50, 100);
+        
+        selection.lineStyle(2, 0xffd900, 1);
 
-        playGame();
+        selection.drawRect(0, 0, 48, 48);
+
+        currTrap = new Trap();
+
+        var traps = [];
+
+        function addTrap(spriteName) {
+            var y = 100 + (50 * traps.length);
+            var t = game.add.sprite(50, y, spriteName);
+            t.inputEnabled = true;
+            t.events.onInputDown.add(function() {
+                currTrap.changeType(spriteName);
+                selection.y = y;
+            }, this);
+
+            traps.push(t);
+        }
+
+        addTrap('trap00');
+        addTrap('trap01');
+        
+        var label = game.add.bitmapText(50, 220, 'blackOpsOne', 'Done', 28);
+
+        label.inputEnabled = true;
+        label.events.onInputUp.add(function() {
+            selection.kill();
+            _.each(traps, function(t) { 
+                t.kill();
+            });
+            label.kill();
+            currTrap.kill();
+
+            beginGame();
+        });
+    }    
+
+    function update() {
+        console.log(game.time.now);
+        
+        if (mode == Modes.Setup) {
+            placeTraps();
+        }        
+
+        if (mode == Modes.Play) {
+            playGame();
+        }
     }
 
     function placeTraps() {
         // TODO: Place traps...
+        currTrap.update();
     }
 
     function playGame() {
@@ -276,7 +346,7 @@
     }
 
     function setupPlayer() {
-        player = game.add.sprite(100, 100, 'player');
+        player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
 
         // TODO: Add shovel to group so that we can set the z-index correctly
 
@@ -307,7 +377,9 @@
         player.animations.add('left', [9, 10, 11, 12, 13, 14, 15, 16, 17], 10, true);
         player.animations.add('down', [18, 19, 20, 21, 22, 23, 24, 25, 26], 10, true);
         player.animations.add('right', [27, 28, 29, 30, 31, 32, 33, 34, 35], 10, true);
+    }
 
+    function setupSounds() {
         fxWhoosh = game.add.sound('whoosh00');
         fxWhoosh.allowMultiple = true;
         fxFootsteps = game.add.sound('footsteps00');
@@ -325,40 +397,7 @@
 
         var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(function() { 
-            gameState.swingCount += 1;
-
-            // TODO: Cancel previous tween so that it doesn't kill the shovel mid-swing
-
-            // TODO: Appropriate direction swing if player is not moving
-
-            if (player.body.velocity.x == 0) {
-                // TODO: Wat do about vertical-only swings?
-                if (player.body.velocity.y > 0) {
-
-                } else {
-                    
-                }
-            } else {            
-                if (player.body.velocity.x > 0) {
-                    startAngle = 180;
-                    endAngle = 0;
-                } else {
-                    startAngle = 179;
-                    endAngle = 0;
-                }            
-            }
-
-            shovel.alpha = 1;
-            shovel.angle = startAngle;
-            var tween = game.add.tween(shovel).to({ angle: endAngle }, 200, Phaser.Easing.Quartic.InOut);
-            
-            tween.onComplete.add(function() {
-                shovel.alpha = 0;
-            });
-        
-            tween.start();
-            fxWhoosh.play();
-            
+            performAttack();            
         }, this);
 
         var ctrlKey = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
@@ -379,6 +418,42 @@
         }, this);
     }
 
+    function performAttack() {
+        gameState.swingCount += 1;
+        
+        // TODO: Cancel previous tween so that it doesn't kill the shovel mid-swing
+
+        // TODO: Appropriate direction swing if player is not moving
+
+        if (player.body.velocity.x == 0) {
+            // TODO: Wat do about vertical-only swings?
+            if (player.body.velocity.y > 0) {
+
+            } else {
+                
+            }
+        } else {            
+            if (player.body.velocity.x > 0) {
+                startAngle = 180;
+                endAngle = 0;
+            } else {
+                startAngle = 179;
+                endAngle = 0;
+            }            
+        }
+
+        shovel.alpha = 1;
+        shovel.angle = startAngle;
+        var tween = game.add.tween(shovel).to({ angle: endAngle }, 200, Phaser.Easing.Quartic.InOut);
+        
+        tween.onComplete.add(function() {
+            shovel.alpha = 0;
+        });
+    
+        tween.start();
+        fxWhoosh.play();
+    }
+    
     function useFlashlight() {
         if (gameState.flashlights <= 0) {
             return;
