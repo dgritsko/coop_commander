@@ -67,9 +67,15 @@
             menuItems.children[selectedIndex].events.onInputUp.dispatch();
         }, this);
 
-        highlightIndex(selectedIndex);
-
+        quoteDisplay = game.add.bitmapText(150, 450, 'blackOpsOne', '', 28);
         showQuote();
+
+        qKey = game.input.keyboard.addKey(Phaser.Keyboard.Q);
+        qKey.onDown.add(function() { 
+            showQuote();
+        }, this);
+
+        highlightIndex(selectedIndex);
     }
 
     function update() {
@@ -106,7 +112,7 @@
         game.state.start('Cutscene', true, false, {});
     }
 
-    function showQuote() {
+    function showQuote(index) {
         var quoteTexts = [
             'You all know I run traps all the time to try to keep the rodents down around the chickens.',
             'I tried a new strategy last night. Guess how many rodents we caught?',
@@ -135,13 +141,15 @@
 
         // TODO: Dynamic message that lists how many were caught during the previous night?
 
-        var index = Math.floor(Math.random() * quoteTexts.length);
+        if (typeof(index) === 'undefined') {
+            index = Math.floor(Math.random() * quoteTexts.length);
+        }
 
         var quoteText = quoteTexts[index];
 
         quoteText = '"' + quoteText + '"\n         - Papa G';
-        
-        game.add.bitmapText(150, 450, 'blackOpsOne', quoteText, 28);
+
+        quoteDisplay.text = quoteText;
     }
 
     function updateBackgroundRats() {
