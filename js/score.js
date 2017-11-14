@@ -42,5 +42,22 @@
         }, this);
     }
 
+    function getInput() {
+        var text = '';
+        
+        game.input.keyboard.addCallbacks(this, null, function(evt) { 
+            var char = String.fromCharCode(evt.keyCode).toString();
+            var pattern = /[A-Za-z0-9\s]/;
+            
+            if (pattern.test(char)) {
+                text += char;
+                console.log(text);
+            } else if (evt.keyCode === 8) {
+                //console.log(evt.keyCode);
+                console.log('backspace pressed');
+            }
+        }, null);
+    }
+
     CoopCommander.Score = {init: init, preload: preload, create: create, update: update};
 })();
