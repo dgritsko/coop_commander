@@ -16,6 +16,7 @@
         
         fxClick = game.add.sound('click00');
         menuMusic = game.add.sound('music00');
+        menuMusic.volume = 0.1;
         menuMusic.loop = true;
         menuMusic.play();        
 

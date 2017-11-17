@@ -104,44 +104,7 @@
     }
 
     function beginSetup() {
-        var selection = game.add.graphics(50, 100);
-        
-        selection.lineStyle(2, 0xffd900, 1);
-
-        selection.drawRect(0, 0, 48, 48);
-
-        currTrap = new Trap();
-
-        var traps = [];
-
-        function addTrap(spriteName) {
-            var y = 100 + (50 * traps.length);
-            var t = game.add.sprite(50, y, spriteName);
-            t.inputEnabled = true;
-            t.events.onInputDown.add(function() {
-                currTrap.changeType(spriteName);
-                selection.y = y;
-            }, this);
-
-            traps.push(t);
-        }
-
-        addTrap('trap00');
-        addTrap('trap01');
-        
-        var label = game.add.bitmapText(50, 220, 'blackOpsOne', 'Done', 28);
-
-        label.inputEnabled = true;
-        label.events.onInputUp.add(function() {
-            selection.kill();
-            _.each(traps, function(t) { 
-                t.kill();
-            });
-            label.kill();
-            currTrap.kill();
-
-            beginGame();
-        });
+        store = new Store();
     }    
 
     function update() {
@@ -155,8 +118,11 @@
     }
 
     function placeTraps() {
-        // TODO: Place traps...
-        currTrap.update();
+        store.update();
+
+        if (store.state == StoreStates.DONE) {
+            beginGame();
+        }
     }
 
     function playGame() {
@@ -526,14 +492,14 @@
 
         hud.scoreText = addText(10, 100, gameState.score);
 
-        hud.upgradePointText = addText(10, 130, gameState.upgradePoints);
+        hud.upgradePointText = addText(10, 130, '$' + gameState.upgradePoints);
     }
 
     function updateHud() {
         hud.flashlightText.setText(gameState.flashlights);
         hud.foodText.setText(gameState.foodCount);
         hud.scoreText.setText(gameState.score);
-        hud.upgradePointText.setText(gameState.upgradePoints);
+        hud.upgradePointText.setText('$' + gameState.upgradePoints);
     }
 
     function drawFence(rect, group) {

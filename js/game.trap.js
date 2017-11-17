@@ -3,7 +3,7 @@ TrapStates = {
 };
 
 class Trap {
-    constructor() {
+    constructor(info) {
         this.isCurrent = true;
 
         this.position = new Phaser.Point(0, 0);
@@ -17,7 +17,8 @@ class Trap {
         this.graphics.drawCircle(0, 0, 200);
 
         // TODO: Sprite
-        this.sprite = game.add.sprite(0, 0, 'trap00');
+        this.info = info;
+        this.sprite = game.add.sprite(0, 0, info['spriteName']);
         this.sprite.anchor.setTo(0.5, 0.5);
     }
 }
@@ -40,8 +41,9 @@ Trap.prototype.update = function() {
     }
 }
 
-Trap.prototype.changeType = function(sprite) {
-    this.sprite.loadTexture(sprite);
+Trap.prototype.changeType = function(info) {
+    this.info = info;
+    this.sprite.loadTexture(info['spriteName']);
 }
 
 Trap.prototype.kill = function() {
