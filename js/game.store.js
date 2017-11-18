@@ -2,12 +2,14 @@ var Items = [
     {
         'name': 'Basic Trap',
         'spriteName': 'trap00',
-        'cost': 2
+        'cost': 2,
+        'radius': 200
     },
     {
         'name': 'Rat Poison',
         'spriteName': 'trap01',
-        'cost': 1
+        'cost': 1,
+        'radius': 100
     }
 ];
 
@@ -39,7 +41,8 @@ class Store {
 
             t.inputEnabled = true;
             t.events.onInputDown.add(function() {
-                that.currItem.changeType(info);
+                that.currItem.kill();
+                that.currItem = new Trap(info);
                 that.selection.y = y;
             }, this);
 

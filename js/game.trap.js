@@ -14,7 +14,7 @@ class Trap {
 
         //graphics.beginFill(0xFF0000, 1);
         // TODO: Trap radius
-        this.graphics.drawCircle(0, 0, 200);
+        this.graphics.drawCircle(0, 0, info['radius']);
 
         // TODO: Sprite
         this.info = info;
@@ -25,7 +25,10 @@ class Trap {
 
 Trap.prototype.update = function() {
     if (this.isCurrent) {
-        if (game.input.x < 150) {
+        var menuWidth = 100;
+        var fadeDistance = 50;
+
+        if (game.input.x < menuWidth) {
             this.graphics.visible = false;
             this.sprite.visible = false;
         } else {
@@ -33,11 +36,22 @@ Trap.prototype.update = function() {
             this.sprite.visible = true;
         }
 
-        this.graphics.x = game.input.x;
-        this.graphics.y = game.input.y;
+        if (game.input.x >= menuWidth && game.input.x <= (menuWidth + fadeDistance)) {
+            this.sprite.alpha = (game.input.x - menuWidth) / fadeDistance;
+        } else {
+            this.sprite.alpha = 1.0;
+        }
 
-        this.sprite.x = game.input.x;
-        this.sprite.y = game.input.y;
+        var snapAmount = 30;
+
+        var x = game.input.x - (game.input.x % snapAmount) + (snapAmount / 2);
+        var y = game.input.y - (game.input.y % snapAmount) + (snapAmount / 2);
+
+        this.graphics.x = x;
+        this.graphics.y = y;
+
+        this.sprite.x = x;
+        this.sprite.y = y;
     }
 }
 
