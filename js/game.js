@@ -104,7 +104,7 @@
     }
 
     function beginSetup() {
-        store = new Store();
+        store = new Store(gameState.upgradePoints);
     }    
 
     function update() {

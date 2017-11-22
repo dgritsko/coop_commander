@@ -19,9 +19,11 @@ StoreStates = {
 };
 
 class Store {
-    constructor() {
+    constructor(money) {
         this.state = StoreStates.ACTIVE;
         var baseY = 200;
+
+        this.money = money;
         
         this.selection = game.add.graphics(50, baseY);
         
@@ -38,6 +40,8 @@ class Store {
             var t = game.add.sprite(50, y, info['spriteName']);
 
             var l = game.add.bitmapText(50 + 20, y + 28, 'blackOpsOne', '$' + info['cost'], 18);
+
+            l.tint = info['cost'] >= that.money ? 0xffffff : 0xff0000;
 
             t.inputEnabled = true;
             t.events.onInputDown.add(function() {
@@ -84,6 +88,13 @@ Store.prototype.done = function() {
 
 Store.prototype.update = function() {
     this.currItem.update();
+
+    if (game.input.activePointer.isDown) {
+        this.pointerDown = true;
+    } else if (this.pointerDown) {
+        this.pointerDown = false;
+        console.log('TODO: Place trap');
+    }
 
     // if (game.input.activePointer.isDown) {
     //     currTrap.isCurrent = false;
