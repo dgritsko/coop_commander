@@ -63,3 +63,7 @@ Trap.prototype.changeType = function(info) {
 Trap.prototype.kill = function() {
     this.sprite.kill();
 }
+
+Trap.prototype.canPlace = function() {
+    return game.input.x >= 150;
+}

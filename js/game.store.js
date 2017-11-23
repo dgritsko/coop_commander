@@ -24,6 +24,8 @@ class Store {
         var baseY = 200;
 
         this.money = money;
+
+        this.selectedIndex = 0;
         
         this.selection = game.add.graphics(50, baseY);
         
@@ -36,18 +38,19 @@ class Store {
         this.placedItems = [];
 
         function addItem(info, that) {
-            var y = baseY + (50 * that.availableItems.length);
+            var index = that.availableItems.length;
+            var y = baseY + (50 * index);
             var t = game.add.sprite(50, y, info['spriteName']);
 
             var l = game.add.bitmapText(50 + 20, y + 28, 'blackOpsOne', '$' + info['cost'], 18);
-
-            l.tint = info['cost'] >= that.money ? 0xffffff : 0xff0000;
 
             t.inputEnabled = true;
             t.events.onInputDown.add(function() {
                 that.currItem.kill();
                 that.currItem = new Trap(info);
                 that.selection.y = y;
+
+                that.selectedIndex = index;
             }, this);
 
             that.availableItems.push(t);
@@ -58,7 +61,9 @@ class Store {
             addItem(Items[i], this);
         }
 
-        this.currItem = new Trap(Items[0]);
+        this.updatePriceLabels();
+
+        this.currItem = new Trap(Items[this.selectedIndex]);
         
         var doneLabelY = baseY + (50 * Items.length) + 20;
         this.doneLabel = game.add.bitmapText(50, doneLabelY, 'blackOpsOne', 'Done', 28);
@@ -68,6 +73,16 @@ class Store {
             this.done();
         }, this);
     }
+}
+
+Store.prototype.updatePriceLabels = function() {
+    var money = this.money;
+    _.each(_.zip(Items, this.itemLabels), function(x) {
+        var item = x[0];
+        var label = x[1];
+
+        label.tint = item['cost'] <= money ? 0xffffff : 0xff0000;
+    });
 }
 
 Store.prototype.done = function() {
@@ -93,15 +108,22 @@ Store.prototype.update = function() {
         this.pointerDown = true;
     } else if (this.pointerDown) {
         this.pointerDown = false;
-        console.log('TODO: Place trap');
+
+        if (!this.currItem.canPlace()) {
+            return;
+        }
+
+        if (this.currItem.info['cost'] <= this.money) {
+            this.currItem.isCurrent = false;   
+
+            this.money -= this.currItem.info['cost'];
+
+            this.currItem = new Trap(Items[this.selectedIndex]);
+
+            this.updatePriceLabels();
+        } else {
+            console.log('TODO: Can\'t place trap, not enough funds');
+        }
+
     }
-
-    // if (game.input.activePointer.isDown) {
-    //     currTrap.isCurrent = false;
-
-    //     currTrap = new Trap();
-    // }
-
-    // // TODO: Place traps...
-    // currTrap.update();
 }
