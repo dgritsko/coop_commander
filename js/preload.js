@@ -31,6 +31,10 @@
         game.load.audio('scream00', 'assets/sound/fx/scream00.wav');
         game.load.audio('chomp00', 'assets/sound/fx/chomp00.wav');
         game.load.audio('success00', 'assets/sound/fx/success00.wav');
+        game.load.audio('error00', 'assets/sound/fx/error00.wav');
+        game.load.audio('error01', 'assets/sound/fx/error01.wav');
+        game.load.audio('pop00', 'assets/sound/fx/pop00.wav');
+        game.load.audio('reload00', 'assets/sound/fx/reload00.wav');
         
         // Music
         game.load.audio('music00', 'assets/sound/music/Rolemusic_-_Keiken_soku.mp3');

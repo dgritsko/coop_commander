@@ -363,6 +363,10 @@
         fxHit.allowMultiple = true;
         fxScream = game.add.sound('scream00');
         fxChomp = game.add.sound('chomp00');
+        fxPop = game.add.sound('pop00');
+        fxError = game.add.sound('error01');
+        fxReload = game.add.sound('reload00');
+        fxReload.volume = 0.5;
     }
 
     function setupInput() {

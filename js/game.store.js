@@ -108,6 +108,8 @@ Store.prototype.selectItem = function(index) {
     this.selection.y = y;
 
     this.selectedIndex = index;
+
+    fxClick.play();    
 }
 
 Store.prototype.updatePriceLabels = function() {
@@ -134,6 +136,8 @@ Store.prototype.done = function() {
     this.currItem.kill();
     
     this.state = StoreStates.DONE;
+
+    fxReload.play();
 }
 
 Store.prototype.update = function() {
@@ -156,8 +160,12 @@ Store.prototype.update = function() {
             this.currItem = new Trap(Items[this.selectedIndex]);
 
             this.updatePriceLabels();
+
+            fxPop.play();
         } else {
             console.log('TODO: Can\'t place trap, not enough funds');
+
+            fxError.play();
         }
     }
 }
