@@ -10,6 +10,12 @@ var Items = [
         'spriteName': 'trap01',
         'cost': 1,
         'radius': 100
+    },
+    {
+        'name': 'Rat Poison',
+        'spriteName': 'trap01',
+        'cost': 1,
+        'radius': 75
     }
 ];
 
@@ -21,13 +27,12 @@ StoreStates = {
 class Store {
     constructor(money) {
         this.state = StoreStates.ACTIVE;
-        var baseY = 200;
 
         this.money = money;
 
         this.selectedIndex = 0;
         
-        this.selection = game.add.graphics(50, baseY);
+        this.selection = game.add.graphics(50, this.getIndexY(0));
         
         this.selection.lineStyle(2, 0xffd900, 1);
 
@@ -39,18 +44,14 @@ class Store {
 
         function addItem(info, that) {
             var index = that.availableItems.length;
-            var y = baseY + (50 * index);
+            var y = that.getIndexY(index);
             var t = game.add.sprite(50, y, info['spriteName']);
 
             var l = game.add.bitmapText(50 + 20, y + 28, 'blackOpsOne', '$' + info['cost'], 18);
 
             t.inputEnabled = true;
             t.events.onInputDown.add(function() {
-                that.currItem.kill();
-                that.currItem = new Trap(info);
-                that.selection.y = y;
-
-                that.selectedIndex = index;
+                that.selectItem(index);
             }, this);
 
             that.availableItems.push(t);
@@ -65,14 +66,48 @@ class Store {
 
         this.currItem = new Trap(Items[this.selectedIndex]);
         
-        var doneLabelY = baseY + (50 * Items.length) + 20;
+        var doneLabelY = this.getIndexY(Items.length) + 20;//baseY + (50 * Items.length) + 20;
         this.doneLabel = game.add.bitmapText(50, doneLabelY, 'blackOpsOne', 'Done', 28);
 
         this.doneLabel.inputEnabled = true;
         this.doneLabel.events.onInputUp.add(function() {
             this.done();
         }, this);
+
+
+        var upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+        upKey.onDown.add(function() { 
+            if (this.state == StoreStates.ACTIVE) {
+                var newIndex = this.selectedIndex > 0 ? this.selectedIndex - 1 : Items.length - 1;
+                this.selectItem(newIndex);
+            }
+        }, this);
+
+        var downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+        downKey.onDown.add(function() { 
+            if (this.state == StoreStates.ACTIVE) {
+                var newIndex = this.selectedIndex < Items.length - 1 ? this.selectedIndex + 1 : 0;
+                this.selectItem(newIndex);
+            } 
+        }, this);
     }
+}
+
+Store.prototype.getIndexY = function(index) {
+    var baseY = 200;
+    var y = baseY + (50 * index);
+    return y;    
+}
+
+Store.prototype.selectItem = function(index) {
+    var info = Items[index];
+    var y = this.getIndexY(index);
+
+    this.currItem.kill();
+    this.currItem = new Trap(info);
+    this.selection.y = y;
+
+    this.selectedIndex = index;
 }
 
 Store.prototype.updatePriceLabels = function() {
@@ -124,6 +159,5 @@ Store.prototype.update = function() {
         } else {
             console.log('TODO: Can\'t place trap, not enough funds');
         }
-
     }
 }

@@ -62,6 +62,7 @@ Trap.prototype.changeType = function(info) {
 
 Trap.prototype.kill = function() {
     this.sprite.kill();
+    this.graphics.kill();
 }
 
 Trap.prototype.canPlace = function() {
