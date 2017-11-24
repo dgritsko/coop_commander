@@ -6,19 +6,19 @@ class Trap {
     constructor(info) {
         this.isCurrent = true;
 
-        this.position = new Phaser.Point(0, 0);
+        var x = game.input.x;
+        var y = game.input.y;
 
-        this.graphics = game.add.graphics(0, 0);
+        this.position = new Phaser.Point(x, y);
+
+        this.graphics = game.add.graphics(x, y);
 
         this.graphics.lineStyle(2, 0xffd900, 1);
 
         //graphics.beginFill(0xFF0000, 1);
-        // TODO: Trap radius
         this.graphics.drawCircle(0, 0, info['radius']);
-
-        // TODO: Sprite
         this.info = info;
-        this.sprite = game.add.sprite(0, 0, info['spriteName']);
+        this.sprite = game.add.sprite(x, y, info['spriteName']);
         this.sprite.anchor.setTo(0.5, 0.5);
     }
 }

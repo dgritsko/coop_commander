@@ -42,6 +42,8 @@ class Store {
         this.itemLabels = [];
         this.placedItems = [];
 
+        this.itemAddedCallbacks = [];
+
         function addItem(info, that) {
             var index = that.availableItems.length;
             var y = that.getIndexY(index);
@@ -162,10 +164,19 @@ Store.prototype.update = function() {
             this.updatePriceLabels();
 
             fxPop.play();
+
+            for (var i = 0; i < this.itemAddedCallbacks.length; i++) {
+                this.itemAddedCallbacks[i]();
+            }
         } else {
             console.log('TODO: Can\'t place trap, not enough funds');
 
             fxError.play();
+            game.camera.flash(0x000000, 50);            
         }
     }
+}
+
+Store.prototype.newItemCallback = function(f) {
+    this.itemAddedCallbacks.push(f);
 }

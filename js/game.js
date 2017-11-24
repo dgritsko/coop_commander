@@ -105,6 +105,11 @@
 
     function beginSetup() {
         store = new Store(gameState.upgradePoints);
+
+        store.newItemCallback(function() {
+            gameState.upgradePoints = store.money;
+            updateHud();
+        });
     }    
 
     function update() {
