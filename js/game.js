@@ -104,7 +104,11 @@
     }
 
     function beginSetup() {
-        store = new Store(gameState.upgradePoints);
+        var existingItems = []; 
+        // Existing items should look like this, where 'id' is index into the Items array:
+        //{'id': 0, 'x': 100, 'y': 200}, {'id': 2, 'x': 300, 'y': 300}];
+
+        store = new Store(gameState.upgradePoints, existingItems);
 
         store.newItemCallback(function() {
             gameState.upgradePoints = store.money;

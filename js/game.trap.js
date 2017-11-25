@@ -3,11 +3,11 @@ TrapStates = {
 };
 
 class Trap {
-    constructor(info) {
-        this.isCurrent = true;
+    constructor(info, isCurrent, x, y) {
+        this.isCurrent = isCurrent;
 
-        var x = game.input.x;
-        var y = game.input.y;
+        x = x || game.input.x;
+        y = y || game.input.y;
 
         this.position = new Phaser.Point(x, y);
 

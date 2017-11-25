@@ -1,18 +1,21 @@
 var Items = [
     {
+        'id': 0,
         'name': 'Basic Trap',
         'spriteName': 'trap00',
         'cost': 2,
         'radius': 200
     },
     {
+        'id': 1,
         'name': 'Rat Poison',
         'spriteName': 'trap01',
         'cost': 1,
         'radius': 100
     },
     {
-        'name': 'Rat Poison',
+        'id': 2,
+        'name': 'Rat Poison 2',
         'spriteName': 'trap01',
         'cost': 1,
         'radius': 75
@@ -25,24 +28,20 @@ StoreStates = {
 };
 
 class Store {
-    constructor(money) {
+    constructor(money, existingItems) {
         this.state = StoreStates.ACTIVE;
 
         this.money = money;
 
         this.selectedIndex = 0;
-        
-        this.selection = game.add.graphics(50, this.getIndexY(0));
-        
-        this.selection.lineStyle(2, 0xffd900, 1);
-
-        this.selection.drawRect(0, 0, 48, 48);
-
         this.availableItems = [];
         this.itemLabels = [];
         this.placedItems = [];
-
         this.itemAddedCallbacks = [];
+        
+        this.selection = game.add.graphics(50, this.getIndexY(0));
+        this.selection.lineStyle(2, 0xffd900, 1);
+        this.selection.drawRect(0, 0, 48, 48);
 
         function addItem(info, that) {
             var index = that.availableItems.length;
@@ -64,18 +63,25 @@ class Store {
             addItem(Items[i], this);
         }
 
+        for (var i = 0; i < (existingItems || []).length; i++) {
+            var info = Items[existingItems[i]['type']];
+            var x = existingItems[i]['x'];
+            var y = existingItems[i]['y'];
+            
+            this.placedItems.push(new Trap(info, false, x, y));
+        }
+
         this.updatePriceLabels();
 
-        this.currItem = new Trap(Items[this.selectedIndex]);
+        this.currItem = new Trap(Items[this.selectedIndex], true);
         
-        var doneLabelY = this.getIndexY(Items.length) + 20;//baseY + (50 * Items.length) + 20;
+        var doneLabelY = this.getIndexY(Items.length) + 20;
         this.doneLabel = game.add.bitmapText(50, doneLabelY, 'blackOpsOne', 'Done', 28);
 
         this.doneLabel.inputEnabled = true;
         this.doneLabel.events.onInputUp.add(function() {
             this.done();
         }, this);
-
 
         var upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
         upKey.onDown.add(function() { 
@@ -106,7 +112,7 @@ Store.prototype.selectItem = function(index) {
     var y = this.getIndexY(index);
 
     this.currItem.kill();
-    this.currItem = new Trap(info);
+    this.currItem = new Trap(info, true);
     this.selection.y = y;
 
     this.selectedIndex = index;
@@ -159,7 +165,9 @@ Store.prototype.update = function() {
 
             this.money -= this.currItem.info['cost'];
 
-            this.currItem = new Trap(Items[this.selectedIndex]);
+            this.placedItems.push(this.currItem);
+
+            this.currItem = new Trap(Items[this.selectedIndex], true);
 
             this.updatePriceLabels();
 
@@ -169,8 +177,7 @@ Store.prototype.update = function() {
                 this.itemAddedCallbacks[i]();
             }
         } else {
-            console.log('TODO: Can\'t place trap, not enough funds');
-
+            // can't place item, not enough funds
             fxError.play();
             game.camera.flash(0x000000, 50);            
         }
