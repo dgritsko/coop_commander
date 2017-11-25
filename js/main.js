@@ -6,4 +6,5 @@ game.state.add('Menu', CoopCommander.Menu);
 game.state.add('Game', CoopCommander.Game);
 game.state.add('Score', CoopCommander.Score);
 game.state.add('Cutscene', CoopCommander.Cutscene);
+game.state.add('Help', CoopCommander.Help);
 game.state.start('Boot');

@@ -36,7 +36,7 @@
         });
 
         addMenuItem('Help', menuItems, function() {
-
+            showHelp();
         });
 
         addMenuItem('Debug', menuItems, function() {
@@ -104,6 +104,13 @@
         game.camera.fade('#000000', 250);
         game.camera.onFadeComplete.add(function() { 
             game.state.start('Game');
+        }, this);
+    }
+
+    function showHelp() {
+        game.camera.fade('#000000', 250);
+        game.camera.onFadeComplete.add(function() { 
+            game.state.start('Help');
         }, this);
     }
 
