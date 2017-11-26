@@ -97,7 +97,7 @@
             createChicken();
         }
 
-        setupPlayer();
+        player = new Player(gameState.playerSpeed);
         
         setupInput();
 
@@ -137,7 +137,7 @@
     }
 
     function playGame() {
-        movePlayer();
+        player.move();
         
         var targets = food.children.map(function(item) { return [item.x, item.y]; });
         for (var i = 0; i < rats.length; i++) {
@@ -179,7 +179,7 @@
             return false;
         });
 
-        if (shovel.alpha) {
+        if (player.shovel.alpha) {
             handleAttacks();
         }
 
@@ -223,7 +223,7 @@
     }
 
     function handleAttacks() {
-        game.physics.arcade.collide(rodents, shovelHead, function(weapon, rodent) {
+        game.physics.arcade.collide(rodents, player.shovelHead, function(weapon, rodent) {
             
         }, function(weapon, rodent) {
             var rat = _.find(rats, function(r) { return r.id == rodent.id; });
@@ -255,70 +255,8 @@
         chickens.push(new Chicken(flock, chickens.length, pen));
     }
 
-    function movePlayer() {
-        player.body.velocity.x = 0;
-        player.body.velocity.y = 0;
-
-        var diagonalVelocity = 0.70710678118; // 1/sqrt(2)
-
-        var xVelocity = 0;
-        var yVelocity = 0;
-        var animation = '';
-
-        if (cursors.left.isDown) {
-            animation = 'left';
-            if (cursors.up.isDown) {
-                xVelocity = -diagonalVelocity;
-                yVelocity = -diagonalVelocity;
-            } else if (cursors.down.isDown) {
-                xVelocity = -diagonalVelocity;
-                yVelocity = diagonalVelocity;
-            } else {
-                shovel.x = -8;
-                shovel.y = 8;
-                xVelocity = -1;
-            }
-        } else if (cursors.right.isDown) {
-            animation = 'right';
-            if (cursors.up.isDown) {
-                xVelocity = diagonalVelocity;
-                yVelocity = -diagonalVelocity;
-            } else if (cursors.down.isDown) {
-                xVelocity = diagonalVelocity;
-                yVelocity = diagonalVelocity;
-            } else {
-                shovel.x = 8;
-                shovel.y = 8;
-                xVelocity = 1;
-            }
-        } else if (cursors.up.isDown) {
-            animation = 'up';
-            yVelocity = -1;
-        } else if (cursors.down.isDown) {
-            animation = 'down';
-            yVelocity = 1;
-        }
-
-        if (xVelocity || yVelocity) {
-            if (!fxFootsteps.isPlaying) {
-                fxFootsteps.play();
-            }
-        } else {
-            fxFootsteps.stop();
-        }
-
-        player.body.velocity.x += (xVelocity * gameState.playerSpeed);    
-        player.body.velocity.y += (yVelocity * gameState.playerSpeed);
-
-        if (animation) {
-            player.animations.play(animation);
-        } else {
-            player.animations.stop();
-        }
-    }
-
     function drawGrass() {
-        var grassSprite = 'grass00';
+        var grassSprite = 'grass01';
 
         var grassSize = game.cache.getImage(grassSprite).width;
         
@@ -327,40 +265,6 @@
                 game.add.sprite(x, y, grassSprite);
             }
         }
-    }
-
-    function setupPlayer() {
-        player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
-
-        // TODO: Add shovel to group so that we can set the z-index correctly
-
-        // TODO: Adjust the scaling so that it's the appropriate size for the player
-        shovel = game.make.sprite(0, 0, 'shovel');
-        shovel.alpha = 0;
-        shovel.scale.setTo(0.5, 0.5);
-        shovel.anchor.setTo(0.5, 0);
-        
-        player.addChild(shovel);
-
-        shovelHead = game.make.sprite(0, 64, 'hitbox00');
-        shovelHead.alpha = 0;
-        shovelHead.anchor.setTo(0.5, 0.5);
-        shovel.addChild(shovelHead);
-        
-        player.scale.setTo(2, 2);
-        player.anchor.setTo(0.5, 0.5);
-
-        game.physics.arcade.enable(shovel);
-        game.physics.arcade.enable(shovelHead);
-
-        game.physics.arcade.enable(player);
-
-        player.body.collideWorldBounds = true;
-
-        player.animations.add('up', [0, 1, 2, 3, 4, 5, 6, 7, 8], 10, true);
-        player.animations.add('left', [9, 10, 11, 12, 13, 14, 15, 16, 17], 10, true);
-        player.animations.add('down', [18, 19, 20, 21, 22, 23, 24, 25, 26], 10, true);
-        player.animations.add('right', [27, 28, 29, 30, 31, 32, 33, 34, 35], 10, true);
     }
 
     function setupSounds() {
@@ -423,15 +327,15 @@
 
         // TODO: Appropriate direction swing if player is not moving
 
-        if (player.body.velocity.x == 0) {
+        if (player.sprite.body.velocity.x == 0) {
             // TODO: Wat do about vertical-only swings?
-            if (player.body.velocity.y > 0) {
+            if (player.sprite.body.velocity.y > 0) {
 
             } else {
                 
             }
         } else {            
-            if (player.body.velocity.x > 0) {
+            if (player.sprite.body.velocity.x > 0) {
                 startAngle = 180;
                 endAngle = 0;
             } else {
@@ -440,12 +344,12 @@
             }            
         }
 
-        shovel.alpha = 1;
-        shovel.angle = startAngle;
-        var tween = game.add.tween(shovel).to({ angle: endAngle }, 200, Phaser.Easing.Quartic.InOut);
+        player.shovel.alpha = 1;
+        player.shovel.angle = startAngle;
+        var tween = game.add.tween(player.shovel).to({ angle: endAngle }, 200, Phaser.Easing.Quartic.InOut);
         
         tween.onComplete.add(function() {
-            shovel.alpha = 0;
+            player.shovel.alpha = 0;
         });
     
         tween.start();
