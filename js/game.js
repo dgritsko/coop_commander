@@ -12,6 +12,7 @@
 
     var rats = [];
     var chickens = [];
+    var items = [];
 
     var mode = Modes.Setup;
 
@@ -130,6 +131,7 @@
         store.update();
 
         if (store.state == StoreStates.DONE) {
+            items = store.placedItems;
             beginGame();
         }
     }
@@ -140,7 +142,7 @@
         var targets = food.children.map(function(item) { return [item.x, item.y]; });
         for (var i = 0; i < rats.length; i++) {
             var rat = rats[i];
-            rat.update(targets);
+            rat.update(targets, items, player);
 
             if (rat.sprite.alive && !rat.sprite.inCamera) {
                 rat.kill();
@@ -479,8 +481,10 @@
     }
 
     function drawHud() {
-        function addText(x, y, text) {
-            return game.add.bitmapText(x, y, 'blackOpsOne', text + '', 24);
+        function addText(x, y, text, size) {
+            size = size || 24;
+
+            return game.add.bitmapText(x, y, 'blackOpsOne', text + '', size);
         }
         
         hud.levelText = addText(10, 10, 'Level ' + gameState.level);

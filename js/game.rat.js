@@ -28,12 +28,12 @@ class Rat {
     }
 }
 
-Rat.prototype.move = function(targets) {
-    if (targets.length == 0) {
+Rat.prototype.move = function(food, items, player) {
+    if (food.length == 0) {
         return;
     }
 
-    var target = targets[Math.floor(Math.random() * targets.length)];
+    var target = food[Math.floor(Math.random() * food.length)];
     this.state = RatStates.HUNGRY;
     game.physics.arcade.moveToXY(this.sprite, target[0], target[1]);
 
@@ -41,9 +41,9 @@ Rat.prototype.move = function(targets) {
     this.sprite.body.velocity.y *= this.speed;
 }
 
-Rat.prototype.update = function(targets) {
+Rat.prototype.update = function(food, items, player) {
     if (this.state == RatStates.STOPPED) {
-        this.move(targets);
+        this.move(food, items, player);
     }
 
     if (this.state == RatStates.HUNGRY) {
