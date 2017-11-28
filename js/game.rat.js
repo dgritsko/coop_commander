@@ -4,6 +4,54 @@ RatStates = {
     RETREATING: 2
 };
 
+RatTypes = [
+    { 
+        'rank': 0,
+        'class': 1,
+        'size': 'small'
+    },
+    { 
+        'rank': 1,
+        'class': 1,
+        'size': 'medium'
+    },
+    { 
+        'rank': 2,
+        'class': 1,
+        'size': 'large'
+    },
+    { 
+        'rank': 3,
+        'class': 2,
+        'size': 'small'
+    },
+    { 
+        'rank': 4,
+        'class': 2,
+        'size': 'medium'
+    },
+    { 
+        'rank': 5,
+        'class': 2,
+        'size': 'large'
+    },
+    { 
+        'rank': 6,
+        'class': 3,
+        'size': 'small'
+    },
+    { 
+        'rank': 7,
+        'class': 3,
+        'size': 'medium'
+    },
+    { 
+        'rank': 8,
+        'class': 3,
+        'size': 'large'
+    },
+];
+
 class Rat {
     constructor(group, id, speed) {
         this.id = id;
