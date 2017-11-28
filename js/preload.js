@@ -35,6 +35,7 @@
         game.load.audio('error01', 'assets/sound/fx/error01.wav');
         game.load.audio('pop00', 'assets/sound/fx/pop00.wav');
         game.load.audio('reload00', 'assets/sound/fx/reload00.wav');
+        game.load.audio('punch00', 'assets/sound/fx/punch00.wav');
         
         // Music
         game.load.audio('music00', 'assets/sound/music/Rolemusic_-_Keiken_soku.mp3');
