@@ -1,17 +1,10 @@
 (function() {
-    var Scenes = {
-        InProgress: -1,
-        Score: 0,
-        Sunrise: 1
-    }
-
     var gameState = {};
     var updateCallbacks = [];
 
     function init(args) {
         updateCallbacks = [];
         gameState = args;
-        scene = Scenes.InProgress;        
     }
 
     function preload() {
@@ -33,44 +26,27 @@
         // TODO: Clouds and stuff
 
         levelComplete();
+        
+        drawGrass();
+        sunrise();
+        drawRats(gameState.ratsKilled);
 
-        enterKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
-        enterKey.onDown.add(function() { 
-            advanceScene();
-        }, this);
+        game.time.events.add(3000, sunset, this);
 
-        spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        spaceKey.onDown.add(function() { 
-            advanceScene();
-        }, this);
+        game.time.events.add(5000, nextLevel, this);
     }
 
     function update() {
-        if (game.input.activePointer.isDown) {
-            advanceScene();
-        }
-
         for (var i = 0; i < updateCallbacks.length; i++) {
             updateCallbacks[i]();
         }
     }
 
-    function advanceScene() {
-        if (scene == Scenes.InProgress) {
-            return;
-        }
-
-        if (scene == Scenes.Score) {
-            scene = Scenes.InProgress;
-            drawGrass();
-            sunrise();
-        } else if (scene == Scenes.Sunrise) {
-            scene = Scenes.InProgress;
-            game.camera.fade('#000000', 250);
-            game.camera.onFadeComplete.add(function() { 
-                game.state.start('Game', true, false, gameState);
-            }, this);        
-        }
+    function nextLevel() {
+        game.camera.fade('#000000', 250);
+        game.camera.onFadeComplete.add(function() { 
+            game.state.start('Game', true, false, gameState);
+        }, this);
     }
 
     function levelComplete() {
@@ -84,12 +60,10 @@
         tween.delay(300);
 
         tween.onComplete.add(function() {
-            scene = Scenes.Score;
+            // TODO
         });        
 
         tween.start();
-
-        drawRats(gameState.ratsKilled);
     }
 
     function predator() {
@@ -125,7 +99,7 @@
         var t4 = moveAlongArc(sun, 270, 180, 300, 750, Phaser.Easing.Bounce.Out);//Phaser.Easing.Cubic.Out);    
 
         t4.onComplete.add(function() {
-            scene = Scenes.Sunrise;
+            // TODO
         });
 
         t4.start();        
