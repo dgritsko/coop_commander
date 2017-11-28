@@ -16,15 +16,26 @@
 
         fxSuccess = game.add.sound('success00');
 
-        levelComplete();
-        
+        for (var i = 0; i < 3; i++) {
+            var j = i;
+            var callback = (function() {
+                
+            })();
+
+            game.time.events.add(1000 + 500 * i, function() {
+                //fxPunch.play();
+            }, this);
+        }
+
+        clouds();
+
         sunrise();
+
+        levelComplete();
 
         grass();
 
         rats(gameState.ratsKilled);
-
-        clouds();
 
         game.time.events.add(1500, predator, this)
 
@@ -139,6 +150,23 @@
     }
 
     function clouds() {
+        for (var i = 0; i < 10; i++) {
+            var maxX = game.world.width;
+            var maxY = 300;
+
+            var x = Math.random() * maxX;
+            var y = Math.random() * maxY;
+
+            var cloud = game.add.sprite(x, y, 'cloud00');
+            cloud.alpha = 0.5;
+
+            var scaleFactor = 1 - ((maxY - y) / maxY);
+            cloud.scale.setTo(scaleFactor, scaleFactor);
+
+            game.physics.arcade.enable(cloud);
+            cloud.body.velocity.x = 10 + 50 * scaleFactor;
+        }
+
         // TODO
         console.log('TODO: Draw clouds');
     }
