@@ -16,20 +16,17 @@
 
         fxSuccess = game.add.sound('success00');
 
-        //sunrise();
-        //sunset();
-
-        // predator();
-
-        //drawGrass();
-
-        // TODO: Clouds and stuff
-
         levelComplete();
         
-        drawGrass();
         sunrise();
-        drawRats(gameState.ratsKilled);
+
+        grass();
+
+        rats(gameState.ratsKilled);
+
+        clouds();
+
+        game.time.events.add(1500, predator, this)
 
         game.time.events.add(3000, sunset, this);
 
@@ -86,7 +83,7 @@
         t1.chain(t2);
         t1.start();
 
-        var sun = game.add.sprite(500, 500, 'sun');
+        sun = game.add.sprite(500, 500, 'sun');
         sun.anchor.setTo(0.5, 0.5);
 
         // Sun tint
@@ -113,8 +110,10 @@
         t1.chain(t2);
         t1.start();
 
-        var sun = game.add.sprite(500, 500, 'sun');
-        sun.anchor.setTo(0.5, 0.5);
+        // var sun = game.add.sprite(500, 500, 'sun');
+        // sun.anchor.setTo(0.5, 0.5);
+        sun.x = 500;
+        sun.y = 500;
 
         // Sun tint
         var t3 = tweenColor(0x00ffffff, 0xD55446, 750, Phaser.Easing.Linear.None, function(color) {
@@ -127,7 +126,7 @@
         t4.start();
     }
 
-    function drawGrass() {
+    function grass() {
         var grassSprite = 'grass00';
 
         var grassSize = game.cache.getImage(grassSprite).width;
@@ -139,7 +138,12 @@
         }
     }
 
-    function drawRats(numRats) {
+    function clouds() {
+        // TODO
+        console.log('TODO: Draw clouds');
+    }
+
+    function rats(numRats) {
         game.physics.startSystem(Phaser.Physics.ARCADE);
         emitter = game.add.emitter(game.world.centerX, 150);
         emitter.bounce.setTo(0.5, 0.5);
