@@ -1,6 +1,7 @@
 (function() {
     var gameState = {};
     var updateCallbacks = [];
+    var predator = undefined;
 
     function init(args) {
         updateCallbacks = [];
@@ -27,21 +28,21 @@
             }, this);
         }
 
-        clouds();
+        drawClouds();
 
-        sunrise();
+        drawSunrise();
 
         levelComplete();
 
-        grass();
+        drawGrass();
 
-        rats(gameState.ratsKilled);
+        drawRats(gameState.ratsKilled);
 
-        game.time.events.add(1500, predator, this)
+        game.time.events.add(1500, drawPredator, this)
 
-        game.time.events.add(3000, sunset, this);
+        game.time.events.add(4000, drawSunset, this);
 
-        game.time.events.add(5000, nextLevel, this);
+        game.time.events.add(6000, nextLevel, this);
     }
 
     function update() {
@@ -74,19 +75,19 @@
         tween.start();
     }
 
-    function predator() {
-        var sprite0 = game.add.sprite(0, 0, 'chicken00');
+    function drawPredator() {
+        predator = game.add.sprite(0, 0, 'chicken00');
         
-        var t1 = game.add.tween(sprite0).to({ x : 1000 }, 3000, Phaser.Easing.Quartic.InOut);
-        var t2 = game.add.tween(sprite0).to({ y : 250 }, 1500, Phaser.Easing.Linear.None)
-        var t3 = game.add.tween(sprite0).to({ y : 0 }, 1500, Phaser.Easing.Quartic.InOut);
+        var t1 = game.add.tween(predator).to({ x : 1000 }, 3000, Phaser.Easing.Quartic.InOut);
+        var t2 = game.add.tween(predator).to({ y : 250 }, 1500, Phaser.Easing.Linear.None)
+        var t3 = game.add.tween(predator).to({ y : 0 }, 1500, Phaser.Easing.Quartic.InOut);
 
         t2.chain(t3);
         t1.start();
         t2.start();
     }
 
-    function sunrise() {
+    function drawSunrise() {
         // Sky color
         var t1 = backgroundColor(0x001933, 0xfb9fa4, 250, Phaser.Easing.Cubic.InOut);
         var t2 = backgroundColor(0xfb9fa4, 0xa7d9ff, 500, Phaser.Easing.Quartic.Out);
@@ -113,7 +114,7 @@
         t4.start();        
     }
 
-    function sunset() {
+    function drawSunset() {
         // Sky color
         var t1 = backgroundColor(0xa7d9ff, 0xfb9fa4, 1000, Phaser.Easing.Cubic.Out);
         var t2 = backgroundColor(0xfb9fa4, 0x001933, 500, Phaser.Easing.Quartic.InOut);
@@ -137,7 +138,7 @@
         t4.start();
     }
 
-    function grass() {
+    function drawGrass() {
         var grassSprite = 'grass00';
 
         var grassSize = game.cache.getImage(grassSprite).width;
@@ -149,7 +150,7 @@
         }
     }
 
-    function clouds() {
+    function drawClouds() {
         for (var i = 0; i < 10; i++) {
             var maxX = game.world.width;
             var maxY = 300;
@@ -166,12 +167,9 @@
             game.physics.arcade.enable(cloud);
             cloud.body.velocity.x = 10 + 50 * scaleFactor;
         }
-
-        // TODO
-        console.log('TODO: Draw clouds');
     }
 
-    function rats(numRats) {
+    function drawRats(numRats) {
         game.physics.startSystem(Phaser.Physics.ARCADE);
         emitter = game.add.emitter(game.world.centerX, 150);
         emitter.bounce.setTo(0.5, 0.5);
@@ -193,8 +191,14 @@
                 a.body.angularVelocity *= 0.9; 
                 b.body.angularVelocity *= 0.9;
             });
-    
+
             emitter.forEach(function (p) {
+                if (predator && predator.x >= p.x) {
+                    p.alpha = 0;
+
+                    // TODO: Play sound effect
+                }
+
                 //game.debug.body(p);
             }, this);
         });
