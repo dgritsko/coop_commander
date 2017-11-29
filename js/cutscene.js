@@ -76,6 +76,15 @@
     }
 
     function drawPredator() {
+        var predators = [
+            drawVulture,
+            drawFox
+        ];
+
+        predators[Math.floor(Math.random() * predators.length)]();
+    }
+
+    function drawVulture() {
         predator = game.add.sprite(0, 0, 'chicken00');
         
         var t1 = game.add.tween(predator).to({ x : 1000 }, 3000, Phaser.Easing.Quartic.InOut);
@@ -85,6 +94,22 @@
         t2.chain(t3);
         t1.start();
         t2.start();
+    }
+
+    function drawFox() {
+        predator = game.add.sprite(50, 50, 'fox00');
+
+        predator.animations.add('down', [0, 1, 2, 3], 10, true);
+        predator.animations.add('left', [4, 5, 6, 7], 10, true);
+        predator.animations.add('right', [8, 9, 10, 11], 10, true);
+        predator.animations.add('up', [12, 13, 14, 15], 10, true);
+
+        updateCallbacks.push(function() {
+            predator.animations.play('right');
+        });
+
+        var t1 = game.add.tween(predator).to({ x : 1000 }, 3000, Phaser.Easing.Quartic.InOut);
+        t1.start();
     }
 
     function drawSunrise() {

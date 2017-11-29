@@ -19,6 +19,7 @@
         game.load.spritesheet('trap00', 'assets/simpletrap.png', 48, 48);
         game.load.image('trap01', 'assets/ratpoison.png');
         game.load.image('cloud00', 'assets/cloud00.png');
+        game.load.spritesheet('fox00', 'assets/fox00.png', 47, 44);
         
         // Sounds
         game.load.audio('whoosh00', 'assets/sound/fx/whoosh00.mp3');
