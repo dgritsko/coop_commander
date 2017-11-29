@@ -78,15 +78,28 @@
     function drawPredator() {
         var predators = [
             drawVulture,
-            drawFox
+            drawFox,
+            //drawOldLady,
+            drawGarbageTruck,
+            //drawBear,
+            drawAliens
         ];
 
         predators[Math.floor(Math.random() * predators.length)]();
     }
 
     function drawVulture() {
-        predator = game.add.sprite(0, 0, 'chicken00');
+        predator = game.add.sprite(0, 0, 'vulture00');
         
+        predator.animations.add('down', [0, 1, 2], 10, true);
+        predator.animations.add('left', [3, 4, 5], 10, true);
+        predator.animations.add('right', [6, 7, 8], 10, true);
+        predator.animations.add('up', [9, 10, 11], 10, true);
+
+        updateCallbacks.push(function() {
+            predator.animations.play('right');
+        });
+
         var t1 = game.add.tween(predator).to({ x : 1000 }, 3000, Phaser.Easing.Quartic.InOut);
         var t2 = game.add.tween(predator).to({ y : 250 }, 1500, Phaser.Easing.Linear.None)
         var t3 = game.add.tween(predator).to({ y : 0 }, 1500, Phaser.Easing.Quartic.InOut);
@@ -94,6 +107,18 @@
         t2.chain(t3);
         t1.start();
         t2.start();
+    }
+
+    function drawGarbageTruck() {
+        predator = game.add.sprite(50, 50, 'garbagetruck00');
+        var t1 = game.add.tween(predator).to({ x : 1000 }, 3000, Phaser.Easing.Quartic.InOut);
+        t1.start()
+    }
+
+    function drawAliens() {
+        predator = game.add.sprite(50, 50, 'ufo00');
+        var t1 = game.add.tween(predator).to({ x : 1000 }, 3000, Phaser.Easing.Quartic.InOut);
+        t1.start()
     }
 
     function drawFox() {
