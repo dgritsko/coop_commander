@@ -31,6 +31,30 @@ class Util {
         return ground;
     }
 
+    static drawSunrise(sun, game) {
+        // Sky color
+        var t1 = Util.backgroundColor(0x001933, 0xfb9fa4, 500, Phaser.Easing.Cubic.InOut, game);
+        var t2 = Util.backgroundColor(0xfb9fa4, 0xa7d9ff, 1000, Phaser.Easing.Quartic.Out, game);
+
+        t1.chain(t2);
+        t1.start();
+
+        // Sun tint
+        var t3 = Util.tweenColor(0xD55446, 0x00ffffff, 1500, Phaser.Easing.Linear.None, function(color) {
+            sun.tint = Util.fromRgb(color);
+        }, game);
+        t3.start();
+
+        // Sun position
+        var t4 = Util.moveAlongArc(sun, 270, 180, 300, 1500, Phaser.Easing.Bounce.Out, game);
+
+        t4.onComplete.add(function() {
+            // TODO
+        });
+
+        t4.start();
+    }
+
     static drawSunset(sun, game, callback) {
         // Sky color
         var t1 = Util.backgroundColor(0xa7d9ff, 0xfb9fa4, 1000, Phaser.Easing.Cubic.Out, game);
@@ -58,6 +82,31 @@ class Util {
         }
 
         t4.start();
+    }
+
+    static drawClouds(game) {
+        var clouds = game.add.group();
+
+        for (var i = 0; i < 10; i++) {
+            var maxX = game.world.width;
+            var maxY = 300;
+
+            var x = Math.random() * maxX - 300;
+            var y = Math.random() * maxY;
+
+            var cloud = game.add.sprite(x, y, 'cloud00');
+            cloud.alpha = 0.5;
+
+            var scaleFactor = 1 - ((maxY - y) / maxY);
+            cloud.scale.setTo(scaleFactor, scaleFactor);
+
+            game.physics.arcade.enable(cloud);
+            cloud.body.velocity.x = 10 + 50 * scaleFactor;
+
+            clouds.add(cloud);
+        }
+
+        return clouds;
     }
 
     static moveAlongArc(sprite, startAngle, endAngle, radius, duration, easing, game) {

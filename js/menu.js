@@ -27,9 +27,13 @@
         menuMusic.play();        
 
         game.camera.flash(0x000000, 250);
-
-        sun = game.add.sprite(500, 200, 'sun');
+        
+        sun = game.add.sprite(500, 500, 'sun');
         sun.anchor.setTo(0.5, 0.5);
+
+        clouds = Util.drawClouds(game);
+
+        Util.drawSunrise(sun, game);
 
         Util.drawGrass(game);
         
@@ -92,6 +96,14 @@
 
     function update() {
         updateBackgroundRats();
+
+        for (var i = 0; i < clouds.children.length; i++) {
+            var cloud = clouds.children[i];
+
+            if (cloud.x >= game.world.width) {
+                cloud.x = -300;
+            }
+        }
     }
 
     function highlightIndex(index) {
