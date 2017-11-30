@@ -8,6 +8,8 @@
         game.load.image('grass01', 'assets/grass01.png');
         game.load.spritesheet('player', 'assets/player.png', 64, 64);
         game.load.spritesheet('rat00', 'assets/rat00.png', 32, 32);
+        game.load.spritesheet('rat01', 'assets/rat01.png', 32, 32);
+        game.load.spritesheet('rat02', 'assets/rat02.png', 32, 32);
         game.load.spritesheet('chicken00', 'assets/chicken00.png', 48, 48);
         game.load.spritesheet('fence00', 'assets/fence00.png', 48, 48);
         game.load.spritesheet('food', 'assets/food.png', 16, 16);
