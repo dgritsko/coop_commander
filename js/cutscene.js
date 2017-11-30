@@ -154,8 +154,8 @@
 
     function drawSunrise() {
         // Sky color
-        var t1 = backgroundColor(0x001933, 0xfb9fa4, 500, Phaser.Easing.Cubic.InOut);
-        var t2 = backgroundColor(0xfb9fa4, 0xa7d9ff, 1000, Phaser.Easing.Quartic.Out);
+        var t1 = Util.backgroundColor(0x001933, 0xfb9fa4, 500, Phaser.Easing.Cubic.InOut, game);
+        var t2 = Util.backgroundColor(0xfb9fa4, 0xa7d9ff, 1000, Phaser.Easing.Quartic.Out, game);
 
         t1.chain(t2);
         t1.start();
@@ -164,9 +164,9 @@
         sun.anchor.setTo(0.5, 0.5);
 
         // Sun tint
-        var t3 = tweenColor(0xD55446, 0x00ffffff, 1500, Phaser.Easing.Linear.None, function(color) {
-            sun.tint = fromRgb(color);
-        });
+        var t3 = Util.tweenColor(0xD55446, 0x00ffffff, 1500, Phaser.Easing.Linear.None, function(color) {
+            sun.tint = Util.fromRgb(color);
+        }, game);
         t3.start();
 
         // Sun position
@@ -181,8 +181,8 @@
 
     function drawSunset() {
         // Sky color
-        var t1 = backgroundColor(0xa7d9ff, 0xfb9fa4, 1000, Phaser.Easing.Cubic.Out);
-        var t2 = backgroundColor(0xfb9fa4, 0x001933, 500, Phaser.Easing.Quartic.InOut);
+        var t1 = Util.backgroundColor(0xa7d9ff, 0xfb9fa4, 1000, Phaser.Easing.Cubic.Out, game);
+        var t2 = Util.backgroundColor(0xfb9fa4, 0x001933, 500, Phaser.Easing.Quartic.InOut, game);
 
         t1.chain(t2);
         t1.start();
@@ -193,9 +193,9 @@
         sun.y = 500;
 
         // Sun tint
-        var t3 = tweenColor(0x00ffffff, 0xD55446, 750, Phaser.Easing.Linear.None, function(color) {
-            sun.tint = fromRgb(color);
-        });
+        var t3 = Util.tweenColor(0x00ffffff, 0xD55446, 750, Phaser.Easing.Linear.None, function(color) {
+            sun.tint = Util.fromRgb(color);
+        }, game);
         t3.start();
 
         // Sun position
@@ -274,55 +274,6 @@
                 a.body.velocity.x *= 0.975;
             });
         });
-    }
-
-    function tweenColor(startColor, endColor, duration, easing, onUpdateCallback) {
-        var colorState = {percent : 0};
-        
-        var tween = game.add.tween(colorState).to({ percent: 100 }, duration, easing);
-        
-        tween.onUpdateCallback(function() {
-            var rgbStart = toRgb(startColor);
-            var rgbEnd = toRgb(endColor);
-
-            function interp(index) {
-                return Math.round(rgbStart[index] + ((rgbEnd[index] - rgbStart[index]) / 100) * colorState.percent);
-            }
-
-            var color = [ interp(0), interp(1), interp(2) ];
-            onUpdateCallback(color);
-        }, this);
-
-        return tween;
-    }
-
-    function backgroundColor(startColor, endColor, duration, easing) {
-        return tweenColor(startColor, endColor, duration, easing, function(color) {
-            var backgroundColor = toColor(color);
-            game.stage.backgroundColor = backgroundColor;
-        });
-    }
-
-    function toRgb(color) {
-        var r = (color & 0xff0000) >> 16;
-        var g = (color & 0x00ff00) >> 8;
-        var b = color & 0x0000ff;
-        return [r, g, b];
-    }
-
-    function fromRgb(color) {
-        var r = color[0] << 16;
-        var g = color[1] << 8;
-        var b = color[2];
-        return r | g | b;
-    }
-
-    function toColor(c) {
-        function toHex(d) {
-            return  ('0'+(Number(d).toString(16))).slice(-2).toUpperCase()
-        }
-
-        return '0x' + toHex(c[0]) + toHex(c[1]) + toHex(c[2]);
     }
 
     CoopCommander.Cutscene = {init: init, preload: preload, create: create, update: update};
