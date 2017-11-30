@@ -35,12 +35,18 @@
         game.load.audio('smack00', 'assets/sound/fx/smack00.wav');
         game.load.audio('scream00', 'assets/sound/fx/scream00.wav');
         game.load.audio('chomp00', 'assets/sound/fx/chomp00.wav');
+        game.load.audio('chomp01', 'assets/sound/fx/chomp01.mp3');
         game.load.audio('success00', 'assets/sound/fx/success00.wav');
         game.load.audio('error00', 'assets/sound/fx/error00.wav');
         game.load.audio('error01', 'assets/sound/fx/error01.wav');
         game.load.audio('pop00', 'assets/sound/fx/pop00.wav');
+        game.load.audio('pop01', 'assets/sound/fx/pop01.wav');
         game.load.audio('reload00', 'assets/sound/fx/reload00.wav');
         game.load.audio('punch00', 'assets/sound/fx/punch00.wav');
+        game.load.audio('punch01', 'assets/sound/fx/punch01.wav');
+        game.load.audio('punch02', 'assets/sound/fx/punch02.wav');
+        game.load.audio('punch03', 'assets/sound/fx/punch03.wav');
+        game.load.audio('engine00', 'assets/sound/fx/engine00.wav');
         
         // Music
         game.load.audio('music00', 'assets/sound/music/Rolemusic_-_Keiken_soku.mp3');
