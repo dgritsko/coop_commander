@@ -189,13 +189,27 @@
     }
 
     function drawGrass() {
-        var grassSprite = 'grass00';
+        var grassSprite = 'grass01';
 
         var grassSize = game.cache.getImage(grassSprite).width;
         
-        for (var x = 0; x < game.width; x += grassSize) {
-            for (var y = 450; y < game.height; y += grassSize) {
-                game.add.sprite(x, y, grassSprite);
+        var scale = 0.15;
+        var maxScale = 1.5;
+        var scaleIncrement = 0.15;
+        
+        var index = 0;
+        for (var y = 450; y < game.height; y += ((grassSize * scale) / 2)) {
+            index++;
+            scale = Math.min(maxScale, scale + scaleIncrement);
+
+            for (var x = 0; x < game.width; x += (grassSize * scale)) {
+                var g = game.add.sprite(x, y, grassSprite);
+
+                g.scale.setTo(scale, scale);
+
+                if (y >= 550) {
+                    game.physics.arcade.enable(g);
+                }
             }
         }
     }
