@@ -72,7 +72,8 @@
         var label = game.add.bitmapText(game.world.centerX, 650, 'blackOpsOne', 'Loading...', 28);
         label.anchor.setTo(0.5, 0.5);
 
-        // TODO: Show artwork
+        var loadingImage = game.add.sprite(game.world.centerX, game.world.centerY, 'papa_g');
+        loadingImage.anchor.setTo(0.5, 0.5);
     }
 
     function update() {

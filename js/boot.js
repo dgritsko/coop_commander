@@ -2,6 +2,7 @@
     function preload() {
         // TODO: Load artwork for Preload screen
         game.load.spritesheet('loading_bar', 'assets/loading_bar.png', 256, 64);
+        game.load.image('papa_g', 'img/papa_g.png');
     }
 
     function create() {
