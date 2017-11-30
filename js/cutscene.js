@@ -84,10 +84,10 @@
         var predators = [
             drawVulture,
             drawFox,
-            //drawOldLady,
-            //drawGarbageTruck,
-            //drawBear,
+            drawGarbageTruck,
             drawAliens
+            //drawOldLady,
+            //drawBear
         ];
 
         predators[Math.floor(Math.random() * predators.length)](duration);
@@ -117,10 +117,15 @@
         t2.start();
     }
 
-    function drawGarbageTruck() {
-        predator = game.add.sprite(50, 50, 'garbagetruck00');
-        var t1 = game.add.tween(predator).to({ x : 1000 }, 3000, Phaser.Easing.Quartic.InOut);
-        t1.start()
+    function drawGarbageTruck(duration) {
+        predator = game.add.sprite(-150, 535, 'garbagetruck00');
+        predator.anchor.setTo(0.5, 0.5);
+        
+        var t1 = game.add.tween(predator).to({ x : game.world.width / 2 + 150 }, duration/2, Phaser.Easing.Cubic.Out);
+        var t2 = game.add.tween(predator).to({ x : game.world.width + 150 }, duration/2, Phaser.Easing.Cubic.In)
+
+        t1.chain(t2);
+        t1.start();
     }
 
     function drawAliens(duration) {
