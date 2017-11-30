@@ -183,8 +183,6 @@
             r.body.velocity.x *= speed;
             r.body.velocity.y *= speed;
 
-            r.alpha = 0.3;
-
             rats.add(r);
         }
         
