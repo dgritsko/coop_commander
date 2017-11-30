@@ -36,13 +36,13 @@
 
         drawGrass();
 
-        drawRats(gameState.ratsKilled);
+        drawRats(gameState.ratsKilled, 100);
 
-        game.time.events.add(1500, drawPredator, this)
+        game.time.events.add(2500, drawPredator, this)
 
-        game.time.events.add(4000, drawSunset, this);
+        game.time.events.add(6000, drawSunset, this);
 
-        game.time.events.add(6000, nextLevel, this);
+        game.time.events.add(8000, nextLevel, this);
     }
 
     function update() {
@@ -139,8 +139,8 @@
 
     function drawSunrise() {
         // Sky color
-        var t1 = backgroundColor(0x001933, 0xfb9fa4, 250, Phaser.Easing.Cubic.InOut);
-        var t2 = backgroundColor(0xfb9fa4, 0xa7d9ff, 500, Phaser.Easing.Quartic.Out);
+        var t1 = backgroundColor(0x001933, 0xfb9fa4, 500, Phaser.Easing.Cubic.InOut);
+        var t2 = backgroundColor(0xfb9fa4, 0xa7d9ff, 1000, Phaser.Easing.Quartic.Out);
 
         t1.chain(t2);
         t1.start();
@@ -149,13 +149,13 @@
         sun.anchor.setTo(0.5, 0.5);
 
         // Sun tint
-        var t3 = tweenColor(0xD55446, 0x00ffffff, 750, Phaser.Easing.Linear.None, function(color) {
+        var t3 = tweenColor(0xD55446, 0x00ffffff, 1500, Phaser.Easing.Linear.None, function(color) {
             sun.tint = fromRgb(color);
         });
         t3.start();
 
         // Sun position
-        var t4 = moveAlongArc(sun, 270, 180, 300, 750, Phaser.Easing.Bounce.Out);//Phaser.Easing.Cubic.Out);    
+        var t4 = moveAlongArc(sun, 270, 180, 300, 1500, Phaser.Easing.Bounce.Out);//Phaser.Easing.Cubic.Out);    
 
         t4.onComplete.add(function() {
             // TODO
@@ -189,6 +189,8 @@
     }
 
     function drawGrass() {
+        ground = game.add.group();
+
         var grassSprite = 'grass01';
 
         var grassSize = game.cache.getImage(grassSprite).width;
@@ -206,9 +208,11 @@
                 var g = game.add.sprite(x, y, grassSprite);
 
                 g.scale.setTo(scale, scale);
-
+                
                 if (y >= 550) {
                     game.physics.arcade.enable(g);
+                    g.body.moves = false;
+                    ground.add(g);
                 }
             }
         }
@@ -219,7 +223,7 @@
             var maxX = game.world.width;
             var maxY = 300;
 
-            var x = Math.random() * maxX;
+            var x = Math.random() * maxX - 300;
             var y = Math.random() * maxY;
 
             var cloud = game.add.sprite(x, y, 'cloud00');
@@ -233,12 +237,12 @@
         }
     }
 
-    function drawRats(numRats) {
+    function drawRats(numRats, duration) {
         game.physics.startSystem(Phaser.Physics.ARCADE);
-        emitter = game.add.emitter(game.world.centerX, 150);
+        emitter = game.add.emitter(game.world.centerX, 500);
         emitter.bounce.setTo(0.5, 0.5);
         emitter.setXSpeed(-50, 50);
-        emitter.setYSpeed(-50, 50);
+        emitter.setYSpeed(-150, 50);
         emitter.gravity = new Phaser.Point(0, 400);
         emitter.particleDrag = new Phaser.Point(10, 10);
         emitter.angularDrag = 25;
@@ -247,13 +251,26 @@
             p.body.setSize(10, 10, 10, 10);
             // p.body.setCircle(15);
         }, this);
-        emitter.start(false, 0, 100);
+
+        var interval = duration / numRats;
+
+        emitter.start(false, 0, interval);
+
+        var friction = 0.8;
+        var minVelocity = 0.05;
 
         updateCallbacks.push(function() {
-            game.physics.arcade.collide(emitter, emitter);
+            function slowDown(particle) {
+                particle.body.angularVelocity *= friction;
+                if (particle.body.angularVelocity <= minVelocity) {
+                    particle.body.angularVelocity = 0.0;
+                }
+            }
+
+            //game.physics.arcade.collide(emitter, emitter);
             game.physics.arcade.collide(emitter, emitter, function(a, b) {
-                a.body.angularVelocity *= 0.9; 
-                b.body.angularVelocity *= 0.9;
+                slowDown(a);
+                slowDown(b);
             });
 
             emitter.forEach(function (p) {
@@ -265,6 +282,12 @@
 
                 //game.debug.body(p);
             }, this);
+
+            game.physics.arcade.collide(emitter, ground, function(a, b) {
+                slowDown(a);
+                a.body.velocity.y = 0;
+                a.body.velocity.x *= 0.975;
+            });
         });
     }
 
