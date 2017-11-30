@@ -247,7 +247,9 @@
     }
 
     function createRat() {
-        rats.push(new Rat(rodents, rats.length, gameState.ratSpeed));
+        var type = RatTypes[Math.floor(Math.random() * RatTypes.length)];
+
+        rats.push(new Rat(rodents, rats.length, gameState.ratSpeed, type));
         fxSqueak.play();
     }
 
@@ -282,6 +284,8 @@
         fxError = game.add.sound('error01');
         fxReload = game.add.sound('reload00');
         fxReload.volume = 0.5;
+        fxPunch = game.add.sound('punch00');
+        fxZap = game.add.sound('zap01');
     }
 
     function setupInput() {
@@ -361,6 +365,8 @@
             return;
         }
 
+        fxZap.play();
+        
         gameState.flashlights -= 1;
 
         game.camera.flash(0xFFFFFF, 250);

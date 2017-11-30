@@ -50,6 +50,7 @@
         game.load.audio('punch03', 'assets/sound/fx/punch03.wav');
         game.load.audio('engine00', 'assets/sound/fx/engine00.wav');
         game.load.audio('zap00', 'assets/sound/fx/zap00.wav');
+        game.load.audio('zap01', 'assets/sound/fx/zap01.wav');
         game.load.audio('thrum00', 'assets/sound/fx/thrum00.wav');
         
         // Music

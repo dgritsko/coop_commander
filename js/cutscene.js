@@ -47,6 +47,11 @@
         game.time.events.add(6000, function() { Util.drawSunset(sun, game); }, this);
 
         game.time.events.add(8000, nextLevel, this);
+
+        fxPop = game.add.sound('pop00');
+        fxPop.volume = 0.5;
+        fxPop.allowMultiple = true;
+        sounds.push(fxPop);
     }
 
     function update() {
@@ -188,9 +193,12 @@
         emitter.gravity = new Phaser.Point(0, 400);
         emitter.particleDrag = new Phaser.Point(10, 10);
         emitter.angularDrag = 25;
-        emitter.makeParticles('rat00', [0,1,2,3,4,5,6,7,8,9,10,11], numRats, true, true);
+        emitter.makeParticles('rat00', [0,1,2,3,4,5,6,7,8,9,10,11], numRats / 3, true, true);
+        emitter.makeParticles('rat01', [0,1,2,3,4,5,6,7,8,9,10,11], numRats / 3, true, true);
+        emitter.makeParticles('rat02', [0,1,2,3,4,5,6,7,8,9,10,11], numRats / 3, true, true);
         emitter.forEach(function (p) {
             p.body.setSize(10, 10, 10, 10);
+            p.alpha = 1.0;
             // p.body.setCircle(15);
         }, this);
 
@@ -217,7 +225,10 @@
 
             emitter.forEach(function (p) {
                 if (predator && predator.x >= p.x) {
-                    p.alpha = 0;
+                    if (p.alpha > 0) {
+                        p.alpha = 0;
+                        fxPop.play();
+                    }
 
                     // TODO: Play sound effect
                 }
@@ -233,5 +244,10 @@
         });
     }
 
-    CoopCommander.Cutscene = {init: init, preload: preload, create: create, update: update};
+    function shutdown() {
+        predator.destroy();
+        predator = null;
+    }
+
+    CoopCommander.Cutscene = {init: init, preload: preload, create: create, update: update, shutdown: shutdown};
 })();

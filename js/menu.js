@@ -199,7 +199,9 @@
 
             var y = 400 + 100 * distance;
 
-            var r = game.add.sprite(0, y, 'rat00');
+            var spriteName = ['rat00', 'rat01', 'rat02'][Math.floor(Math.random() * 3)]
+
+            var r = game.add.sprite(0, y, spriteName);
 
             r.scale.setTo(distance, distance);
 

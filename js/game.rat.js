@@ -53,14 +53,31 @@ RatTypes = [
 ];
 
 class Rat {
-    constructor(group, id, speed) {
+    constructor(group, id, speed, type) {
         this.id = id;
         this.state = RatStates.STOPPED;
         this.group = group;
+        this.type = Object.assign({}, type);
 
-        var width = game.cache.getImage('rat00').width;
+        var spriteName = 'rat00';
+        if (type['class'] == 2) {
+            spriteName = 'rat01';
+        } else if (type['class'] == 3) {
+            spriteName = 'rat02';
+        }
 
-        this.sprite = game.add.sprite(game.camera.bounds.x - (width / 10), Math.random() * game.world.height, 'rat00');
+        var scale = 1.0;
+        if (type['size'] == 'medium') {
+            scale = 1.2;
+        } else if (type['size'] == 'large') {
+            scale = 1.5;
+        }
+
+        var width = game.cache.getImage(spriteName).width;
+        this.sprite = game.add.sprite(game.camera.bounds.x - (width / 10), Math.random() * game.world.height, spriteName);
+
+        this.sprite.scale.setTo(scale, scale);
+
         this.sprite.id = id;
 
         game.physics.arcade.enable(this.sprite);
