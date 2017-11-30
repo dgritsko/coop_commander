@@ -2,6 +2,8 @@
     var menuMinX = 570;
     var menuMinY = 130;
 
+    var isStarting = false;
+
     function init(args) {
         args = args || {};
 
@@ -108,12 +110,19 @@
     }
 
     function startGame() {
-        menuMusic.stop();
+        if (isStarting) {
+            return;
+        }
+        isStarting = true;
 
-        game.camera.fade('#000000', 250);
-        game.camera.onFadeComplete.add(function() { 
-            game.state.start('Game');
-        }, this);
+        Util.drawSunset(sun, game, function() {
+            menuMusic.stop();
+            
+            game.camera.fade('#000000', 250);
+            game.camera.onFadeComplete.add(function() { 
+                game.state.start('Game');
+            }, this);
+        })
     }
 
     function showHelp() {

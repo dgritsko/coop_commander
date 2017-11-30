@@ -40,7 +40,7 @@
 
         game.time.events.add(1500, drawPredator, this)
 
-        game.time.events.add(6000, drawSunset, this);
+        game.time.events.add(6000, function() { Util.drawSunset(sun, game); }, this);
 
         game.time.events.add(8000, nextLevel, this);
     }
@@ -176,30 +176,6 @@
             // TODO
         });
 
-        t4.start();        
-    }
-
-    function drawSunset() {
-        // Sky color
-        var t1 = Util.backgroundColor(0xa7d9ff, 0xfb9fa4, 1000, Phaser.Easing.Cubic.Out, game);
-        var t2 = Util.backgroundColor(0xfb9fa4, 0x001933, 500, Phaser.Easing.Quartic.InOut, game);
-
-        t1.chain(t2);
-        t1.start();
-
-        // var sun = game.add.sprite(500, 500, 'sun');
-        // sun.anchor.setTo(0.5, 0.5);
-        sun.x = 500;
-        sun.y = 500;
-
-        // Sun tint
-        var t3 = Util.tweenColor(0x00ffffff, 0xD55446, 750, Phaser.Easing.Linear.None, function(color) {
-            sun.tint = Util.fromRgb(color);
-        }, game);
-        t3.start();
-
-        // Sun position
-        var t4 = Util.moveAlongArc(sun, 180, 90, 300, 1500, Phaser.Easing.Cubic.Out, game);
         t4.start();
     }
 
