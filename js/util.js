@@ -40,7 +40,7 @@ class Util {
         t1.start();
 
         // Sun tint
-        var t3 = Util.tweenColor(0xD55446, 0x00ffffff, 1500, Phaser.Easing.Linear.None, function(color) {
+        var t3 = Util.tweenColor(0xD55446, 0x00ffffff, 750, Phaser.Easing.Linear.None, function(color) {
             sun.tint = Util.fromRgb(color);
         }, game);
         t3.start();
