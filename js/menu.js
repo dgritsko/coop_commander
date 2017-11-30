@@ -16,7 +16,8 @@
 
     function create() {
         game.stage.disableVisibilityChange = true;
-        
+        game.stage.backgroundColor = 0xa7d9ff;
+
         fxClick = game.add.sound('click00');
         menuMusic = game.add.sound('music00');
         menuMusic.volume = 0.1;
@@ -24,6 +25,9 @@
         menuMusic.play();        
 
         game.camera.flash(0x000000, 250);
+
+        sun = game.add.sprite(500, 200, 'sun');
+        sun.anchor.setTo(0.5, 0.5);
 
         Util.drawGrass(game);
         
@@ -81,7 +85,7 @@
             showQuote();
         }, this);
 
-        highlightIndex(selectedIndex);
+        highlightIndex(selectedIndex);   
     }
 
     function update() {
