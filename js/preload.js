@@ -47,7 +47,6 @@
         game.load.audio('punch00', 'assets/sound/fx/punch00.wav');
         game.load.audio('punch01', 'assets/sound/fx/punch01.wav');
         game.load.audio('punch02', 'assets/sound/fx/punch02.wav');
-        game.load.audio('punch03', 'assets/sound/fx/punch03.wav');
         game.load.audio('engine00', 'assets/sound/fx/engine00.wav');
         game.load.audio('zap00', 'assets/sound/fx/zap00.wav');
         game.load.audio('zap01', 'assets/sound/fx/zap01.wav');
