@@ -2,6 +2,7 @@
     var gameState = {};
     var updateCallbacks = [];
     var predator = undefined;
+    var sounds = [];
 
     function init(args) {
         updateCallbacks = [];
@@ -126,6 +127,11 @@
 
         t1.chain(t2);
         t1.start();
+
+        var fxEngine = game.add.sound('engine00');
+        fxEngine.play();
+
+        sounds.push(fxEngine);
     }
 
     function drawAliens(duration) {
@@ -138,7 +144,20 @@
         var t2 = game.add.tween(predator).to({ x : game.world.width + 150 }, duration/2, Phaser.Easing.Cubic.In)
 
         t1.chain(t2);
+
+        var fxZap = game.add.sound('zap00');
+        sounds.push(fxZap);
+
+        t1.onComplete.add(function() {
+            fxZap.play();
+        })
+
         t1.start();
+
+        var fxThrum = game.add.sound('thrum00');
+        fxThrum.play();
+
+        sounds.push(fxThrum);
     }
 
     function drawFox(duration) {

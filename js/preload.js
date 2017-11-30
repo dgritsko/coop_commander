@@ -47,6 +47,8 @@
         game.load.audio('punch02', 'assets/sound/fx/punch02.wav');
         game.load.audio('punch03', 'assets/sound/fx/punch03.wav');
         game.load.audio('engine00', 'assets/sound/fx/engine00.wav');
+        game.load.audio('zap00', 'assets/sound/fx/zap00.wav');
+        game.load.audio('thrum00', 'assets/sound/fx/thrum00.wav');
         
         // Music
         game.load.audio('music00', 'assets/sound/music/Rolemusic_-_Keiken_soku.mp3');
