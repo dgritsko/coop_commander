@@ -1,4 +1,7 @@
 (function() {
+    var menuMinX = 570;
+    var menuMinY = 130;
+
     function init(args) {
         args = args || {};
 
@@ -22,6 +25,8 @@
 
         game.camera.flash(0x000000, 250);
 
+        Util.drawGrass(game);
+        
         rats = game.add.group();
 
         var args = CoopCommander.Menu.args;
@@ -43,7 +48,7 @@
             debug();
         });
 
-        menuArrow = game.add.sprite(200 - 16, 0, 'menu_arrow');
+        menuArrow = game.add.sprite(menuMinX - 16, 0, 'menu_arrow');
         menuArrow.scale.setTo(0.5, 0.5);
         menuArrow.anchor.setTo(0.5, 0.5);
 
@@ -68,7 +73,7 @@
             menuItems.children[selectedIndex].events.onInputUp.dispatch();
         }, this);
 
-        quoteDisplay = game.add.bitmapText(150, 450, 'blackOpsOne', '', 28);
+        quoteDisplay = game.add.bitmapText(150, 250, 'blackOpsOne', '', 28);
         showQuote();
 
         qKey = game.input.keyboard.addKey(Phaser.Keyboard.Q);
@@ -84,13 +89,13 @@
     }
 
     function highlightIndex(index) {
-        menuArrow.y = 200 + index * 28 + 14;
+        menuArrow.y = menuMinY + index * 28 + 14;
     }
 
     function addMenuItem(text, items, callback) {
         var fontSize = 28;
 
-        var label = game.add.bitmapText(200, 200 + items.children.length * fontSize, 'blackOpsOne', text, 28);
+        var label = game.add.bitmapText(menuMinX, menuMinY + items.children.length * fontSize, 'blackOpsOne', text, 28);
 
         label.inputEnabled = true;
         label.events.onInputUp.add(callback);
@@ -163,11 +168,11 @@
 
     function updateBackgroundRats() {
         if (CoopCommander.Menu.args.nextRatSpawn < game.time.now) {
-            CoopCommander.Menu.args.nextRatSpawn = game.time.now + 1000 + Math.random() * 3000;
+            CoopCommander.Menu.args.nextRatSpawn = game.time.now + 1000 + Math.random() * 2000;
 
             var distance = 0.5 + Math.random() * 2;
 
-            var y = 470 + 150 * distance;
+            var y = 400 + 100 * distance;
 
             var r = game.add.sprite(0, y, 'rat00');
 
