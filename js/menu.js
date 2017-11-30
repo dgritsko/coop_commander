@@ -144,7 +144,8 @@
             'Pardon my analogy but rats are like Starbucks in the animal world.',
             'Many larger mammals and birds of prey feed on them. At 9 am there were 23. \nGuess how many are already gone. My guess is to hawks or vultures.',
             'I won\'t get into how they went from being alive to dead.',
-            'I\'ll update more later. I am leading a tour at 10am. Pray it goes well. \nTell Cait I\'ll get back on her email today'
+            'I\'ll update more later. I am leading a tour at 10am. Pray it goes well. \nTell Cait I\'ll get back on her email today',
+            'Good news is that there seem to be very few rats at the moment.'
         ];
 
         // TODO: Dynamic message that lists how many were caught during the previous night?
