@@ -322,6 +322,12 @@
             
             game.paused = !game.paused;
         }, this);
+
+        var debugKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
+        debugKey.onDown.add(function() {
+            // TODO: Add any debug functionality here
+            food = game.add.group();
+        });
     }
 
     function performAttack() {
