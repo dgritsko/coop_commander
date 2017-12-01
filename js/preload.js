@@ -23,7 +23,7 @@
         game.load.image('cloud00', 'assets/cloud00.png');
         game.load.spritesheet('fox00', 'assets/fox00.png', 47, 44);
         game.load.spritesheet('vulture00', 'assets/vulture00.png', 40, 40);
-        game.load.image('garbagetruck00', 'assets/garbagetruck00.gif');
+        game.load.spritesheet('garbagetruck00', 'assets/garbagetruck00.png', 308, 142);
         game.load.image('ufo00', 'assets/ufo00.gif');
         game.load.image('beam00', 'assets/beam00.png');
         

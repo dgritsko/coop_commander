@@ -127,6 +127,12 @@
         predator = game.add.sprite(-150, 535, 'garbagetruck00');
         predator.anchor.setTo(0.5, 0.5);
         
+        predator.animations.add('right', [0, 1, 2, 3], 10, true);
+        
+        updateCallbacks.push(function() {
+            predator.animations.play('right');
+        });
+
         var t1 = game.add.tween(predator).to({ x : game.world.width / 2 + 150 }, duration/2, Phaser.Easing.Cubic.Out);
         var t2 = game.add.tween(predator).to({ x : game.world.width + 150 }, duration/2, Phaser.Easing.Cubic.In)
 
