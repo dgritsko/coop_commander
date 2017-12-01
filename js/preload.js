@@ -25,6 +25,7 @@
         game.load.spritesheet('vulture00', 'assets/vulture00.png', 40, 40);
         game.load.image('garbagetruck00', 'assets/garbagetruck00.gif');
         game.load.image('ufo00', 'assets/ufo00.gif');
+        game.load.image('beam00', 'assets/beam00.png');
         
         // Sounds
         game.load.audio('whoosh00', 'assets/sound/fx/whoosh00.mp3');

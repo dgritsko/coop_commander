@@ -153,9 +153,19 @@
         var fxZap = game.add.sound('zap00');
         sounds.push(fxZap);
 
+        game.time.events.add(duration/2-250, function() {
+            var beam = game.add.sprite(game.world.width/2, 370, 'beam00');
+            beam.scale.setTo(1.0, 2.0);
+            beam.anchor.setTo(0.5, 0);
+            predator.bringToTop();
+            game.time.events.add(600, function() {
+                beam.alpha = 0;
+            }, this);
+        });
+
         t1.onComplete.add(function() {
             fxZap.play();
-        })
+        });
 
         t1.start();
 
