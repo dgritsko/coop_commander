@@ -18,17 +18,6 @@
 
         fxSuccess = game.add.sound('success00');
 
-        for (var i = 0; i < 3; i++) {
-            var j = i;
-            var callback = (function() {
-                
-            })();
-
-            game.time.events.add(1000 + 500 * i, function() {
-                //fxPunch.play();
-            }, this);
-        }
-
         Util.drawClouds(game);
 
         sun = game.add.sprite(500, 500, 'sun');
@@ -36,23 +25,40 @@
 
         Util.drawSunrise(sun, game);
 
-        levelComplete();
+        var texts = [
+            'first',
+            'second',
+            'third'
+        ];
+
+        levelComplete(texts);
 
         ground = Util.drawGrass(game);
 
         drawRats(gameState.ratsKilled);
 
-        game.time.events.add(1500, drawPredator, this)
+        var extraDelay = 500 * texts.length;
 
-        game.time.events.add(6000, function() { Util.drawSunset(sun, game); }, this);
+        game.time.events.add(extraDelay + 1500, drawPredator, this)
 
-        game.time.events.add(8000, nextLevel, this);
+        game.time.events.add(extraDelay + 6000, function() { Util.drawSunset(sun, game); }, this);
 
+        game.time.events.add(extraDelay + 8000, nextLevel, this);
+
+        fxSmash = game.add.sound('smash00');
+        fxSmash.volume = 0.5;
+        sounds.push(fxSmash);
+        fxScore = game.add.sound('punch00');
+        fxScore.allowMultiple = true;
+        sounds.push(fxScore);
         fxPunch = game.add.sound('punch01');
         sounds.push(fxPunch);
         fxChomp = game.add.sound('chomp01');
         fxChomp.volume = 0.5;
         sounds.push(fxChomp);
+        fxZap = game.add.sound('zap00');
+        fxZap.volume = 0.5;
+        sounds.push(fxZap);
     }
 
     function update() {
@@ -68,7 +74,7 @@
         }, this);
     }
 
-    function levelComplete() {
+    function levelComplete(texts) {
         fxSuccess.play();
 
         var label = game.add.bitmapText(game.world.centerX, 150, 'blackOpsOne', 'Level ' + gameState.level + ' Complete', 28);
@@ -76,13 +82,33 @@
         label.alpha = 0;
 
         var tween = game.add.tween(label).to({ alpha: 1 }, 300, Phaser.Easing.Linear.None);
-        tween.delay(300);
+        tween.delay(500);
 
         tween.onComplete.add(function() {
-            // TODO
+            drawLevelStats(texts);
         });        
 
         tween.start();
+    }
+
+    function drawLevelStats(texts) {
+        var fontSize = 24;
+        var margin = 2;
+        var delay = 500;
+
+        texts.forEach(function(text, index) {
+            game.time.events.add(delay * (index + 1), function () {
+                fxScore.play();
+
+                var textLabel = game.add.bitmapText(game.world.centerX, 180 + (fontSize + margin) * index, 'blackOpsOne', text, fontSize);
+                textLabel.anchor.setTo(0.5, 0.5);
+
+                var t1 = game.add.tween(textLabel.scale).to({ x : 2, y : 2}, 150, Phaser.Easing.Cubic.Out);
+                var t2 = game.add.tween(textLabel.scale).to({ x : 1, y : 1}, 150, Phaser.Easing.Cubic.In);
+                t1.chain(t2);
+                t1.start();
+            });
+        });
     }
 
     function drawPredator() {
@@ -143,7 +169,7 @@
         var t1 = game.add.tween(predator).to({ x : game.world.width / 2 + 150 }, duration/2, Phaser.Easing.Cubic.Out);
         
         t1.onComplete.add(function() {
-            fxPunch.play();
+            fxSmash.play();
             rats.children.forEach(function(r) {
                 r.alpha = 0;
             });
@@ -170,9 +196,6 @@
         var t2 = game.add.tween(predator).to({ x : game.world.width + 150 }, duration/2, Phaser.Easing.Cubic.In)
 
         t1.chain(t2);
-
-        var fxZap = game.add.sound('zap00');
-        sounds.push(fxZap);
 
         game.time.events.add(duration/2-250, function() {
             var beam = game.add.sprite(game.world.width/2, 370, 'beam00');
