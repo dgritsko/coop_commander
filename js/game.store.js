@@ -2,6 +2,7 @@ var Items = [
     {
         'id': 0,
         'name': 'Basic Trap',
+        'description': '',
         'spriteName': 'trap00',
         'cost': 2,
         'radius': 200
@@ -9,6 +10,7 @@ var Items = [
     {
         'id': 1,
         'name': 'Rat Poison',
+        'description': 'Cheap and effective, but harmful to use.',
         'spriteName': 'trap01',
         'cost': 1,
         'radius': 100
@@ -16,6 +18,7 @@ var Items = [
     {
         'id': 2,
         'name': 'Rat Poison 2',
+        'description': '',
         'spriteName': 'trap01',
         'cost': 1,
         'radius': 75
@@ -98,6 +101,12 @@ class Store {
                 this.selectItem(newIndex);
             } 
         }, this);
+
+        this.remainingTime = game.time.now + (1000 * 20);
+
+        this.descriptionLabel = game.add.bitmapText(200, 20, 'blackOpsOne', '', 28);
+
+        this.selectItem(0, true);
     }
 }
 
@@ -107,7 +116,7 @@ Store.prototype.getIndexY = function(index) {
     return y;    
 }
 
-Store.prototype.selectItem = function(index) {
+Store.prototype.selectItem = function(index, silent) {
     var info = Items[index];
     var y = this.getIndexY(index);
 
@@ -117,7 +126,14 @@ Store.prototype.selectItem = function(index) {
 
     this.selectedIndex = index;
 
-    fxClick.play();    
+    this.descriptionLabel.text = info['name'];
+    if (info['description']) {
+        this.descriptionLabel.text += ': ' + info['description'];
+    }
+
+    if (!silent) {
+        fxClick.play();
+    }    
 }
 
 Store.prototype.updatePriceLabels = function() {
@@ -149,6 +165,17 @@ Store.prototype.done = function() {
 }
 
 Store.prototype.update = function() {
+    var remainingSeconds = Math.floor((this.remainingTime - game.time.now) / 1000);
+    if (remainingSeconds <= 5) {
+        this.doneLabel.tint = 0xff0000;
+    } 
+    
+    if (remainingSeconds <= 0) {
+        this.done();
+        return;
+    }
+    this.doneLabel.text = 'Done (' + remainingSeconds + ')';
+
     this.currItem.update();
 
     if (game.input.activePointer.isDown) {
