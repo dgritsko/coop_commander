@@ -56,7 +56,11 @@
 
         console.log(gameState);
 
-        mode = Modes.Setup;
+        if (gameState.upgradePoints <= 0) {
+            mode = Modes.Intro;
+        } else {
+            mode = Modes.Setup;
+        }
     }
 
     function preload() {
