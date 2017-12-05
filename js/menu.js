@@ -17,6 +17,8 @@
     }
 
     function create() {
+        isStarting = false;
+
         game.stage.disableVisibilityChange = true;
         game.stage.backgroundColor = 0xa7d9ff;
 
