@@ -4,7 +4,7 @@
         Play: 1
     };
 
-    var pen = new Phaser.Rectangle(720, 120, 8 * 48, 10 * 48);
+    var pen = new Phaser.Rectangle(860, 120, 8 * 48, 11 * 48);
 
     var gameState = {};
 
@@ -84,6 +84,8 @@
     function beginStage() {
         drawGrass();
         
+        drawDirt(pen);
+
         fence = game.add.group();
         drawFence(pen, fence);
     }
@@ -433,6 +435,48 @@
         hud.foodText.setText(gameState.foodCount);
         hud.scoreText.setText(gameState.score);
         hud.upgradePointText.setText('$' + gameState.upgradePoints);
+    }
+
+    function drawDirt(rect) {
+        var spriteSize = 48;
+        var width = rect.width / spriteSize;
+        var height = rect.height / spriteSize;
+
+        for (var i = 0; i < width; i++) {
+            for (var j = 0; j < height; j++) {
+                var spriteIndex = 4;
+
+                if (j == 0) {
+                    if (i == 0) {
+                        spriteIndex = 0; 
+                    } else if (i == (width - 1)) {
+                        spriteIndex = 2;
+                    } else {
+                        spriteIndex = 1;
+                    }
+                } else if (j == (height - 1)) {
+                    if (i == 0) {
+                        spriteIndex = 6;
+                    } else if (i == (width - 1)) {
+                        spriteIndex = 8;
+                    } else {
+                        spriteIndex = 7;
+                    }
+                } else {
+                    if (i == 0) {
+                        spriteIndex = 3;
+                    } else if (i == (width - 1)) {
+                        spriteIndex = 5;
+                    } else {
+                        spriteIndex = 4;
+                    }
+                }
+
+                var dirt = game.add.sprite(rect.x + (i * spriteSize), rect.y + (j * spriteSize), 'dirt01', spriteIndex);
+                
+                dirt.anchor.setTo(0.5, 0.5);
+            }
+        }
     }
 
     function drawFence(rect, group) {

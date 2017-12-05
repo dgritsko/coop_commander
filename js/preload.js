@@ -6,6 +6,7 @@
         // Sprites
         game.load.image('grass00', 'assets/grass00.png');
         game.load.image('grass01', 'assets/grass01.png');
+        game.load.spritesheet('dirt01', 'assets/dirt01.png', 48, 48);
         game.load.spritesheet('player', 'assets/player.png', 64, 64);
         game.load.spritesheet('rat00', 'assets/rat00.png', 32, 32);
         game.load.spritesheet('rat01', 'assets/rat01.png', 32, 32);
