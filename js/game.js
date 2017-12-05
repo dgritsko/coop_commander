@@ -1,7 +1,8 @@
 (function() {
     var Modes = {
         Setup: 0,
-        Play: 1
+        Intro: 1,
+        Play: 2
     };
 
     var pen = new Phaser.Rectangle(860, 120, 8 * 48, 11 * 48);
@@ -76,6 +77,10 @@
             beginSetup();
         }
 
+        if (mode == Modes.Intro) {
+            beginIntro();
+        }
+
         if (mode == Modes.Play) {
             beginGame();
         }        
@@ -106,6 +111,21 @@
         mode = Modes.Play;
     }
 
+    function beginIntro() {
+        mode = Modes.Intro;
+
+        var introLabel = game.add.bitmapText(game.world.centerX, game.world.centerY, 'blackOpsOne', 'Ready!', 28);
+        introLabel.anchor.setTo(0.5, 0.5);
+
+        game.time.events.add(1500, function() {
+            var t1 = game.add.tween(introLabel).to({alpha: 0}, 200, Phaser.Easing.Linear.None);
+            t1.onComplete.add(function() {
+                beginGame();
+            });
+            t1.start();
+        }, this);
+    }
+
     function beginSetup() {
         var existingItems = []; 
         // Existing items should look like this, where 'id' is index into the Items array:
@@ -122,7 +142,7 @@
     function update() {
         if (mode == Modes.Setup) {
             placeTraps();
-        }        
+        }
 
         if (mode == Modes.Play) {
             playGame();
@@ -134,7 +154,7 @@
 
         if (store.state == StoreStates.DONE) {
             items = store.placedItems;
-            beginGame();
+            beginIntro();
         }
     }
 

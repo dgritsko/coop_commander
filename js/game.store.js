@@ -158,6 +158,7 @@ Store.prototype.done = function() {
 
     this.doneLabel.kill();
     this.currItem.kill();
+    this.descriptionLabel.kill();
     
     this.state = StoreStates.DONE;
 
