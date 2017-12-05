@@ -319,7 +319,9 @@
 
         var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(function() { 
-            performAttack();            
+            gameState.swingCount += 1;
+            fxWhoosh.play();
+            player.attack(game);
         }, this);
 
         var ctrlKey = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
@@ -354,53 +356,6 @@
             // TODO: Add any debug functionality here
             food = game.add.group();
         });
-    }
-
-    function performAttack() {
-        gameState.swingCount += 1;
-        
-        // TODO: Cancel previous tween so that it doesn't kill the shovel mid-swing
-
-        // TODO: Appropriate direction swing if player is not moving
-        player.shovel.alpha = 1;
-
-        if (player.sprite.body.velocity.x == 0) {
-            // TODO: Wat do about vertical-only swings?
-            if (player.sprite.body.velocity.y > 0) {
-                player.shovel.scale.y = -0.5;
-                endY = 0.5;
-            } else {
-                player.shovel.scale.y = 0.5;
-                endY = -0.5;
-            }
-
-            var tween = game.add.tween(player.shovel.scale).to({ y: endY }, 200, Phaser.Easing.Quartic.InOut);
-            
-            tween.onComplete.add(function() {
-                player.shovel.alpha = 0;
-            });
-        
-            tween.start();
-        } else {            
-            if (player.sprite.body.velocity.x > 0) {
-                startAngle = 180;
-                endAngle = 0;
-            } else {
-                startAngle = 179;
-                endAngle = 0;
-            }            
-
-            player.shovel.angle = startAngle;
-            var tween = game.add.tween(player.shovel).to({ angle: endAngle }, 200, Phaser.Easing.Quartic.InOut);
-            
-            tween.onComplete.add(function() {
-                player.shovel.alpha = 0;
-            });
-        
-            tween.start();
-        }
-        
-        fxWhoosh.play();
     }
     
     function useFlashlight() {

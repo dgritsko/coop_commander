@@ -95,3 +95,45 @@ Player.prototype.move = function() {
         this.sprite.animations.stop();
     }
 }
+
+Player.prototype.attack = function(game) {
+    // TODO: Cancel previous tween so that it doesn't kill the shovel mid-swing
+
+    // TODO: Appropriate direction swing if player is not moving
+    this.shovel.alpha = 1;
+
+    if (this.sprite.body.velocity.x == 0) {
+        if (this.sprite.body.velocity.y > 0) {
+            this.shovel.scale.y = -0.5;
+            endY = 0.5;
+        } else {
+            this.shovel.scale.y = 0.5;
+            endY = -0.5;
+        }
+
+        var tween = game.add.tween(this.shovel.scale).to({ y: endY }, 200, Phaser.Easing.Quartic.InOut);
+        
+        tween.onComplete.add(function() {
+            this.shovel.alpha = 0;
+        }, this);
+    
+        tween.start();
+    } else {            
+        if (this.sprite.body.velocity.x > 0) {
+            startAngle = 180;
+            endAngle = 0;
+        } else {
+            startAngle = 179;
+            endAngle = 0;
+        }            
+
+        this.shovel.angle = startAngle;
+        var tween = game.add.tween(this.shovel).to({ angle: endAngle }, 200, Phaser.Easing.Quartic.InOut);
+        
+        tween.onComplete.add(function() {
+            this.shovel.alpha = 0;
+        }, this);
+    
+        tween.start();
+    }
+}
