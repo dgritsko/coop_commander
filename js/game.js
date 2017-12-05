@@ -362,14 +362,25 @@
         // TODO: Cancel previous tween so that it doesn't kill the shovel mid-swing
 
         // TODO: Appropriate direction swing if player is not moving
+        player.shovel.alpha = 1;
 
         if (player.sprite.body.velocity.x == 0) {
             // TODO: Wat do about vertical-only swings?
             if (player.sprite.body.velocity.y > 0) {
-
+                player.shovel.scale.y = -0.5;
+                endY = 0.5;
             } else {
-                
+                player.shovel.scale.y = 0.5;
+                endY = -0.5;
             }
+
+            var tween = game.add.tween(player.shovel.scale).to({ y: endY }, 200, Phaser.Easing.Quartic.InOut);
+            
+            tween.onComplete.add(function() {
+                player.shovel.alpha = 0;
+            });
+        
+            tween.start();
         } else {            
             if (player.sprite.body.velocity.x > 0) {
                 startAngle = 180;
@@ -378,17 +389,17 @@
                 startAngle = 179;
                 endAngle = 0;
             }            
-        }
 
-        player.shovel.alpha = 1;
-        player.shovel.angle = startAngle;
-        var tween = game.add.tween(player.shovel).to({ angle: endAngle }, 200, Phaser.Easing.Quartic.InOut);
+            player.shovel.angle = startAngle;
+            var tween = game.add.tween(player.shovel).to({ angle: endAngle }, 200, Phaser.Easing.Quartic.InOut);
+            
+            tween.onComplete.add(function() {
+                player.shovel.alpha = 0;
+            });
         
-        tween.onComplete.add(function() {
-            player.shovel.alpha = 0;
-        });
-    
-        tween.start();
+            tween.start();
+        }
+        
         fxWhoosh.play();
     }
     
