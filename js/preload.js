@@ -33,6 +33,7 @@
         game.load.audio('click00', 'assets/sound/fx/click00.wav');
         game.load.audio('footsteps00', 'assets/sound/fx/footsteps00.wav');
         game.load.audio('squeak00', 'assets/sound/fx/squeak00.wav');
+        game.load.audio('squawk00', 'assets/sound/fx/squawk00.mp3');
         game.load.audio('cluck00', 'assets/sound/fx/cluck00.wav');
         game.load.audio('eating00', 'assets/sound/fx/eating00.wav');
         game.load.audio('bang00', 'assets/sound/fx/bang00.wav');

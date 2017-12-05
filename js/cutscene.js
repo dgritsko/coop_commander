@@ -59,6 +59,9 @@
         fxZap = game.add.sound('zap00');
         fxZap.volume = 0.5;
         sounds.push(fxZap);
+        fxSquawk = game.add.sound('squawk00');
+        fxSquawk.volume = 0.5;
+        sounds.push(fxSquawk);
     }
 
     function update() {
@@ -160,6 +163,8 @@
         t2.chain(t3);
         t1.start();
         t2.start();
+
+        fxSquawk.play();
     }
 
     function drawGarbageTruck(duration) {
