@@ -55,6 +55,8 @@
             gameState.ratsRetreated = 0;
         }
 
+        GameLevels.level(gameState.level);
+
         console.log(gameState);
 
         if (gameState.upgradePoints <= 0) {
