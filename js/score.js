@@ -8,9 +8,7 @@
     }
 
     function create() {
-        game.stage.backgroundColor = '#000000';
-
-        game.camera.flash(0x000000, 250);
+        game.stage.backgroundColor = 0x001933;
 
         var args = CoopCommander.Score.args;
 
@@ -27,6 +25,12 @@
         enterKey.onDown.add(function() { 
             showMenu();
         }, this);
+
+        var clouds = Util.drawClouds(game);
+        
+        Util.drawGrass(game);
+
+        game.camera.flash('#000000', 250);
     }
 
     function update() {
