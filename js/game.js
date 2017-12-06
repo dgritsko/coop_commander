@@ -15,6 +15,7 @@
     var rats = [];
     var chickens = [];
     var items = [];
+    var rodents;
 
     var mode = Modes.Setup;
 
@@ -25,9 +26,6 @@
 
         gameState = {
             playerSpeed: 200,
-            maxActiveRats: 2,
-            ratSpeed: 2,
-            nextRatSpawn: 0
         };
 
         if (args) {
@@ -36,12 +34,6 @@
             _.extend(gameState, args);
 
             gameState.level += 1;
-            gameState.totalRats = 3 * gameState.level;
-            gameState.maxActiveRats = 2 + gameState.level;
-            gameState.ratSpeed = 2 + gameState.level * 0.5;
-            gameState.ratsKilled = 0;
-            gameState.ratsTrapped = 0;
-            gameState.ratsRetreated = 0;            
         } else {
             gameState.level = 1;
             gameState.flashlights = 3;
@@ -49,15 +41,12 @@
             gameState.score = 0;
             gameState.upgradePoints = 0;
             gameState.swingCount = 0;            
-            gameState.totalRats = 3;
-            gameState.ratsKilled = 0;
-            gameState.ratsTrapped = 0;
-            gameState.ratsRetreated = 0;
         }
 
-        GameLevels.level(gameState.level);
+        gameState.inactiveRats = [];
+        gameState.activeRats = GameLevels.level(gameState.level);
 
-        console.log(gameState);
+        console.log(gameState.activeRats);
 
         if (gameState.upgradePoints <= 0) {
             mode = Modes.Intro;
@@ -120,6 +109,19 @@
         setupInput();
 
         mode = Modes.Play;
+
+        gameState.activeRats.forEach(function(r) {
+            var ratTypes = _.filter(RatTypes, function(t) { return r.class == t.class && r.size == t.size; });
+            
+            if (ratTypes.length == 1) {
+                var spawnTime = r.spawn * 1000;
+                game.time.events.add(spawnTime, function() {
+                    createRat(ratTypes[0]);
+                });
+            } else {
+                console.log('error: couldn\'t find correct rat info for ', r, ratTypes);
+            }
+        });
     }
 
     function beginIntro() {
@@ -194,8 +196,9 @@
 
             if (rat.sprite.alive && !rat.sprite.inCamera) {
                 rat.kill();
-                // TODO: Distinguish between "scared" vs. "not scared"?
-                gameState.ratsRetreated += 1;
+                
+                console.log('killing offscreen rat');
+                gameState.inactiveRats.push(rat);
             }
         }
 
@@ -231,18 +234,8 @@
             handleAttacks();
         }
 
-        var remainingRats = getRemainingRats();
-
-        // TODO: Account for "dead" rats?        
-        if (rodents.children.length < gameState.maxActiveRats && remainingRats > 0 && rodents.children.length < remainingRats) {
-            if (gameState.nextRatSpawn < game.time.now) {
-                gameState.nextRatSpawn = game.time.now + Phaser.Timer.SECOND * Math.random() * 2;
-                createRat();
-            }            
-        }
-
         var gameOver = food.children.length == 0;
-        var levelComplete = remainingRats <= 0;
+        var levelComplete = gameState.inactiveRats.length == gameState.activeRats.length;
 
         var state = { 
             foodCount: food.children.length,
@@ -251,10 +244,6 @@
             score: gameState.score,
             upgradePoints: gameState.upgradePoints,
             swingCount: gameState.swingCount,
-            totalRats: gameState.totalRats,
-            ratsKilled: gameState.ratsKilled,
-            ratsTrapped: gameState.ratsTrapped,
-            ratsRetreated: gameState.ratsRetreated
         };
 
         if (gameOver) {
@@ -290,14 +279,8 @@
         });
     }
 
-    function getRemainingRats() {
-        return gameState.totalRats - (gameState.ratsKilled + gameState.ratsTrapped + gameState.ratsRetreated);
-    }
-
-    function createRat() {
-        var type = RatTypes[Math.floor(Math.random() * RatTypes.length)];
-
-        rats.push(new Rat(rodents, rats.length, gameState.ratSpeed, type));
+    function createRat(type) {
+        rats.push(new Rat(rodents, rats.length, type));
         fxSqueak.play();
     }
 
@@ -352,7 +335,6 @@
                 gameState.pauseEnded = game.time.now;
 
                 var pauseDuration = gameState.pauseEnded - gameState.pauseBegan;
-                gameState.nextRatSpawn += pauseDuration;
                 console.log('pause duration: ', pauseDuration);
             } else {
                 gameState.pauseBegan = game.time.now;
@@ -392,10 +374,12 @@
 
     function killRat(rat) {
         rat.kill();
-        gameState.ratsKilled += 1;
+        
+        // TODO: Make this a function of the rat's parameters
         gameState.score += 10;
 
-        console.log('Rats remaining: ' + getRemainingRats());
+        console.log('killing rat');
+        gameState.inactiveRats.push(rat);
     }
 
     function drawHud() {
@@ -450,6 +434,10 @@
         group.add(f);
     }
 
+    function render() {
+        game.debug.text(gameState.inactiveRats.length + ' / ' + gameState.activeRats.length, 2, 14, "#00ff00");   
+    }
+
     function shutdown() {
         console.log('TODO: Call .destroy() on anything that we still have a reference to so as not to cause memory leaks');
 
@@ -459,5 +447,5 @@
         fxWhoosh.stop();
     }
 
-    CoopCommander.Game = {init: init, preload: preload, create: create, update: update, shutdown: shutdown};
+    CoopCommander.Game = {init: init, preload: preload, create: create, update: update, render: render, shutdown: shutdown};
 })();

@@ -11,12 +11,20 @@ class GameLevels {
         return 'small';
     }
 
-    static parseLevel(raw) {
+    static splitCsv(raw) {
         var components = raw.split(/,| /);
-
+        
         var result = _.filter(components, function(e) { return e.trim(); });
+        
+        return result;
+    }
 
-        var parsed = _.map(result, function(p) {
+    static parseLevel(items) {
+        if (typeof(items) == 'string') {
+            items = [items];
+        }
+
+        var parsed = _.map(items, function(p) {
             var parts = p.split(':');
 
             var c = p[0];
@@ -37,14 +45,14 @@ class GameLevels {
         var levelIndex = num - 1;
 
         var initialLevels = [
-            '1s:1, 1s:1.2, 1s:3',
-            '1s:1, 1s:1, 1m:3, 1m:3, 1s:3, 1m:7, 1s:8'
+            GameLevels.splitCsv('1s:1, 1s:1.2, 1s:3'),
+            GameLevels.splitCsv('1s:1, 1s:1, 1m:3, 1m:3, 1s:3, 1m:7, 1s:8')
         ];
 
-        if (levelIndex <= initialLevels.length) {
+        if (levelIndex < initialLevels.length) {
             return GameLevels.parseLevel(initialLevels[levelIndex]);
         }
 
-        
+        return GameLevels.parseLevel('3l:1');
     }
 }

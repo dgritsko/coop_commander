@@ -53,7 +53,7 @@ RatTypes = [
 ];
 
 class Rat {
-    constructor(group, id, speed, type) {
+    constructor(group, id, type) {
         this.id = id;
         this.state = RatStates.STOPPED;
         this.group = group;
@@ -89,7 +89,8 @@ class Rat {
 
         group.add(this.sprite);
 
-        this.speed = speed;
+        // TODO: Scale this appropriately
+        this.speed = 1;
     }
 }
 
