@@ -28,8 +28,6 @@
         menuMusic.loop = true;
         menuMusic.play();        
 
-        game.camera.flash(0x000000, 250);
-        
         sun = game.add.sprite(500, 500, 'sun');
         sun.anchor.setTo(0.5, 0.5);
 
