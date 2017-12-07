@@ -1,6 +1,6 @@
 class Player {
-    constructor(speed) {
-        this.speed = speed
+    constructor() {
+        this.speed = 200;
 
         this.sprite = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
 

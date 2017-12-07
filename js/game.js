@@ -8,7 +8,7 @@
 
     var pen = new Phaser.Rectangle(860, 120, 8 * 48, 11 * 48);
 
-    var gameState = {};
+    var gameState;
 
     var hud = {};
 
@@ -24,9 +24,7 @@
         rats = [];
         chickens = [];
 
-        gameState = {
-            playerSpeed: 200,
-        };
+        gameState = { };
 
         if (args && args.previousState) {
             _.extend(gameState, args.previousState);
@@ -104,7 +102,7 @@
             createChicken();
         }
 
-        player = new Player(gameState.playerSpeed);
+        player = new Player();
         
         setupInput();
 
@@ -180,6 +178,7 @@
 
         if (mode == Modes.Outro) {
             player.move();
+            updateHud();
         }
     }
 
