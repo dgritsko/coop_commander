@@ -54,6 +54,8 @@ Trap.prototype.update = function() {
 
         this.sprite.x = x;
         this.sprite.y = y;
+
+        this.position = new Phaser.Point(x, y);
     }
 }
 
