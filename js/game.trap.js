@@ -6,8 +6,10 @@ class Trap {
     constructor(info, isCurrent, x, y) {
         this.isCurrent = isCurrent;
 
-        x = x || game.input.x;
-        y = y || game.input.y;
+        if (isCurrent) {
+            x = x || game.input.x;
+            y = y || game.input.y;
+        }
 
         this.position = new Phaser.Point(x, y);
 
@@ -53,11 +55,6 @@ Trap.prototype.update = function() {
         this.sprite.x = x;
         this.sprite.y = y;
     }
-}
-
-Trap.prototype.changeType = function(info) {
-    this.info = info;
-    this.sprite.loadTexture(info['spriteName']);
 }
 
 Trap.prototype.kill = function() {
