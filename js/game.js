@@ -145,17 +145,21 @@
         game.time.events.add(1500, function() {
             game.camera.fade('#000000', 250);
             game.camera.onFadeComplete.add(function() { 
-                var ratInfos = _.map(gameState.inactiveRats, function(r) { return { 'level': r.level, 'state': r.state, 'rank': r.type.rank, 'class': r.type.class, 'size': r.type.size, 'spriteName': r.sprite.key, 'scale': r.sprite.scale }; });
+                var ratInfos = _.map(gameState.inactiveRats, function(r) { return { level: r.level, state: r.state, rank: r.type.rank, class: r.type.class, size: r.type.size, spriteName: r.sprite.key, scale: r.sprite.scale }; });
                 gameState.currentRatInfo = ratInfos;
+
+                var itemInfos = _.map(items, function(i) { return { id: i.info.id, x: i.position.x, y: i.position.y }; })
+                gameState.currentItemInfo = itemInfos;
+
                 game.state.start('Cutscene', true, false, gameState);
             }, this);            
         });
     }
 
     function beginSetup() {
-        var existingItems = []; 
         // Existing items should look like this, where 'id' is index into the Items array:
         //{'id': 0, 'x': 100, 'y': 200}, {'id': 2, 'x': 300, 'y': 300}];
+        var existingItems = gameState.currentItemInfo || [];
 
         store = new Store(gameState.money, existingItems);
 

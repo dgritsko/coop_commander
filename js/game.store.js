@@ -67,7 +67,7 @@ class Store {
         }
 
         for (var i = 0; i < (existingItems || []).length; i++) {
-            var info = Items[existingItems[i]['type']];
+            var info = Items[existingItems[i]['id']];
             var x = existingItems[i]['x'];
             var y = existingItems[i]['y'];
             
