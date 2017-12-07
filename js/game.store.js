@@ -5,7 +5,9 @@ var Items = [
         'description': '',
         'spriteName': 'trap00',
         'cost': 2,
-        'radius': 200
+        'radius': 200,
+        'minLevel': 1,
+        'max': -1
     },
     {
         'id': 1,
@@ -13,16 +15,50 @@ var Items = [
         'description': 'Cheap and effective, but harmful to use.',
         'spriteName': 'trap01',
         'cost': 1,
-        'radius': 100
+        'radius': 100,
+        'minLevel': 1,
+        'max': -1
     },
     {
         'id': 2,
-        'name': 'Rat Poison 2',
+        'name': 'No-Kill Trap',
         'description': '',
         'spriteName': 'trap01',
-        'cost': 1,
-        'radius': 75
-    }
+        'cost': 10,
+        'radius': 75,
+        'minLevel': 2,
+        'max': -1
+    },
+    {
+        'id': 3,
+        'name': 'Good Trap',
+        'description': '',
+        'spriteName': 'trap01',
+        'cost': 15,
+        'radius': 75,
+        'minLevel': 3,
+        'max': -1
+    },
+    {
+        'id': 4,
+        'name': 'Cat',
+        'description': '',
+        'spriteName': 'trap01',
+        'cost': 15,
+        'radius': 75,
+        'minLevel': 4,
+        'max': -1
+    },
+    {
+        'id': 5,
+        'name': 'John',
+        'description': '',
+        'spriteName': 'trap01',
+        'cost': 15,
+        'radius': 75,
+        'minLevel': 5,
+        'max': 1
+    },
 ];
 
 StoreStates = {
@@ -31,10 +67,11 @@ StoreStates = {
 };
 
 class Store {
-    constructor(money, existingItems) {
+    constructor(money, existingItems, level) {
         this.state = StoreStates.ACTIVE;
 
         this.money = money;
+        this.level = level;
 
         this.selectedIndex = 0;
         this.availableItems = [];
@@ -52,6 +89,7 @@ class Store {
             var t = game.add.sprite(50, y, info['spriteName']);
 
             var l = game.add.bitmapText(50 + 20, y + 28, 'blackOpsOne', '$' + info['cost'], 18);
+            l.itemId = info.id;
 
             t.inputEnabled = true;
             t.events.onInputDown.add(function() {
@@ -63,7 +101,9 @@ class Store {
         }
 
         for (var i = 0; i < Items.length; i++) {
-            addItem(Items[i], this);
+            if (this.level >= Items[i].minLevel) {
+                addItem(Items[i], this);
+            }
         }
 
         for (var i = 0; i < (existingItems || []).length; i++) {
@@ -78,7 +118,7 @@ class Store {
 
         this.currItem = new Trap(Items[this.selectedIndex], true);
         
-        var doneLabelY = this.getIndexY(Items.length) + 20;
+        var doneLabelY = this.getIndexY(this.availableItems.length) + 20;
         this.doneLabel = game.add.bitmapText(50, doneLabelY, 'blackOpsOne', 'Done', 28);
 
         this.doneLabel.inputEnabled = true;
@@ -138,10 +178,9 @@ Store.prototype.selectItem = function(index, silent) {
 
 Store.prototype.updatePriceLabels = function() {
     var money = this.money;
-    _.each(_.zip(Items, this.itemLabels), function(x) {
-        var item = x[0];
-        var label = x[1];
 
+    this.itemLabels.forEach(function(label) { 
+        var item = Items[label.itemId];
         label.tint = item['cost'] <= money ? 0xffffff : 0xff0000;
     });
 }

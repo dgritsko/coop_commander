@@ -159,7 +159,7 @@
         //{'id': 0, 'x': 100, 'y': 200}, {'id': 2, 'x': 300, 'y': 300}];
         var existingItems = gameState.currentItemInfo || [];
 
-        store = new Store(gameState.money, existingItems);
+        store = new Store(gameState.money, existingItems, gameState.level);
 
         store.newItemCallback(function() {
             gameState.money = store.money;
