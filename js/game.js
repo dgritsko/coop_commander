@@ -28,19 +28,19 @@
             playerSpeed: 200,
         };
 
-        if (args) {
-            console.log('Args: ', args);
-
-            _.extend(gameState, args);
-
-            gameState.level += 1;
+        if (args && args.previousState) {
+            _.extend(gameState, args.previousState);
         } else {
-            gameState.level = 1;
-            gameState.flashlights = 3;
-            gameState.foodCount = 10;
-            gameState.score = 0;
-            gameState.upgradePoints = 0;
-            gameState.swingCount = 0;            
+            var initialState = {
+                level: 1,
+                flashlights: 3,
+                foodCount: 10,
+                score: 0,
+                money: 0,
+                swingCount: 0
+            };
+
+            _.extend(gameState, initialState);
         }
 
         gameState.inactiveRats = [];
@@ -48,7 +48,7 @@
 
         console.log(gameState.activeRats);
 
-        if (gameState.upgradePoints <= 0) {
+        if (gameState.money <= 0) {
             mode = Modes.Intro;
         } else {
             mode = Modes.Setup;
@@ -145,6 +145,8 @@
         game.time.events.add(1500, function() {
             game.camera.fade('#000000', 250);
             game.camera.onFadeComplete.add(function() { 
+                var ratInfos = _.map(gameState.inactiveRats, function(r) { return { 'level': r.level, 'state': r.state, 'rank': r.type.rank, 'class': r.type.class, 'size': r.type.size, 'spriteName': r.sprite.key, 'scale': r.sprite.scale }; });
+                gameState.currentRatInfo = ratInfos;
                 game.state.start('Cutscene', true, false, gameState);
             }, this);            
         });
@@ -155,10 +157,10 @@
         // Existing items should look like this, where 'id' is index into the Items array:
         //{'id': 0, 'x': 100, 'y': 200}, {'id': 2, 'x': 300, 'y': 300}];
 
-        store = new Store(gameState.upgradePoints, existingItems);
+        store = new Store(gameState.money, existingItems);
 
         store.newItemCallback(function() {
-            gameState.upgradePoints = store.money;
+            gameState.money = store.money;
             updateHud();
         });
     }    
@@ -242,7 +244,7 @@
             level: gameState.level,
             flashlights: gameState.flashlights,
             score: gameState.score,
-            upgradePoints: gameState.upgradePoints,
+            money: gameState.money,
             swingCount: gameState.swingCount,
         };
 
@@ -272,15 +274,14 @@
             // Keep track of the last swing index that hit the rat... this seems like a crummy way to do this but it works
             rodent.hitBySwing = gameState.swingCount;
             fxHit.play();
-            // TODO: Maybe we should just injure the rat?
-            killRat(rat);
+            killRat(rat, RatStates.KILLED_BY_SHOVEL);
 
             return false;         
         });
     }
 
     function createRat(type) {
-        rats.push(new Rat(rodents, rats.length, type));
+        rats.push(new Rat(rodents, type, gameState.level));
         fxSqueak.play();
     }
 
@@ -305,6 +306,7 @@
         fxReload.volume = 0.5;
         fxPunch = game.add.sound('punch00');
         fxZap = game.add.sound('zap01');
+        fxZap.volume = 0.7;
     }
 
     function setupInput() {
@@ -368,17 +370,13 @@
         for (var i = rodents.children.length - 1; i >= 0; i--) {
             var rodent = rodents.children[i];
             var rat = _.find(rats, function(r) { return r.id == rodent.id; });
-            killRat(rat);
+            killRat(rat, RatStates.KILLED_BY_FLASHLIGHT);
         }
     }
 
-    function killRat(rat) {
-        rat.kill();
-        
-        // TODO: Make this a function of the rat's parameters
-        gameState.score += 10;
-
-        console.log('killing rat');
+    function killRat(rat, newState) {
+        rat.kill(newState);
+        gameState.score += rat.score();
         gameState.inactiveRats.push(rat);
     }
 
@@ -411,14 +409,14 @@
 
         hud.scoreText = addText(10, 100, gameState.score);
 
-        hud.upgradePointText = addText(10, 130, '$' + gameState.upgradePoints);
+        hud.upgradePointText = addText(10, 130, '$' + gameState.money);
     }
 
     function updateHud() {
         hud.flashlightText.setText(gameState.flashlights);
         hud.foodText.setText(gameState.foodCount);
         hud.scoreText.setText(gameState.score);
-        hud.upgradePointText.setText('$' + gameState.upgradePoints);
+        hud.upgradePointText.setText('$' + gameState.money);
     }
 
     function createFood(rect, group) {

@@ -1,7 +1,10 @@
 RatStates = {
     STOPPED: 0,
     HUNGRY: 1,
-    RETREATING: 2
+    RETREATING: 2,
+    RETREATED: 3,
+    KILLED_BY_SHOVEL: 4,
+    KILLED_BY_FLASHLIGHT: 5
 };
 
 RatTypes = [
@@ -53,46 +56,62 @@ RatTypes = [
 ];
 
 class Rat {
-    constructor(group, id, type) {
-        this.id = id;
-        this.state = RatStates.STOPPED;
-        this.group = group;
-        this.type = Object.assign({}, type);
-
+    static getSpriteName(type) {
         var spriteName = 'rat00';
         if (type['class'] == 2) {
             spriteName = 'rat01';
         } else if (type['class'] == 3) {
             spriteName = 'rat02';
         }
+        return spriteName;
+    }
 
+    static getScale(type) {
         var scale = 1.0;
         if (type['size'] == 'medium') {
             scale = 1.2;
         } else if (type['size'] == 'large') {
             scale = 1.5;
         }
+        return scale;
+    }
 
-        var width = game.cache.getImage(spriteName).width;
-        this.sprite = game.add.sprite(game.camera.bounds.x - (width / 10), Math.random() * game.world.height, spriteName);
-
-        this.sprite.scale.setTo(scale, scale);
-
-        this.sprite.id = id;
-
-        game.physics.arcade.enable(this.sprite);
-        
-        this.sprite.animations.add('down', [0, 1, 2], 10, true);
-        this.sprite.animations.add('left', [3, 4, 5], 10, true);
-        this.sprite.animations.add('right', [6, 7, 8], 10, true);
-        this.sprite.animations.add('up', [9, 10, 11], 10, true);
-
-        group.add(this.sprite);
-
+    static getSpeed(type, level) {
         // TODO: Scale this appropriately
-        this.speed = 1;
+        return 1;
+    }
+
+    constructor(group, type, level) {
+        this.group = group;
+        this.type = Object.assign({}, type);
+        this.level = level;
+        this.id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+
+        this.state = RatStates.STOPPED;
+
+        this.setupSprite(game);
+
+        this.speed = Rat.getSpeed(this.type, this.level);
     }
 }
+
+Rat.prototype.setupSprite = function(game) {
+    var spriteName = Rat.getSpriteName(this.type);
+    var scale = Rat.getScale(this.type);
+
+    var width = game.cache.getImage(spriteName).width;
+    this.sprite = game.add.sprite(game.camera.bounds.x - (width / 10), Math.random() * game.world.height, spriteName);
+    this.sprite.scale.setTo(scale, scale);
+    this.sprite.id = this.id;
+    game.physics.arcade.enable(this.sprite);
+    
+    this.sprite.animations.add('down', [0, 1, 2], 10, true);
+    this.sprite.animations.add('left', [3, 4, 5], 10, true);
+    this.sprite.animations.add('right', [6, 7, 8], 10, true);
+    this.sprite.animations.add('up', [9, 10, 11], 10, true);
+
+    this.group.add(this.sprite);
+};
 
 Rat.prototype.move = function(food, items, player) {
     if (food.length == 0) {
@@ -121,9 +140,10 @@ Rat.prototype.update = function(food, items, player) {
     }
 }
 
-Rat.prototype.kill = function() {
+Rat.prototype.kill = function(newState) {
     this.sprite.kill();
     this.group.remove(this.sprite);
+    this.state = newState;
 }
 
 Rat.prototype.shouldEat = function() {
@@ -134,4 +154,9 @@ Rat.prototype.eat = function() {
     this.state = RatStates.RETREATING;
     this.sprite.body.velocity.x *= -1;
     this.sprite.body.velocity.y *= 0.25;
+}
+
+Rat.prototype.score = function() {
+    // TODO
+    return 10;
 }

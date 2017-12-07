@@ -8,6 +8,8 @@
     }
 
     function create() {
+        game.stage.disableVisibilityChange = true;
+        
         game.stage.backgroundColor = 0x001933;
 
         var args = CoopCommander.Score.args;

@@ -45,7 +45,7 @@ class GameLevels {
         var levelIndex = num - 1;
 
         var initialLevels = [
-            GameLevels.splitCsv('1s:1, 1s:1.2, 1s:3'),
+            GameLevels.splitCsv('1s:1, 2m:1.2, 3l:3'),
             GameLevels.splitCsv('1s:1, 1s:1, 1m:3, 1m:3, 1s:3, 1m:7, 1s:8')
         ];
 

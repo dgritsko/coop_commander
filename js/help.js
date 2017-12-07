@@ -1,5 +1,7 @@
 (function() {
     function create() {
+        game.stage.disableVisibilityChange = true;
+        
         game.stage.backgroundColor = '#000000';
 
         addText('Story', 50, 50);

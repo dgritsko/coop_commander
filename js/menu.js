@@ -147,7 +147,7 @@
     function debug() {
         // Put any debug code here...
         menuMusic.stop();
-        game.state.start('Cutscene', true, false, {'ratsKilled': 50});
+        game.state.start('Score', true, false, {'ratsKilled': 50});
     }
 
     function showQuote(index) {

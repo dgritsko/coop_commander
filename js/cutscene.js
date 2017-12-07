@@ -10,6 +10,7 @@
     }
 
     function preload() {
+        game.time.advancedTiming = true;
     }
 
     function create() {
@@ -25,19 +26,15 @@
 
         Util.drawSunrise(sun, game);
 
-        var texts = [
-            'first',
-            'second',
-            'third'
-        ];
+        var stats = createStats(gameState);
 
-        levelComplete(texts);
+        levelComplete(stats);
 
         ground = Util.drawGrass(game);
 
-        drawRats(gameState.ratsKilled);
+        drawRats(gameState.currentRatInfo);
 
-        var extraDelay = 500 * texts.length;
+        var extraDelay = 500 * stats.length;
 
         game.time.events.add(extraDelay + 1500, drawPredator, this)
 
@@ -73,11 +70,28 @@
     function nextLevel() {
         game.camera.fade('#000000', 250);
         game.camera.onFadeComplete.add(function() { 
-            game.state.start('Game', true, false, gameState);
+
+            gameState.level += 1;
+            gameState.money += 1;
+
+            game.state.start('Game', true, false, { previousState: gameState });
         }, this);
     }
 
-    function levelComplete(texts) {
+    function createStats(gameState) {
+        var result = [];
+        var killedByFlashlight = _.filter(gameState.inactiveRats, function(r) { return r.state == RatStates.KILLED_BY_FLASHLIGHT; }).length;
+        result.push('Killed by Flashlight: ' + killedByFlashlight);
+
+        var killedByShovel = _.filter(gameState.inactiveRats, function(r) { return r.state == RatStates.KILLED_BY_SHOVEL; }).length;
+        result.push('Killed by Shovel: ' + killedByShovel);
+
+        // TODO: Moar stuff!
+
+        return result;
+    }
+
+    function levelComplete(stats) {
         fxSuccess.play();
 
         var label = game.add.bitmapText(game.world.centerX, 150, 'blackOpsOne', 'Level ' + gameState.level + ' Complete', 28);
@@ -88,22 +102,22 @@
         tween.delay(500);
 
         tween.onComplete.add(function() {
-            drawLevelStats(texts);
+            drawLevelStats(stats);
         });        
 
         tween.start();
     }
 
-    function drawLevelStats(texts) {
+    function drawLevelStats(stats) {
         var fontSize = 24;
         var margin = 2;
         var delay = 500;
 
-        texts.forEach(function(text, index) {
+        stats.forEach(function(stat, index) {
             game.time.events.add(delay * (index + 1), function () {
                 fxScore.play();
 
-                var textLabel = game.add.bitmapText(game.world.centerX, 180 + (fontSize + margin) * index, 'blackOpsOne', text, fontSize);
+                var textLabel = game.add.bitmapText(game.world.centerX, 180 + (fontSize + margin) * index, 'blackOpsOne', stat, fontSize);
                 textLabel.anchor.setTo(0.5, 0.5);
 
                 var t1 = game.add.tween(textLabel.scale).to({ x : 2, y : 2}, 150, Phaser.Easing.Cubic.Out);
@@ -270,40 +284,33 @@
         t1.start();
     }
 
-    function drawRats(numRats) {
+    function drawRats(ratInfos) {
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
         rats = game.add.group();
 
-        for (var i = 0; i < numRats; i++) {
-            var rat = game.add.sprite(game.world.centerX, 500, 'rat00', Math.floor(Math.random() * 12));
+        var addRat = function(ratInfo) {
+            var rat = game.add.sprite(game.world.centerX, 500, ratInfo.spriteName, Math.floor(Math.random() * 12));
             game.physics.arcade.enable(rat);
             rat.anchor.setTo(0.5, 0.5);
+            var scale = ratInfo.scale.x;
+            rat.scale.setTo(scale, scale);
             rat.body.bounce.setTo(0.5, 0.5);
             rat.body.gravity.setTo(0, 400);
-            rat.body.setSize(10, 10, 10, 10);
+            var bodySize = 10 * scale;
+            rat.body.setSize(bodySize, bodySize, bodySize, bodySize);
             rat.body.velocity.x = (Math.random() * 100) - 50;
             rat.body.velocity.y = (Math.random() * 200) - 150;
-            rat.body.angularVelocity = (Math.random() * 180) - 90;
+            rat.angle = (Math.random() * 180) - 90;
             rat.body.drag = new Phaser.Point(20, 200);
             rats.add(rat);
-        }
+        };
 
-        var friction = 0.8;
+        ratInfos.forEach(function(r) { addRat(r); });
+
         var minVelocity = 0.05;
 
         updateCallbacks.push(function() {
-            function slowDown(rat) {
-                rat.body.angularVelocity *= friction;
-                if (rat.body.angularVelocity <= minVelocity) {
-                    rat.body.angularVelocity = 0.0;
-                }
-            }
-            game.physics.arcade.collide(rats, rats, function (a, b) {
-                slowDown(a);
-                slowDown(b);
-            });
-
             game.physics.arcade.collide(rats, ground, function(a, b) {
                 a.body.velocity.y = 0;
             });
@@ -315,5 +322,9 @@
         predator = null;
     }
 
-    CoopCommander.Cutscene = {init: init, preload: preload, create: create, update: update, shutdown: shutdown};
+    function render() {
+        game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");   
+    }
+
+    CoopCommander.Cutscene = {init: init, preload: preload, create: create, update: update, shutdown: shutdown, render: render};
 })();

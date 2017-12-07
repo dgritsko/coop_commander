@@ -62,6 +62,8 @@
     }
 
     function create() {
+        game.stage.disableVisibilityChange = true;
+        
         pauseDuration = game.time.now + 1000;
 
         var titleLabel = game.add.bitmapText(game.world.centerX, 60, 'blackOpsOne', 'Papa G\'s Coop Commander', 64);
