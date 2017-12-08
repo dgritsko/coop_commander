@@ -1,3 +1,9 @@
+$(document).bind("keydown", function (e) {
+    if (e.keyCode == 8) { // backspace
+      e.preventDefault();
+    }
+});
+
 var game = new Phaser.Game(1280, 720, Phaser.AUTO, 'game');
 
 game.state.add('Boot', CoopCommander.Boot);

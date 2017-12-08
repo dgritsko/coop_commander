@@ -7,6 +7,12 @@
     
     }
 
+    var playerName;
+    var scoreText;
+    var maxLength = 100;
+
+    var remainingTime;
+
     function create() {
         game.stage.disableVisibilityChange = true;
         
@@ -17,12 +23,11 @@
         var gameOverText = game.add.bitmapText(game.world.centerX, game.world.centerY, 'blackOpsOne', 'Game Over', 28);
         gameOverText.anchor.setTo(0.5, 0.5);
 
-        var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        spaceKey.onDown.add(function() {
-            showMenu();
-        }, this);
-
-        
+        // var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        // spaceKey.onDown.add(function() {
+        //     showMenu();
+        // }, this);
+       
         enterKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
         enterKey.onDown.add(function() { 
             showMenu();
@@ -33,34 +38,49 @@
         Util.drawGrass(game);
 
         game.camera.flash('#000000', 250);
+
+        playerName = '';
+        scoreText = game.add.bitmapText(game.world.centerX, game.world.centerY + 34, 'blackOpsOne', '', 28);
+        scoreText.anchor.setTo(0.5, 0.5);
+        
+        getInput();
+
+        remainingTime = game.time.now + (1000 * 20);
+        timeLabel = game.add.bitmapText(game.world.width - 44, 10, 'blackOpsOne', '', 28);
     }
 
     function update() {
-        if (game.input.activePointer.isDown) {
+        scoreText.text = playerName + '_';
+
+        var remainingSeconds = Math.floor((remainingTime - game.time.now) / 1000);
+
+        if (remainingSeconds <= 0) {
             showMenu();
         }
+
+        timeLabel.text = remainingSeconds;        
     }
 
     function showMenu() {
         game.camera.fade('#000000', 250);
         game.camera.onFadeComplete.add(function() { 
+            console.log('TODO: Save score for', playerName);
+
             game.state.start('Menu');
         }, this);
     }
 
     function getInput() {
-        var text = '';
-        
         game.input.keyboard.addCallbacks(this, null, function(evt) { 
-            var char = String.fromCharCode(evt.keyCode).toString();
-            var pattern = /[A-Za-z0-9\s]/;
-            
-            if (pattern.test(char)) {
-                text += char;
-                console.log(text);
+            // var char = String.fromCharCode(evt.keyCode).toString();
+            // var pattern = /[A-Za-z0-9 ]/;
+            // if (pattern.test(char)) {
+
+            if (evt.key.length == 1 && playerName.length < maxLength) {
+                playerName += evt.key;
             } else if (evt.keyCode === 8) {
-                //console.log(evt.keyCode);
-                console.log('backspace pressed');
+                evt.preventDefault();
+                playerName = playerName.length > 0 ? playerName.slice(0, playerName.length - 1) : '';
             }
         }, null);
     }
