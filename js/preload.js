@@ -27,6 +27,7 @@
         game.load.spritesheet('garbagetruck00', 'assets/garbagetruck00.png', 308, 142);
         game.load.image('ufo00', 'assets/ufo00.gif');
         game.load.image('beam00', 'assets/beam00.png');
+        game.load.spritesheet('powerups', 'assets/powerups.png', 24, 24);
         
         // Sounds
         game.load.audio('whoosh00', 'assets/sound/fx/whoosh00.mp3');

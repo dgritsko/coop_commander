@@ -102,6 +102,7 @@ Rat.prototype.setupSprite = function(game) {
     var width = game.cache.getImage(spriteName).width;
     this.sprite = game.add.sprite(game.camera.bounds.x - (width / 10), Math.random() * game.world.height, spriteName);
     this.sprite.scale.setTo(scale, scale);
+    this.sprite.anchor.setTo(0.5, 0.5);
     this.sprite.id = this.id;
     game.physics.arcade.enable(this.sprite);
     
