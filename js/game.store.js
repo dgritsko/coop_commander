@@ -118,8 +118,7 @@ class Store {
 
         this.currItem = new Trap(Items[this.selectedIndex], true);
         
-        var doneLabelY = this.getIndexY(this.availableItems.length) + 20;
-        this.doneLabel = game.add.bitmapText(50, doneLabelY, 'blackOpsOne', 'Done', 28);
+        this.doneLabel = game.add.bitmapText(game.world.width - 170, 20, 'blackOpsOne', 'Done', 28);
 
         this.doneLabel.inputEnabled = true;
         this.doneLabel.events.onInputUp.add(function() {
@@ -204,6 +203,11 @@ Store.prototype.done = function() {
     fxReload.play();
 }
 
+Store.prototype.error = function() {
+    fxError.play();
+    game.camera.flash(0x000000, 50);    
+}
+
 Store.prototype.update = function() {
     var remainingSeconds = Math.floor((this.remainingTime - game.time.now) / 1000);
     if (remainingSeconds <= 5) {
@@ -224,6 +228,7 @@ Store.prototype.update = function() {
         this.pointerDown = false;
 
         if (!this.currItem.canPlace()) {
+            this.error();
             return;
         }
 
@@ -245,8 +250,7 @@ Store.prototype.update = function() {
             }
         } else {
             // can't place item, not enough funds
-            fxError.play();
-            game.camera.flash(0x000000, 50);            
+            this.error();        
         }
     }
 }

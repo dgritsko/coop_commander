@@ -65,5 +65,5 @@ Trap.prototype.kill = function() {
 }
 
 Trap.prototype.canPlace = function() {
-    return game.input.x >= 150;
+    return game.input.x >= 150 && game.input.x <= 850;
 }

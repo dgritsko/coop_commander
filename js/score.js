@@ -46,7 +46,12 @@
         getInput();
 
         remainingTime = game.time.now + (1000 * 20);
-        timeLabel = game.add.bitmapText(game.world.width - 44, 10, 'blackOpsOne', '', 28);
+        doneLabel = game.add.bitmapText(game.world.width - 170, 20, 'blackOpsOne', 'Done', 28);
+
+        doneLabel.inputEnabled = true;
+        doneLabel.events.onInputUp.add(function() {
+            showMenu();
+        }, this);
     }
 
     function update() {
@@ -58,7 +63,7 @@
             showMenu();
         }
 
-        timeLabel.text = remainingSeconds;        
+        doneLabel.text = 'Done (' + remainingSeconds + ')';
     }
 
     function showMenu() {

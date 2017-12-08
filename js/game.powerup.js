@@ -22,8 +22,8 @@ class Powerup {
 
         // TODO: Restrict the area in which powerups can spawn a little more than just "anywhere"
 
-        var x = Math.random() * game.world.width;
-        var y = Math.random() * game.world.height;
+        var x = game.rnd.integerInRange(100, game.world.width - 450);
+        var y = game.rnd.integerInRange(100, game.world.height - 100);
 
         this.sprite = game.add.sprite(x, y, 'powerups', this.id);
         this.sprite.anchor.setTo(0.5, 0.5);

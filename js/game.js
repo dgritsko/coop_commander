@@ -333,15 +333,7 @@
 
         var pauseKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
         pauseKey.onDown.add(function() {
-            console.log('todo: pause menu');
-            if (game.paused) {
-                gameState.pauseEnded = game.time.now;
-
-                var pauseDuration = gameState.pauseEnded - gameState.pauseBegan;
-                console.log('pause duration: ', pauseDuration);
-            } else {
-                gameState.pauseBegan = game.time.now;
-            }
+            // TODO: Pause menu
             
             game.paused = !game.paused;
         }, this);
