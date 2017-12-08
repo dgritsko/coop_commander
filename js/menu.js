@@ -1,6 +1,10 @@
 (function() {
-    var menuMinX = 570;
-    var menuMinY = 130;
+    var menuMinX = 300;
+    var menuMinY = 230;
+    var quoteX = 150;
+    var quoteY = 525;
+    var highScoreX = 700;
+    var highScoreY = 130;
 
     var isStarting = false;
 
@@ -83,7 +87,7 @@
             menuItems.children[selectedIndex].events.onInputUp.dispatch();
         }, this);
 
-        quoteDisplay = game.add.bitmapText(150, 250, 'blackOpsOne', '', 28);
+        quoteDisplay = game.add.bitmapText(quoteX, quoteY, 'blackOpsOne', '', 28);
         showQuote();
 
         qKey = game.input.keyboard.addKey(Phaser.Keyboard.Q);
@@ -209,11 +213,11 @@
 
         var fontSize = 28;
         
-        var nameLabel = game.add.bitmapText(x, y, 'blackOpsOne', 'High Scores', fontSize);
+        var highScoreLabel = game.add.bitmapText(highScoreX + 144, highScoreY, 'blackOpsOne', 'High Scores', fontSize);
 
         for (var i = 0; i < highScores.length; i++) {
-            var x = 650;
-            var y = 200 + i * fontSize;
+            var x = highScoreX;
+            var y = highScoreY + (i + 1) * fontSize;
 
             var maxLength = 26;
             var name = highScores[i].name.length > maxLength ? highScores[i].name.slice(0, maxLength) + '...' : highScores[i].name;
