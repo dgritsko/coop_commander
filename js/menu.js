@@ -91,7 +91,9 @@
             showQuote();
         }, this);
 
-        highlightIndex(selectedIndex);   
+        highlightIndex(selectedIndex);
+
+        showHighScores();
     }
 
     function update() {
@@ -189,6 +191,37 @@
         quoteText = '"' + quoteText + '"\n         - Papa G';
 
         quoteDisplay.text = quoteText;
+    }
+
+    function showHighScores() {
+        var highScores = [
+            { name: 'Player 1', score: 200 },
+            { name: 'Player 2', score: 200 },
+            { name: 'Player 3', score: 200 },
+            { name: 'Player 4 Has a Very Long Name But It\'s OK', score: 200 },
+            { name: 'Player 5', score: 200 },
+            { name: 'Player 6', score: 200 },
+            { name: 'Player 7', score: 200 },
+            { name: 'Player 8', score: 200 },
+            { name: 'Player 9', score: 200 },
+            { name: 'Player 10', score: 200 }
+        ];
+
+        var fontSize = 28;
+        
+        var nameLabel = game.add.bitmapText(x, y, 'blackOpsOne', 'High Scores', fontSize);
+
+        for (var i = 0; i < highScores.length; i++) {
+            var x = 650;
+            var y = 200 + i * fontSize;
+
+            var maxLength = 26;
+            var name = highScores[i].name.length > maxLength ? highScores[i].name.slice(0, maxLength) + '...' : highScores[i].name;
+
+            var prefixLabel = game.add.bitmapText(x, y, 'blackOpsOne', (i + 1) + '.', fontSize);
+            var nameLabel = game.add.bitmapText(x + 40, y, 'blackOpsOne', name, fontSize);
+            var scoreLabel = game.add.bitmapText(x + 400, y, 'blackOpsOne', highScores[i].score, fontSize);
+        }
     }
 
     function updateBackgroundRats() {
