@@ -1,8 +1,8 @@
 RatStates = {
     STOPPED: 0,
     HUNGRY: 1,
-    RETREATING: 2,
-    RETREATED: 3,
+    ESCAPING: 2,
+    ESCAPED: 3,
     KILLED_BY_SHOVEL: 4,
     KILLED_BY_FLASHLIGHT: 5
 };
@@ -135,7 +135,7 @@ Rat.prototype.update = function(food, items, player) {
         this.sprite.animations.play('right');
     }
 
-    if (this.state == RatStates.RETREATING) {
+    if (this.state == RatStates.ESCAPING) {
         this.sprite.animations.play('left');
     }
 }
@@ -151,7 +151,7 @@ Rat.prototype.shouldEat = function() {
 }
 
 Rat.prototype.eat = function() {
-    this.state = RatStates.RETREATING;
+    this.state = RatStates.ESCAPING;
     this.sprite.body.velocity.x *= -1;
     this.sprite.body.velocity.y *= 0.25;
 }

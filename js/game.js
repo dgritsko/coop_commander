@@ -200,9 +200,7 @@
             rat.update(targets, items, player);
 
             if (rat.sprite.alive && !rat.sprite.inCamera) {
-                rat.kill();
-                
-                console.log('killing offscreen rat');
+                rat.kill(RatStates.ESCAPED);
                 gameState.inactiveRats.push(rat);
             }
         }
@@ -391,34 +389,27 @@
         }
         
         hud.levelText = addText(10, 10, 'Level ' + gameState.level);
-
-        hud.flashlightText = addText(10, 40, gameState.flashlights);
-
+        hud.foodText = addText(10, 40, 'Food: ' + gameState.foodCount);
+        hud.scoreText = addText(10, 70, 'Score: ' + gameState.score);
+        hud.upgradePointText = addText(10, 100, '$' + gameState.money);
+        //hud.flashlightText = addText(10, 100, gameState.flashlights);
+        
         hud.flashlights = [];
 
         for (var i = 0; i < gameState.flashlights; i++) {
-            var f = game.add.sprite(44 + i * 30, 40, 'flashlight');
+            //var x = 44 + i * 30;
+            var x = 10 + i * 30;
+
+            var f = game.add.sprite(x, 130, 'flashlight');
             f.scale.setTo(1/3.8, 1/3.8);
             hud.flashlights.push(f);
         }
-
-        hud.foodText = addText(10, 70, gameState.foodCount);
-
-        hud.food = [];
-
-        for (var i = 0; i < gameState.foodCount; i++) {
-            console.log('TODO: draw food in HUD');
-        }
-
-        hud.scoreText = addText(10, 100, gameState.score);
-
-        hud.upgradePointText = addText(10, 130, '$' + gameState.money);
     }
 
     function updateHud() {
-        hud.flashlightText.setText(gameState.flashlights);
-        hud.foodText.setText(gameState.foodCount);
-        hud.scoreText.setText(gameState.score);
+        //hud.flashlightText.setText(gameState.flashlights);
+        hud.foodText.setText('Food: ' + gameState.foodCount);
+        hud.scoreText.setText('Score: ' + gameState.score);
         hud.upgradePointText.setText('$' + gameState.money);
     }
 

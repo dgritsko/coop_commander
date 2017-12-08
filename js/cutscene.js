@@ -86,6 +86,9 @@
         var killedByShovel = _.filter(gameState.inactiveRats, function(r) { return r.state == RatStates.KILLED_BY_SHOVEL; }).length;
         result.push('Killed by Shovel: ' + killedByShovel);
 
+        var escaped = _.filter(gameState.inactiveRats, function(r) { return r.state == RatStates.ESCAPED; }).length;
+        result.push('Escaped: ' + escaped);
+
         // TODO: Moar stuff!
 
         return result;

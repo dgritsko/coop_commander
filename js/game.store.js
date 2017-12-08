@@ -129,7 +129,7 @@ class Store {
         var upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
         upKey.onDown.add(function() { 
             if (this.state == StoreStates.ACTIVE) {
-                var newIndex = this.selectedIndex > 0 ? this.selectedIndex - 1 : Items.length - 1;
+                var newIndex = this.selectedIndex > 0 ? this.selectedIndex - 1 : this.availableItems.length - 1;
                 this.selectItem(newIndex);
             }
         }, this);
@@ -137,7 +137,7 @@ class Store {
         var downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
         downKey.onDown.add(function() { 
             if (this.state == StoreStates.ACTIVE) {
-                var newIndex = this.selectedIndex < Items.length - 1 ? this.selectedIndex + 1 : 0;
+                var newIndex = this.selectedIndex < this.availableItems.length - 1 ? this.selectedIndex + 1 : 0;
                 this.selectItem(newIndex);
             } 
         }, this);
