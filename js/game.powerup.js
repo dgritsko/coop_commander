@@ -14,34 +14,21 @@ PowerupTypes = [
 ];
 
 class Powerup {
-    constructor(game) {
-        this.id = Math.floor(Math.random() * PowerupTypes.length);
+    constructor(game, id, x, y) {
+        this.isActive = true;
+        this.id = typeof(id) == 'number' ? id : Math.floor(Math.random() * PowerupTypes.length);
 
-        this.spawnTime = game.time.now;
-        this.lifetime = 1000 * 5;
-
-        // TODO: Restrict the area in which powerups can spawn a little more than just "anywhere"
-
-        var x = game.rnd.integerInRange(100, game.world.width - 450);
-        var y = game.rnd.integerInRange(100, game.world.height - 100);
+        var x = x || game.rnd.integerInRange(100, game.world.width - 450);
+        var y = y || game.rnd.integerInRange(100, game.world.height - 100);
 
         this.sprite = game.add.sprite(x, y, 'powerups', this.id);
         this.sprite.anchor.setTo(0.5, 0.5);
     }
 }
 
-Powerup.prototype.update = function(game) {
-    if (game.time.now > (this.spawnTime + this.lifetime)) {
-        this.kill();
-    }
-}
-
 Powerup.prototype.kill = function() {
-    // TODO
-}
-
-Powerup.prototype.pickup = function() {
-    // TODO: Affect the game state based on the powerup's type
-
-    this.kill();
+    if (this.isActive) {
+        this.sprite.destroy();
+        this.isActive = false;
+    }
 }

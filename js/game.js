@@ -16,6 +16,7 @@
     var chickens = [];
     var items = [];
     var rodents;
+    var powerups = [];
 
     var mode = Modes.Setup;
 
@@ -231,6 +232,38 @@
             return false;
         });
 
+        var playerBounds = player.sprite.getBounds();        
+        for (var i = 0; i < powerups.length; i++) {
+            var powerup = powerups[i];
+
+            if (!powerup.isActive) {
+                continue;
+            }
+
+            var powerupBounds = powerup.sprite.getBounds();
+        
+            if (Phaser.Rectangle.intersects(playerBounds, powerupBounds)) {
+                powerup.kill();
+                // TODO: Play sound effect
+
+                switch (powerup.id) {
+                    case 0:
+                        gameState.foodCount += 1;
+                        createFood(pen, food);                
+                        break;
+                    case 1:
+                        player.increaseSpeed();
+                        game.time.events.add(1000 * 10, function() {
+                            player.resetSpeed();
+                        });
+                    break;
+                    case 2:
+                        gameState.money += 1;
+                        break;
+                }
+            }
+        }
+
         if (player.shovel.alpha) {
             handleAttacks();
         }
@@ -379,7 +412,7 @@
         }
         
         hud.levelText = addText(10, 10, 'Level ' + gameState.level);
-        hud.foodText = addText(10, 40, 'Food: ' + gameState.foodCount);
+        hud.chickenText = addText(10, 40, 'Flock: ' + gameState.foodCount);
         hud.scoreText = addText(10, 70, 'Score: ' + gameState.score);
         hud.upgradePointText = addText(10, 100, '$' + gameState.money);
         //hud.flashlightText = addText(10, 100, gameState.flashlights);
@@ -398,7 +431,7 @@
 
     function updateHud() {
         //hud.flashlightText.setText(gameState.flashlights);
-        hud.foodText.setText('Food: ' + gameState.foodCount);
+        hud.chickenText.setText('Flock: ' + gameState.foodCount);
         hud.scoreText.setText('Score: ' + gameState.score);
         hud.upgradePointText.setText('$' + gameState.money);
     }
@@ -414,6 +447,22 @@
         f.body.moves = false;
         
         group.add(f);
+    }
+
+    function spawnPowerups() {
+        var lifetime = 8;
+
+        var spawnTime = 1;
+
+        game.time.events.add(1000 * spawnTime, function() {
+            var powerup = new Powerup(game);
+            powerups.push(powerup);
+
+            game.time.events.add(1000 * lifetime, function() {
+                powerup.kill();
+                powerups = _.filter(powerups, function(p) { return p !== powerup; });
+            });
+        });
     }
 
     function render() {

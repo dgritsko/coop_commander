@@ -137,3 +137,11 @@ Player.prototype.attack = function(game) {
         tween.start();
     }
 }
+
+Player.prototype.increaseSpeed = function() {
+    this.speed = 400;
+}
+
+Player.prototype.resetSpeed = function() {
+    this.speed = 200;
+}
