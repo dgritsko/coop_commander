@@ -269,5 +269,9 @@
         }
     }
 
-    CoopCommander.Menu = {init: init, preload: preload, create: create, update: update};
+    function shutdown() {
+        game.camera.onFadeComplete.removeAll();        
+    }
+
+    CoopCommander.Menu = {init: init, preload: preload, create: create, update: update, shutdown: shutdown};
 })();

@@ -44,8 +44,6 @@
         gameState.inactiveRats = [];
         gameState.activeRats = GameLevels.level(gameState.level);
 
-        console.log(gameState.activeRats);
-
         if (gameState.money <= 0) {
             mode = Modes.Intro;
         } else {
@@ -423,12 +421,12 @@
     }
 
     function shutdown() {
-        console.log('TODO: Call .destroy() on anything that we still have a reference to so as not to cause memory leaks');
-
         fxFootsteps.stop();
         fxHit.stop();
         fxScream.stop();
         fxWhoosh.stop();
+
+        game.camera.onFadeComplete.removeAll();
     }
 
     CoopCommander.Game = {init: init, preload: preload, create: create, update: update, render: render, shutdown: shutdown};

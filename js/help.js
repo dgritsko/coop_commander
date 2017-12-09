@@ -68,6 +68,10 @@
     function update() {
     }
 
+    function shutdown() {
+        game.camera.onFadeComplete.removeAll();        
+    }
+    
     function showMenu() {
         game.camera.fade('#000000', 250);
         game.camera.onFadeComplete.add(function() { 
@@ -81,5 +85,5 @@
         game.add.bitmapText(x, y, 'blackOpsOne', text, size);
     }
 
-    CoopCommander.Help = {create: create, update: update};
+    CoopCommander.Help = {create: create, update: update, shutdown: shutdown};
 })();

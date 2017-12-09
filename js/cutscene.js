@@ -68,12 +68,11 @@
     }
 
     function nextLevel() {
+        gameState.level += 1;            
+        gameState.money += 1;
+        
         game.camera.fade('#000000', 250);
-        game.camera.onFadeComplete.add(function() { 
-
-            gameState.level += 1;
-            gameState.money += 1;
-
+        game.camera.onFadeComplete.add(function() {
             game.state.start('Game', true, false, { previousState: gameState });
         }, this);
     }
@@ -323,6 +322,8 @@
     function shutdown() {
         predator.destroy();
         predator = null;
+
+        game.camera.onFadeComplete.removeAll();
     }
 
     function render() {

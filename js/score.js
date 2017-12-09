@@ -66,6 +66,10 @@
         doneLabel.text = 'Done (' + remainingSeconds + ')';
     }
 
+    function shutdown() {
+        game.camera.onFadeComplete.removeAll();        
+    }
+
     function showMenu() {
         game.camera.fade('#000000', 250);
         game.camera.onFadeComplete.add(function() { 
@@ -90,5 +94,5 @@
         }, null);
     }
 
-    CoopCommander.Score = {init: init, preload: preload, create: create, update: update};
+    CoopCommander.Score = {init: init, preload: preload, create: create, update: update, shutdown: shutdown};
 })();
