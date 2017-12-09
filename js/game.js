@@ -369,7 +369,7 @@
 
     function killRat(rat, newState) {
         rat.kill(newState);
-        gameState.score += rat.score();
+        gameState.score += rat.type.score;
         gameState.inactiveRats.push(rat);
     }
 

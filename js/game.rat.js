@@ -9,58 +9,67 @@ RatStates = {
 
 RatTypes = [
     { 
-        'rank': 0,
-        'class': 1,
-        'size': 'small'
+        rank: 0,
+        class: 1,
+        size: 'small',
+        score: 5
     },
     { 
-        'rank': 1,
-        'class': 1,
-        'size': 'medium'
+        rank: 1,
+        class: 1,
+        size: 'medium',
+        score: 10
     },
     { 
-        'rank': 2,
-        'class': 1,
-        'size': 'large'
+        rank: 2,
+        class: 1,
+        size: 'large',
+        score: 15
     },
     { 
-        'rank': 3,
-        'class': 2,
-        'size': 'small'
+        rank: 3,
+        class: 2,
+        size: 'small',
+        score: 20
     },
     { 
-        'rank': 4,
-        'class': 2,
-        'size': 'medium'
+        rank: 4,
+        class: 2,
+        size: 'medium',
+        score: 25
     },
     { 
-        'rank': 5,
-        'class': 2,
-        'size': 'large'
+        rank: 5,
+        class: 2,
+        size: 'large',
+        score: 30
     },
     { 
-        'rank': 6,
-        'class': 3,
-        'size': 'small'
+        rank: 6,
+        class: 3,
+        size: 'small',
+        score: 35
     },
     { 
-        'rank': 7,
-        'class': 3,
-        'size': 'medium'
+        rank: 7,
+        class: 3,
+        size: 'medium',
+        score: 40
     },
     { 
-        'rank': 8,
-        'class': 3,
-        'size': 'large'
+        rank: 8,
+        class: 3,
+        size: 'large',
+        score: 45
     },
 ];
 
 class Rat {
     static getSpriteName(type) {
         var spriteName = 'rat00';
-        if (type['class'] == 2) {
+        if (type.class == 2) {
             spriteName = 'rat01';
-        } else if (type['class'] == 3) {
+        } else if (type.class == 3) {
             spriteName = 'rat02';
         }
         return spriteName;
@@ -68,17 +77,53 @@ class Rat {
 
     static getScale(type) {
         var scale = 1.0;
-        if (type['size'] == 'medium') {
-            scale = 1.2;
-        } else if (type['size'] == 'large') {
-            scale = 1.5;
+        switch (type.size) {
+            case 'small':
+                break;
+            case 'medium':
+                scale = 1.2;
+                break;
+            case 'large':
+                scale = 1.4;
+                break;
         }
         return scale;
     }
 
     static getSpeed(type, level) {
-        // TODO: Scale this appropriately
-        return 1;
+        var baseSpeed = 0.5;
+        
+        var levelSpeed = level / 3;
+
+        var classSpeed = 0;
+
+        switch (type.class) {
+            case 1:
+                classSpeed = 0.1;
+                break;
+            case 2:
+                classSpeed = 0.2;
+                break;
+            case 3:
+                classSpeed = 0.3;
+                break;
+        }
+
+        var sizeSpeed = 0;
+
+        switch (type.size) {
+            case 'small':
+                sizeSpeed = 0.05;
+                break;
+            case 'medium':
+                sizeSpeed = 0.1;
+                break;
+            case 'large':
+                sizeSpeed = 0.15;
+                break;
+        }
+
+        return baseSpeed + levelSpeed + classSpeed + sizeSpeed;
     }
 
     constructor(group, type, level) {
@@ -155,9 +200,4 @@ Rat.prototype.eat = function() {
     this.state = RatStates.ESCAPING;
     this.sprite.body.velocity.x *= -1;
     this.sprite.body.velocity.y *= 0.25;
-}
-
-Rat.prototype.score = function() {
-    // TODO
-    return 10;
 }
