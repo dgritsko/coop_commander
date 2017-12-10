@@ -1,9 +1,6 @@
-TrapStates = {
-
-};
-
-class Trap {
+class Item {
     constructor(info, isCurrent, x, y) {
+        this.isActive = true;
         this.isCurrent = isCurrent;
 
         if (isCurrent) {
@@ -25,7 +22,7 @@ class Trap {
     }
 }
 
-Trap.prototype.update = function() {
+Item.prototype.update = function() {
     if (this.isCurrent) {
         var menuWidth = 100;
         var fadeDistance = 50;
@@ -59,11 +56,11 @@ Trap.prototype.update = function() {
     }
 }
 
-Trap.prototype.kill = function() {
+Item.prototype.kill = function() {
     this.sprite.destroy();
     this.graphics.destroy();
 }
 
-Trap.prototype.canPlace = function() {
+Item.prototype.canPlace = function() {
     return game.input.x >= 150 && game.input.x <= 850;
 }

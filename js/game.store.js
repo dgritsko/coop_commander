@@ -111,12 +111,12 @@ class Store {
             var x = existingItems[i]['x'];
             var y = existingItems[i]['y'];
             
-            this.placedItems.push(new Trap(info, false, x, y));
+            this.placedItems.push(new Item(info, false, x, y));
         }
 
         this.updatePriceLabels();
 
-        this.currItem = new Trap(Items[this.selectedIndex], true);
+        this.currItem = new Item(Items[this.selectedIndex], true);
         
         this.doneLabel = game.add.bitmapText(game.world.width - 170, 20, 'blackOpsOne', 'Done', 28);
 
@@ -160,7 +160,7 @@ Store.prototype.selectItem = function(index, silent) {
     var y = this.getIndexY(index);
 
     this.currItem.kill();
-    this.currItem = new Trap(info, true);
+    this.currItem = new Item(info, true);
     this.selection.y = y;
 
     this.selectedIndex = index;
@@ -239,7 +239,7 @@ Store.prototype.update = function() {
 
             this.placedItems.push(this.currItem);
 
-            this.currItem = new Trap(Items[this.selectedIndex], true);
+            this.currItem = new Item(Items[this.selectedIndex], true);
 
             this.updatePriceLabels();
 

@@ -168,7 +168,7 @@
 
     function update() {
         if (mode == Modes.Setup) {
-            placeTraps();
+            placeItems();
         }
 
         if (mode == Modes.Play) {
@@ -181,7 +181,7 @@
         }
     }
 
-    function placeTraps() {
+    function placeItems() {
         store.update();
 
         if (store.state == StoreStates.DONE) {
