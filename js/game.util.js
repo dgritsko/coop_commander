@@ -123,14 +123,14 @@ class GameUtil {
         return g;
     }
 
-    static drawButton(game, x, y, label, onInputDown) {
+    static drawTextButton(game, x, y, label, onInputUp, that) {
         var t = game.add.bitmapText(x, y, 'blackOpsOne', label, 28);
-        if (onInputDown) {
+        if (onInputUp) {
             var margin = 10;
 
             t.hitArea = new Phaser.Rectangle(-margin, -margin, t.width + margin * 2, t.height + margin * 2);                
             t.inputEnabled = true;
-            t.events.onInputDown.add(onInputDown, this);                
+            t.events.onInputUp.add(onInputUp, that);             
         }
 
         return t;

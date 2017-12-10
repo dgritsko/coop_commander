@@ -46,10 +46,8 @@
         getInput();
 
         remainingTime = game.time.now + (1000 * 20);
-        doneLabel = game.add.bitmapText(game.world.width - 170, 20, 'blackOpsOne', 'Done', 28);
 
-        doneLabel.inputEnabled = true;
-        doneLabel.events.onInputUp.add(function() {
+        doneLabel = GameUtil.drawTextButton(game, game.world.width - 170, 20, 'Done', function() {
             showMenu();
         }, this);
     }

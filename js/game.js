@@ -392,17 +392,17 @@
 
         var menu = GameUtil.drawKey(game, game.world.centerX - menuWidth / 2, game.world.centerY - menuHeight / 2, menuWidth, menuHeight);
 
-        var continueButton = GameUtil.drawButton(game, menuWidth * 0.25 - 30, 60, 'Continue', function() {
+        var continueButton = GameUtil.drawTextButton(game, menuWidth * 0.25 - 30, 60, 'Continue', function() {
             menu.kill();
             game.paused = false;
-        });
+        }, this);
         menu.addChild(continueButton);
         continueButton.tint = 0x70665B;
 
-        var quitButton = GameUtil.drawButton(game, menuWidth * 0.75 - 44, 60, 'Quit', function() {
+        var quitButton = GameUtil.drawTextButton(game, menuWidth * 0.75 - 44, 60, 'Quit', function() {
             game.state.start('Menu');
             game.paused = false;
-        });
+        }, this);
         menu.addChild(quitButton);
         quitButton.tint = 0x70665B;
 

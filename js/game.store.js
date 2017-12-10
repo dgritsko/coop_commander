@@ -129,10 +129,7 @@ class Store {
         var currInfo = Items[this.selectedIndex];
         this.currItem = currInfo.create(currInfo, true);
         
-        this.doneLabel = game.add.bitmapText(game.world.width - 170, 20, 'blackOpsOne', 'Done', 28);
-
-        this.doneLabel.inputEnabled = true;
-        this.doneLabel.events.onInputUp.add(function() {
+        this.doneLabel = GameUtil.drawTextButton(game, game.world.width - 170, 20, 'Done', function() {
             this.done();
         }, this);
 

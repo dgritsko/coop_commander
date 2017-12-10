@@ -113,16 +113,15 @@
     }
 
     function highlightIndex(index) {
-        menuArrow.y = menuMinY + index * 28 + 14;
+        menuArrow.y = menuItems.children[index].centerY + 3;
     }
 
     function addMenuItem(text, items, callback) {
         var fontSize = 28;
 
-        var label = game.add.bitmapText(menuMinX, menuMinY + items.children.length * fontSize, 'blackOpsOne', text, 28);
+        var y = menuMinY + items.children.length * (fontSize + 12);
 
-        label.inputEnabled = true;
-        label.events.onInputUp.add(callback);
+        var label = GameUtil.drawTextButton(game, menuMinX, y, text, callback, this);
 
         items.add(label);
     }
@@ -273,5 +272,17 @@
         game.camera.onFadeComplete.removeAll();        
     }
 
-    CoopCommander.Menu = {init: init, preload: preload, create: create, update: update, shutdown: shutdown};
+    function render() {
+        // for (var i = 0; i < menuItems.children.length; i++) {
+        //     var l = menuItems.children[i];
+
+        //     var rect = new Phaser.Rectangle();
+        //     rect.copyFrom(l.hitArea);
+        //     rect.offset(l.x, l.y);
+
+        //     game.debug.geom(rect, 'rgba(255, 0, 0, 1)')
+        // }
+    }
+
+    CoopCommander.Menu = {init: init, preload: preload, create: create, update: update, shutdown: shutdown, render: render};
 })();
