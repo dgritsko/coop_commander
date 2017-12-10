@@ -232,7 +232,12 @@
             return false;
         });
 
-        var playerBounds = player.sprite.getBounds();        
+        var playerBounds = player.sprite.getBounds();
+        var originalWidth = playerBounds.width;
+        var originalHeight = playerBounds.height;
+
+        playerBounds = playerBounds.scale(0.5, 0.75).offset(originalWidth * 0.25, originalHeight * 0.25);
+
         for (var i = 0; i < powerups.length; i++) {
             var powerup = powerups[i];
 
@@ -467,6 +472,10 @@
 
     function render() {
         game.debug.text(gameState.inactiveRats.length + ' / ' + gameState.activeRats.length, 2, 14, "#00ff00");   
+
+        // if (mode == Modes.Play) {
+        //     game.debug.geom(player.sprite.getBounds(), 'rgba(0, 0, 255, 0.5)');
+        // }
     }
 
     function shutdown() {
