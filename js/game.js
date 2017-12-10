@@ -19,6 +19,7 @@
     var powerups = [];
 
     var mode = Modes.Setup;
+    var pauseMenu;
 
     function init(args) {
         hud = {};
@@ -369,7 +370,11 @@
 
         var pauseKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
         pauseKey.onDown.add(function() {
-            // TODO: Pause menu
+            if (!game.paused) {
+                pauseMenu = drawMenu();
+            } else {
+                pauseMenu.kill();
+            }
             
             game.paused = !game.paused;
         }, this);
@@ -379,6 +384,75 @@
             // TODO: Add any debug functionality here
             food = game.add.group();
         });
+    }
+
+    function drawMenu() {
+        var menuWidth = 500;
+        var menuHeight = 400;
+
+        var menu = GameUtil.drawKey(game, game.world.centerX - menuWidth / 2, game.world.centerY - menuHeight / 2, menuWidth, menuHeight);
+
+        var continueButton = GameUtil.drawButton(game, menuWidth * 0.25 - 30, 60, 'Continue', function() {
+            menu.kill();
+            game.paused = false;
+        });
+        menu.addChild(continueButton);
+        continueButton.tint = 0x70665B;
+
+        var quitButton = GameUtil.drawButton(game, menuWidth * 0.75 - 44, 60, 'Quit', function() {
+            game.state.start('Menu');
+            game.paused = false;
+        });
+        menu.addChild(quitButton);
+        quitButton.tint = 0x70665B;
+
+        debugItems = [continueButton, quitButton];
+
+        function drawLabel(x, y, text, size) {
+            size = size || 18;
+            var l = game.add.bitmapText(x, y, 'blackOpsOne', text, size);
+            l.anchor.setTo(0.5, 0.5);
+            menu.addChild(l);
+            l.tint = 0x70665B;
+        }
+
+        var keySize = 40;
+        var keyX = 290;
+        var keyY = 260;
+        var keySeparator = 6;
+
+        var spaceKey = GameUtil.drawKey(game, 50, keyY + keySize + keySeparator, keySize * 5, keySize);
+        menu.addChild(spaceKey);
+
+        var firstRowY = 170;
+
+        var flashlightKey = GameUtil.drawKey(game, 130, firstRowY, keySize, keySize, 'F');
+        menu.addChild(flashlightKey);
+
+        var pauseKey = GameUtil.drawKey(game, 336, firstRowY, keySize, keySize, 'P');
+        menu.addChild(pauseKey);
+
+        var upKey = GameUtil.drawKey(game, keyX + keySize + keySeparator, keyY, keySize, keySize, '↑');
+        menu.addChild(upKey);
+
+        var downKey = GameUtil.drawKey(game, keyX + keySize + keySeparator, keyY + keySeparator + keySize, keySize, keySize, '↓');
+        menu.addChild(downKey);
+        
+        var leftKey = GameUtil.drawKey(game, keyX, keyY + keySeparator + keySize, keySize, keySize, '←');
+        menu.addChild(leftKey);
+        
+        var rightKey = GameUtil.drawKey(game, keyX + keySize * 2 + keySeparator * 2, keyY + keySeparator + keySize, keySize, keySize, '→');
+        menu.addChild(rightKey); 
+        
+        drawLabel(spaceKey.centerX, spaceKey.y + spaceKey.height + 16, 'Attack');
+        drawLabel(downKey.centerX, downKey.y + downKey.height + 16, 'Move');
+        drawLabel(pauseKey.centerX, pauseKey.y + pauseKey.height + 16, 'Pause');  
+        drawLabel(flashlightKey.centerX, flashlightKey.y + flashlightKey.height + 16, 'Flashlight'); 
+        
+        drawLabel(menu.width / 2, 24, 'Paused', 32);
+        drawLabel(menu.width / 2, 140, 'Controls', 32);
+
+        return menu;
     }
     
     function useFlashlight() {

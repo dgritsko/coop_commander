@@ -89,4 +89,50 @@ class GameUtil {
             }
         }
     }
+
+    static drawKey(game, x, y, width, height, label, onInputDown) {
+        var radius = 4;
+        var borderWidth = 2;
+        var borderColor = 0xE7D296;
+        var keyColor = 0xF8EFC8;
+        var keyLabelColor = '#70665B';
+
+        var g = game.add.graphics(x, y);
+
+        g.beginFill(borderColor);
+        g.drawRoundedRect(0, 0, width, height, radius);
+        g.endFill();
+
+        g.beginFill(keyColor);
+        g.drawRoundedRect(borderWidth, borderWidth, width - borderWidth * 2, height - borderWidth * 2, radius);
+        g.endFill();
+
+        if (label) {
+            var t = game.add.text(0, 0, label, { 'fill': keyLabelColor });
+            t.anchor.setTo(0.5, 0.5);
+            t.x = width / 2;
+            t.y = height / 2;
+            g.addChild(t);
+        }
+
+        if (onInputDown) {
+            g.inputEnabled = true;
+            g.events.onInputDown.add(onInputDown, this);
+        }
+
+        return g;
+    }
+
+    static drawButton(game, x, y, label, onInputDown) {
+        var t = game.add.bitmapText(x, y, 'blackOpsOne', label, 28);
+        if (onInputDown) {
+            var margin = 10;
+
+            t.hitArea = new Phaser.Rectangle(-margin, -margin, t.width + margin * 2, t.height + margin * 2);                
+            t.inputEnabled = true;
+            t.events.onInputDown.add(onInputDown, this);                
+        }
+
+        return t;
+    }
 }
