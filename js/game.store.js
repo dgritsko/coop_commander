@@ -1,63 +1,73 @@
 var Items = [
     {
-        'id': 0,
-        'name': 'Basic Trap',
-        'description': '',
-        'spriteName': 'trap00',
-        'cost': 2,
-        'radius': 200,
-        'minLevel': 1,
-        'max': -1
+        id: 0,
+        name: 'Poison',
+        description: '',
+        cost: 2,
+        minLevel: 1,
+        max: -1,
+        menuSprite: 'poison',
+        create: function(info, isCurrent, x, y) { return new Poison(info, isCurrent, x, y); }
     },
     {
-        'id': 1,
-        'name': 'Rat Poison',
-        'description': 'Cheap and effective, but harmful to use.',
-        'spriteName': 'trap01',
-        'cost': 1,
-        'radius': 100,
-        'minLevel': 1,
-        'max': -1
+        id: 1,
+        name: 'Small Trap',
+        description: '',
+        cost: 2,
+        minLevel: 1,
+        max: -1,
+        menuSprite: 'simpletrap',
+        create: function(info, isCurrent, x, y) { return new SmallTrap(info, isCurrent, x, y); }
     },
     {
-        'id': 2,
-        'name': 'No-Kill Trap',
-        'description': '',
-        'spriteName': 'trap01',
-        'cost': 10,
-        'radius': 75,
-        'minLevel': 2,
-        'max': -1
+        id: 2,
+        name: 'Large Trap',
+        description: '',
+        cost: 1,
+        minLevel: 1,
+        max: -1,
+        menuSprite: 'simpletrap',
+        create: function(info, isCurrent, x, y) { return new LargeTrap(info, isCurrent, x, y); }
     },
     {
-        'id': 3,
-        'name': 'Good Trap',
-        'description': '',
-        'spriteName': 'trap01',
-        'cost': 15,
-        'radius': 75,
-        'minLevel': 3,
-        'max': -1
+        id: 3,
+        name: 'Heavy-Duty Trap',
+        description: '',
+        cost: 10,
+        minLevel: 2,
+        max: -1,
+        menuSprite: 'simpletrap',
+        create: function(info, isCurrent, x, y) { return new HeavyDutyTrap(info, isCurrent, x, y); }
     },
     {
-        'id': 4,
-        'name': 'Cat',
-        'description': '',
-        'spriteName': 'trap01',
-        'cost': 15,
-        'radius': 75,
-        'minLevel': 4,
-        'max': -1
+        id: 4,
+        name: 'Humane Trap',
+        description: '',
+        cost: 15,
+        minLevel: 3,
+        max: -1,
+        menuSprite: 'simpletrap',
+        create: function(info, isCurrent, x, y) { return new HumaneTrap(info, isCurrent, x, y); }
     },
     {
-        'id': 5,
-        'name': 'John',
-        'description': '',
-        'spriteName': 'trap01',
-        'cost': 15,
-        'radius': 75,
-        'minLevel': 5,
-        'max': 1
+        id: 5,
+        name: 'Cat',
+        description: '',
+        cost: 15,
+        minLevel: 4,
+        max: -1,
+        menuSprite: 'simpletrap',
+        create: function(info, isCurrent, x, y) { return new Cat(info, isCurrent, x, y); }
+    },
+    {
+        id: 6,
+        name: 'John',
+        description: '',
+        cost: 15,
+        minLevel: 5,
+        max: 1,
+        menuSprite: 'simpletrap',
+        create: function(info, isCurrent, x, y) { return new John(info, isCurrent, x, y); }
     },
 ];
 
@@ -86,9 +96,9 @@ class Store {
         function addItem(info, that) {
             var index = that.availableItems.length;
             var y = that.getIndexY(index);
-            var t = game.add.sprite(50, y, info['spriteName']);
+            var t = game.add.sprite(50, y, info.menuSprite);
 
-            var l = game.add.bitmapText(50 + 20, y + 28, 'blackOpsOne', '$' + info['cost'], 18);
+            var l = game.add.bitmapText(50 + 20, y + 28, 'blackOpsOne', '$' + info.cost, 18);
             l.itemId = info.id;
 
             t.inputEnabled = true;
@@ -111,12 +121,13 @@ class Store {
             var x = existingItems[i]['x'];
             var y = existingItems[i]['y'];
             
-            this.placedItems.push(new Item(info, false, x, y));
+            this.placedItems.push(info.create(info, false, x, y));
         }
 
         this.updatePriceLabels();
 
-        this.currItem = new Item(Items[this.selectedIndex], true);
+        var currInfo = Items[this.selectedIndex];
+        this.currItem = currInfo.create(currInfo, true);
         
         this.doneLabel = game.add.bitmapText(game.world.width - 170, 20, 'blackOpsOne', 'Done', 28);
 
@@ -160,7 +171,8 @@ Store.prototype.selectItem = function(index, silent) {
     var y = this.getIndexY(index);
 
     this.currItem.kill();
-    this.currItem = new Item(info, true);
+
+    this.currItem = info.create(info, true);
     this.selection.y = y;
 
     this.selectedIndex = index;
@@ -239,7 +251,8 @@ Store.prototype.update = function() {
 
             this.placedItems.push(this.currItem);
 
-            this.currItem = new Item(Items[this.selectedIndex], true);
+            var currInfo = Items[this.selectedIndex];
+            this.currItem = currInfo.create(currInfo, true);
 
             this.updatePriceLabels();
 
