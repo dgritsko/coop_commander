@@ -132,6 +132,8 @@ class Store {
         this.doneLabel = GameUtil.drawTextButton(game, game.world.width - 170, 20, 'Done', function() {
             this.done();
         }, this);
+        var margin = 10;
+        this.doneLabel.hitArea = new Phaser.Rectangle(-margin, -margin, this.doneLabel.width + margin * 8, this.doneLabel.height + margin * 2);
 
         var upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
         upKey.onDown.add(function() { 

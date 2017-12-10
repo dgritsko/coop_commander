@@ -23,6 +23,8 @@
     function create() {
         isStarting = false;
 
+        game.camera.flash('#000000', 250);
+        
         game.stage.disableVisibilityChange = true;
         game.stage.backgroundColor = 0xa7d9ff;
 
@@ -48,6 +50,9 @@
         var titleLabel = game.add.bitmapText(game.world.centerX, 60, 'blackOpsOne', 'Papa G\'s Coop Commander', 64);
         titleLabel.anchor.setTo(0.5, 0.5);
         
+        var subtitleLabel = game.add.bitmapText(game.world.centerX, 120, 'blackOpsOne', 'Inspired by true events', 24);
+        subtitleLabel.anchor.setTo(0.5, 0.5);
+
         menuItems = game.add.group();
 
         addMenuItem('Start', menuItems, function() {

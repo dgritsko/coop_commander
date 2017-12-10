@@ -90,10 +90,7 @@
         loadingBar.animations.play('default');
 
         if (game.time.now > pauseDuration) {
-            game.camera.fade('#000000', 250);
-            game.camera.onFadeComplete.add(function() { 
-                game.state.start('Menu');   
-            }, this);
+            game.state.start('Menu');   
         }
     }
 

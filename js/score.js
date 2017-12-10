@@ -10,6 +10,7 @@
     var playerName;
     var scoreText;
     var maxLength = 100;
+    var doneLabel;
 
     var remainingTime;
 
@@ -50,6 +51,9 @@
         doneLabel = GameUtil.drawTextButton(game, game.world.width - 170, 20, 'Done', function() {
             showMenu();
         }, this);
+
+        var margin = 10;
+        doneLabel.hitArea = new Phaser.Rectangle(-margin, -margin, doneLabel.width + margin * 8, doneLabel.height + margin * 2); 
     }
 
     function update() {
