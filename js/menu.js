@@ -205,25 +205,28 @@
             { name: 'Player 5', score: 200 },
             { name: 'Player 6', score: 200 },
             { name: 'Player 7', score: 200 },
-            { name: 'Player 8', score: 200 },
-            { name: 'Player 9', score: 200 },
-            { name: 'Player 10', score: 200 }
         ];
 
         var fontSize = 28;
         
         var highScoreLabel = game.add.bitmapText(highScoreX + 144, highScoreY, 'blackOpsOne', 'High Scores', fontSize);
 
-        for (var i = 0; i < highScores.length; i++) {
+        for (var i = 0; i < 10; i++) {
             var x = highScoreX;
             var y = highScoreY + (i + 1) * fontSize;
 
             var maxLength = 26;
-            var name = highScores[i].name.length > maxLength ? highScores[i].name.slice(0, maxLength) + '...' : highScores[i].name;
+
+            var name = '---';
+            var score = '--';
+            if (i < highScores.length) {
+                name = highScores[i].name.length > maxLength ? highScores[i].name.slice(0, maxLength) + '...' : highScores[i].name
+                score = highScores[i].score;
+            }
 
             var prefixLabel = game.add.bitmapText(x, y, 'blackOpsOne', (i + 1) + '.', fontSize);
             var nameLabel = game.add.bitmapText(x + 40, y, 'blackOpsOne', name, fontSize);
-            var scoreLabel = game.add.bitmapText(x + 400, y, 'blackOpsOne', highScores[i].score, fontSize);
+            var scoreLabel = game.add.bitmapText(x + 400, y, 'blackOpsOne', score, fontSize);
         }
     }
 
