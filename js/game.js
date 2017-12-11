@@ -146,7 +146,18 @@
         game.time.events.add(1500, function() {
             game.camera.fade('#000000', 250);
             game.camera.onFadeComplete.add(function() { 
-                var ratInfos = _.map(gameState.inactiveRats, function(r) { return { level: r.level, state: r.state, rank: r.type.rank, class: r.type.class, size: r.type.size, spriteName: r.sprite.key, scale: r.sprite.scale }; });
+        
+                var ratInfos = _.map(gameState.inactiveRats, function(r) { return { 
+                        level: r.level, 
+                        state: r.state, 
+                        rank: r.type.rank, 
+                        class: r.type.class, 
+                        size: r.type.size, 
+                        spriteName: r.sprite.key, 
+                        scale: r.sprite.scale,
+                        isDead: r.isDead()
+                    }; 
+                });
                 gameState.currentRatInfo = ratInfos;
 
                 var itemInfos = _.map(items, function(i) { return { id: i.info.id, x: i.position.x, y: i.position.y }; })

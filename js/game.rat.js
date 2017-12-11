@@ -201,3 +201,12 @@ Rat.prototype.eat = function() {
     this.sprite.body.velocity.x *= -1;
     this.sprite.body.velocity.y *= 0.25;
 }
+
+Rat.prototype.isDead = function() {
+    var deadStates = [ 
+        RatStates.KILLED_BY_SHOVEL,
+        RatStates.KILLED_BY_FLASHLIGHT
+    ];
+
+    return deadStates.indexOf(this.state) > -1;
+};

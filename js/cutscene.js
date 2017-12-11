@@ -34,15 +34,23 @@
 
         ground = Util.drawGrass(game);
 
-        drawRats(gameState.currentRatInfo);
-
         var extraDelay = 500 * stats.length;
 
-        game.time.events.add(extraDelay + 1500, drawPredator, this)
+        var deadRats = _.where(gameState.currentRatInfo, { isDead: true }).length;
 
-        game.time.events.add(extraDelay + 6000, function() { Util.drawSunset(sun, game); }, this);
+        if (deadRats > 0) {
+            drawRats(gameState.currentRatInfo);
 
-        game.time.events.add(extraDelay + 8000, nextLevel, this);
+            game.time.events.add(extraDelay + 1500, drawPredator, this)
+
+            game.time.events.add(extraDelay + 6000, function() { Util.drawSunset(sun, game); }, this);
+
+            game.time.events.add(extraDelay + 8000, nextLevel, this);
+        } else {
+            game.time.events.add(extraDelay + 1000, function() { Util.drawSunset(sun, game); }, this);
+            
+            game.time.events.add(extraDelay + 3000, nextLevel, this);
+        }
 
         fxSmash = game.add.sound('smash00');
         fxSmash.volume = 0.5;
@@ -71,13 +79,8 @@
 
     function updateGameState(state) {
         state.level += 1;
-        
-        var deadStates = [ 
-            RatStates.KILLED_BY_SHOVEL,
-            RatStates.KILLED_BY_FLASHLIGHT
-        ];
 
-        var deadRats = _.filter(state.inactiveRats, function(r) { return deadStates.indexOf(r.state) > -1; }).length;
+        var deadRats = _.where(state.currentRatInfo, { isDead: true }).length;
 
         // TODO: Scale this better?
         state.money += deadRats;
@@ -321,7 +324,11 @@
             rats.add(rat);
         };
 
-        ratInfos.forEach(function(r) { addRat(r); });
+        ratInfos.forEach(function(r) { 
+            if (r.isDead) {
+                addRat(r); 
+            }
+        });
 
         var minVelocity = 0.05;
 
@@ -333,8 +340,10 @@
     }
 
     function shutdown() {
-        predator.destroy();
-        predator = null;
+        if (predator) {
+            predator.destroy();
+            predator = null;
+        }
 
         game.camera.onFadeComplete.removeAll();
         game.time.events.removeAll();
