@@ -6,11 +6,11 @@ $(document).bind("keydown", function (e) {
 
 var game = new Phaser.Game(1280, 720, Phaser.AUTO, 'game');
 
-game.state.add('Boot', CoopCommander.Boot);
-game.state.add('Preload', CoopCommander.Preload);
-game.state.add('Menu', CoopCommander.Menu);
-game.state.add('Game', CoopCommander.Game);
-game.state.add('Score', CoopCommander.Score);
-game.state.add('Cutscene', CoopCommander.Cutscene);
-game.state.add('Help', CoopCommander.Help);
+game.state.add('Boot', CoopDefender.Boot);
+game.state.add('Preload', CoopDefender.Preload);
+game.state.add('Menu', CoopDefender.Menu);
+game.state.add('Game', CoopDefender.Game);
+game.state.add('Score', CoopDefender.Score);
+game.state.add('Cutscene', CoopDefender.Cutscene);
+game.state.add('Help', CoopDefender.Help);
 game.state.start('Boot');

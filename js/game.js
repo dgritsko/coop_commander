@@ -561,5 +561,5 @@
         game.camera.onFadeComplete.removeAll();
     }
 
-    CoopCommander.Game = {init: init, preload: preload, create: create, update: update, render: render, shutdown: shutdown};
+    CoopDefender.Game = {init: init, preload: preload, create: create, update: update, render: render, shutdown: shutdown};
 })();

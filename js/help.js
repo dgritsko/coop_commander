@@ -85,5 +85,5 @@
         game.add.bitmapText(x, y, 'blackOpsOne', text, size);
     }
 
-    CoopCommander.Help = {create: create, update: update, shutdown: shutdown};
+    CoopDefender.Help = {create: create, update: update, shutdown: shutdown};
 })();

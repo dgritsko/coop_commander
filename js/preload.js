@@ -69,10 +69,13 @@
         
         pauseDuration = game.time.now + 1000;
 
-        var titleLabel = game.add.bitmapText(game.world.centerX, 60, 'blackOpsOne', 'Papa G\'s Coop Commander', 64);
+        var titleLabel = game.add.bitmapText(game.world.centerX, 60, 'blackOpsOne', 'Coop Defender', 64);
         titleLabel.anchor.setTo(0.5, 0.5);
 
-        var subtitleLabel = game.add.bitmapText(game.world.centerX, 120, 'blackOpsOne', 'Inspired by true events', 24);
+        var papaGLabel = game.add.bitmapText(game.world.centerX - titleLabel.width / 2, 20, 'blackOpsOne', 'Papa G\'s', 20);
+        papaGLabel.anchor.setTo(0, 0.5);
+
+        var subtitleLabel = game.add.bitmapText(game.world.centerX, 100, 'blackOpsOne', 'Inspired by true events', 24);
         subtitleLabel.anchor.setTo(0.5, 0.5);
 
         loadingBar = game.add.sprite(game.world.centerX, 650, 'loading_bar');
@@ -94,5 +97,5 @@
         }
     }
 
-    CoopCommander.Preload = {preload: preload, create: create, update: update};
+    CoopDefender.Preload = {preload: preload, create: create, update: update};
 })();

@@ -13,5 +13,5 @@
         game.state.start('Preload');
     }
 
-    CoopCommander.Boot = {preload: preload, create: create};
+    CoopDefender.Boot = {preload: preload, create: create};
 })();

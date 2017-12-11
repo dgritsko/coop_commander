@@ -330,5 +330,5 @@
         game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");   
     }
 
-    CoopCommander.Cutscene = {init: init, preload: preload, create: create, update: update, shutdown: shutdown, render: render};
+    CoopDefender.Cutscene = {init: init, preload: preload, create: create, update: update, shutdown: shutdown, render: render};
 })();

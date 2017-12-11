@@ -1,6 +1,6 @@
 (function() {
     function init(args) {
-        CoopCommander.Score.args = args;
+        CoopDefender.Score.args = args;
     }
 
     function preload() {
@@ -19,7 +19,7 @@
         
         game.stage.backgroundColor = 0x001933;
 
-        var args = CoopCommander.Score.args;
+        var args = CoopDefender.Score.args;
 
         var gameOverText = game.add.bitmapText(game.world.centerX, game.world.centerY, 'blackOpsOne', 'Game Over', 28);
         gameOverText.anchor.setTo(0.5, 0.5);
@@ -96,5 +96,5 @@
         }, null);
     }
 
-    CoopCommander.Score = {init: init, preload: preload, create: create, update: update, shutdown: shutdown};
+    CoopDefender.Score = {init: init, preload: preload, create: create, update: update, shutdown: shutdown};
 })();

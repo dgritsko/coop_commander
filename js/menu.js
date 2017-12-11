@@ -11,7 +11,7 @@
     function init(args) {
         args = args || {};
 
-        CoopCommander.Menu.args = args;
+        CoopDefender.Menu.args = args;
         
         args.nextRatSpawn = game.time.now;
     }
@@ -45,12 +45,15 @@
         
         rats = game.add.group();
 
-        var args = CoopCommander.Menu.args;
+        var args = CoopDefender.Menu.args;
 
-        var titleLabel = game.add.bitmapText(game.world.centerX, 60, 'blackOpsOne', 'Papa G\'s Coop Commander', 64);
+        var titleLabel = game.add.bitmapText(game.world.centerX, 60, 'blackOpsOne', 'Coop Defender', 64);
         titleLabel.anchor.setTo(0.5, 0.5);
+
+        var papaGLabel = game.add.bitmapText(game.world.centerX - titleLabel.width / 2, 20, 'blackOpsOne', 'Papa G\'s', 20);
+        papaGLabel.anchor.setTo(0, 0.5);
         
-        var subtitleLabel = game.add.bitmapText(game.world.centerX, 120, 'blackOpsOne', 'Inspired by true events', 24);
+        var subtitleLabel = game.add.bitmapText(game.world.centerX, 100, 'blackOpsOne', 'Inspired by true events', 24);
         subtitleLabel.anchor.setTo(0.5, 0.5);
 
         menuItems = game.add.group();
@@ -236,8 +239,8 @@
     }
 
     function updateBackgroundRats() {
-        if (CoopCommander.Menu.args.nextRatSpawn < game.time.now) {
-            CoopCommander.Menu.args.nextRatSpawn = game.time.now + 1000 + Math.random() * 2000;
+        if (CoopDefender.Menu.args.nextRatSpawn < game.time.now) {
+            CoopDefender.Menu.args.nextRatSpawn = game.time.now + 1000 + Math.random() * 2000;
 
             var distance = 0.5 + Math.random() * 2;
 
@@ -292,5 +295,5 @@
         // }
     }
 
-    CoopCommander.Menu = {init: init, preload: preload, create: create, update: update, shutdown: shutdown, render: render};
+    CoopDefender.Menu = {init: init, preload: preload, create: create, update: update, shutdown: shutdown, render: render};
 })();
