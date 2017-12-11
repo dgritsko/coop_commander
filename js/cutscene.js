@@ -14,6 +14,8 @@
     }
 
     function create() {
+        updateGameState(gameState);
+
         game.stage.disableVisibilityChange = true;
         game.stage.backgroundColor = '#000000';
 
@@ -67,10 +69,21 @@
         }
     }
 
-    function nextLevel() {
-        gameState.level += 1;            
-        gameState.money += 1;
+    function updateGameState(state) {
+        state.level += 1;
         
+        var deadStates = [ 
+            RatStates.KILLED_BY_SHOVEL,
+            RatStates.KILLED_BY_FLASHLIGHT
+        ];
+
+        var deadRats = _.filter(state.inactiveRats, function(r) { return deadStates.indexOf(r.state) > -1; }).length;
+
+        // TODO: Scale this better?
+        state.money += deadRats;
+    }
+
+    function nextLevel() {
         game.camera.fade('#000000', 250);
         game.camera.onFadeComplete.add(function() {
             game.state.start('Game', true, false, { previousState: gameState });
@@ -324,6 +337,7 @@
         predator = null;
 
         game.camera.onFadeComplete.removeAll();
+        game.time.events.removeAll();
     }
 
     function render() {

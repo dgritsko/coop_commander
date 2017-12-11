@@ -182,6 +182,7 @@ Store.prototype.selectItem = function(index, silent) {
     }
 
     if (!silent) {
+        var fxClick = game.add.sound('click00');
         fxClick.play();
     }    
 }

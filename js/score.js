@@ -69,7 +69,8 @@
     }
 
     function shutdown() {
-        game.camera.onFadeComplete.removeAll();        
+        game.camera.onFadeComplete.removeAll();    
+        game.time.events.removeAll();    
     }
 
     function showMenu() {

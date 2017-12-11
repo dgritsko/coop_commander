@@ -538,8 +538,6 @@
 
         var lastRatSpawn = _.max(ratSpawns);
 
-        lastRatSpawn = 40;
-
         var availableIds = _.pluck(PowerupTypes, 'id');
 
         var spawns = [];
@@ -582,6 +580,7 @@
         fxWhoosh.stop();
 
         game.camera.onFadeComplete.removeAll();
+        game.time.events.removeAll();
     }
 
     CoopDefender.Game = {init: init, preload: preload, create: create, update: update, render: render, shutdown: shutdown};
