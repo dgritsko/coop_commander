@@ -46,6 +46,9 @@
         gameState.inactiveRats = [];
         gameState.activeRats = GameLevels.level(gameState.level);
 
+        var ratSpawns = _.pluck(gameState.activeRats, 'spawn');
+        spawnPowerups(ratSpawns);
+
         if (gameState.money <= 0) {
             mode = Modes.Intro;
         } else {
@@ -528,18 +531,38 @@
         group.add(f);
     }
 
-    function spawnPowerups() {
+    function spawnPowerups(ratSpawns) {
         var lifetime = 8;
+        var firstSpawn = 10;
+        var spawnInterval = 15;
 
-        var spawnTime = 1;
+        var lastRatSpawn = _.max(ratSpawns);
 
-        game.time.events.add(1000 * spawnTime, function() {
-            var powerup = new Powerup(game);
-            powerups.push(powerup);
+        lastRatSpawn = 40;
 
-            game.time.events.add(1000 * lifetime, function() {
-                powerup.kill();
-                powerups = _.filter(powerups, function(p) { return p !== powerup; });
+        var availableIds = _.pluck(PowerupTypes, 'id');
+
+        var spawns = [];
+
+        for (var i = firstSpawn; i <= lastRatSpawn; i += spawnInterval) {
+            // default powerup type is $$$
+            var id = 2;
+            if (availableIds.length > 0) {
+                id = Phaser.ArrayUtils.removeRandomItem(availableIds);
+            }
+
+            spawns.push({ id: id, time: i });
+        }
+
+        spawns.forEach(function(spawn) {
+            game.time.events.add(1000 * spawn.time, function() {
+                var powerup = new Powerup(game, spawn.id);
+                powerups.push(powerup);
+
+                game.time.events.add(1000 * lifetime, function() {
+                    powerup.kill();
+                    powerups = _.filter(powerups, function(p) { return p !== powerup; });
+                });
             });
         });
     }
