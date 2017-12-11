@@ -2,8 +2,7 @@
     var loadingBar;
 
     function preload() {
-        // Fonts
-        game.load.bitmapFont('blackOpsOne', 'assets/fonts/BlackOpsOne.png', 'assets/fonts/BlackOpsOne.fnt');
+        setupLoadingScreen();
 
         // Sprites
         game.load.image('grass00', 'assets/grass00.png');
@@ -64,11 +63,9 @@
         game.load.audio('music01', 'assets/sound/music/sawsquarenoise_-_01_-_Interstellar.mp3');
     }
 
-    function create() {
+    function setupLoadingScreen() {
         game.stage.disableVisibilityChange = true;
         
-        pauseDuration = game.time.now + 1000;
-
         var titleLabel = game.add.bitmapText(game.world.centerX, 60, 'blackOpsOne', 'Coop Defender', 64);
         titleLabel.anchor.setTo(0.5, 0.5);
 
@@ -89,13 +86,13 @@
         loadingImage.anchor.setTo(0.5, 0.5);
     }
 
-    function update() {
-        loadingBar.animations.play('default');
-
-        if (game.time.now > pauseDuration) {
-            game.state.start('Menu');   
-        }
+    function create() {
+        game.state.start('Menu');   
     }
 
-    CoopDefender.Preload = {preload: preload, create: create, update: update};
+    function loadUpdate() {
+        loadingBar.animations.play('default');
+    }
+
+    CoopDefender.Preload = {preload: preload, create: create, loadUpdate: loadUpdate};
 })();
