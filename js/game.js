@@ -291,16 +291,16 @@
         var gameOver = food.children.length == 0;
         var levelComplete = gameState.inactiveRats.length == gameState.activeRats.length;
 
-        var state = { 
-            foodCount: food.children.length,
-            level: gameState.level,
-            flashlights: gameState.flashlights,
-            score: gameState.score,
-            money: gameState.money,
-            swingCount: gameState.swingCount,
-        };
-
         if (gameOver) {
+            var state = { 
+                foodCount: food.children.length,
+                level: gameState.level,
+                flashlights: gameState.flashlights,
+                score: gameState.score,
+                money: gameState.money,
+                swingCount: gameState.swingCount,
+            };
+
             game.state.start('Score', true, false, state);
             return;
         }

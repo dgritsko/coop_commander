@@ -20,6 +20,7 @@ if ($method == 'GET') {
 	$result=curl_exec($ch);
 	curl_close($ch);
 
+	header("Access-Control-Allow-Origin: *");
 	header('Content-Type: application/json');
 
 	echo $result;
@@ -29,7 +30,8 @@ if ($method == 'GET') {
 	$level = $_GET['level'];
 		
 	if (empty($score) || empty($name) || empty($level)) {
-		http_response_code(404);
+		header("Access-Control-Allow-Origin: *");
+		http_response_code(400);
 		die();
 	} else {
 		$date = substr(date('c', time()), 0, 19) . 'Z';
@@ -55,9 +57,14 @@ if ($method == 'GET') {
 		curl_setopt($ch, CURLOPT_URL,$url);
 		$result=curl_exec($ch);
 		curl_close($ch);
+		
+		header("Access-Control-Allow-Origin: *");
+		header('Content-Type: application/json');
+		echo json_encode(array('result' => 'OK'));
 	}
 } else {
-	http_response_code(404);
+	header("Access-Control-Allow-Origin: *");
+	http_response_code(405);
 	die();
 }
 

@@ -105,7 +105,12 @@
 
         highlightIndex(selectedIndex);
 
-        showHighScores();
+        var highScoreLabels = showHighScores();
+
+        $.getJSON('http://gritsko.com/coop_defender/api/scores', function(scores) { 
+            highScoreLabels.destroy();
+            showHighScores(scores);
+        });
     }
 
     function update() {
@@ -204,16 +209,10 @@
         quoteDisplay.text = quoteText;
     }
 
-    function showHighScores() {
-        var highScores = [
-            { name: 'Player 1', score: 200 },
-            { name: 'Player 2', score: 200 },
-            { name: 'Player 3', score: 200 },
-            { name: 'Player 4 Has a Very Long Name But It\'s OK', score: 200 },
-            { name: 'Player 5', score: 200 },
-            { name: 'Player 6', score: 200 },
-            { name: 'Player 7', score: 200 },
-        ];
+    function showHighScores(highScores) {
+        var labels = game.add.group();
+
+        highScores = highScores || [];
 
         var fontSize = 28;
         
@@ -235,7 +234,13 @@
             var prefixLabel = game.add.bitmapText(x, y, 'blackOpsOne', (i + 1) + '.', fontSize);
             var nameLabel = game.add.bitmapText(x + 40, y, 'blackOpsOne', name, fontSize);
             var scoreLabel = game.add.bitmapText(x + 400, y, 'blackOpsOne', score, fontSize);
+
+            labels.add(prefixLabel);
+            labels.add(nameLabel);
+            labels.add(scoreLabel);
         }
+
+        return labels;
     }
 
     function updateBackgroundRats() {

@@ -74,12 +74,15 @@
     }
 
     function showMenu() {
-        game.camera.fade('#000000', 250);
-        game.camera.onFadeComplete.add(function() { 
-            console.log('TODO: Save score for', playerName);
+        var score = CoopDefender.Score.args.score || 0;
+        var level = CoopDefender.Score.args.level || 0;
 
-            game.state.start('Menu');
-        }, this);
+        $.post('http://gritsko.com/coop_defender/api/scores?name=' + playerName + '&score=' + score + '&level=' + level).always(function() {
+            game.camera.fade('#000000', 250);
+            game.camera.onFadeComplete.add(function() { 
+                game.state.start('Menu');
+            }, this);
+        });
     }
 
     function getInput() {
