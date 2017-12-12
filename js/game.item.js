@@ -95,6 +95,12 @@ TrapItem.prototype.calculateVector = function(rat) {
     }
 }
 
+TrapItem.prototype.intersects = function(rat) {
+    var trapBounds = this.sprite.getBounds();
+    var ratBounds = rat.sprite.getBounds();
+    return Phaser.Rectangle.intersects(trapBounds, ratBounds);
+}
+
 class Poison extends TrapItem {
     constructor(info, isCurrent, x, y) {
         super(info, isCurrent, x, y);
@@ -105,6 +111,14 @@ class Poison extends TrapItem {
         this.sprite.anchor.setTo(0.5, 0.5);
         this.sprite.scale.setTo(0.5);
     }
+}
+
+Poison.prototype.affectRat = function(rat, gameState) {
+    if (!this.intersects(rat)) {
+        return;
+    }
+
+    rat.kill(RatStates.KILLED_BY_POISON, gameState);
 }
 
 class SmallTrap extends TrapItem {
@@ -173,7 +187,7 @@ Cat.prototype.calculateVector = function(rat) {
         var vector = Phaser.Point.subtract(rat.sprite.position, this.sprite.position);
 
         vector.normalize();
-        //vector.setMagnitude(this.radius - dist);
+        vector.setMagnitude(this.radius - dist);
 
         return vector;
     }

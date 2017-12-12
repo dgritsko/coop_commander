@@ -4,7 +4,8 @@ RatStates = {
     ESCAPING: 2,
     ESCAPED: 3,
     KILLED_BY_SHOVEL: 4,
-    KILLED_BY_FLASHLIGHT: 5
+    KILLED_BY_FLASHLIGHT: 5,
+    KILLED_BY_POISON: 6
 };
 
 RatTypes = [
@@ -173,7 +174,7 @@ Rat.prototype.move = function(food) {
     game.physics.arcade.moveToXY(this.sprite, this.target.x, this.target.y, this.speed * 50);
 }
 
-Rat.prototype.update = function(food, items, player) {
+Rat.prototype.update = function(food, items, player, gameState) {
     if (this.state == RatStates.STOPPED) {
         this.move(food);
     }
@@ -195,7 +196,7 @@ Rat.prototype.update = function(food, items, player) {
             }
 
             if (activeItem.affectRat) {
-                activeItem.affectRat(this);
+                activeItem.affectRat(this, gameState);
             }
         }
 
@@ -219,10 +220,16 @@ Rat.prototype.update = function(food, items, player) {
     }
 }
 
-Rat.prototype.kill = function(newState) {
+Rat.prototype.kill = function(newState, gameState) {
     this.sprite.kill();
     this.group.remove(this.sprite);
     this.state = newState;
+    
+    if (newState != RatStates.ESCAPED) {
+        gameState.score += this.type.score;
+    }
+
+    gameState.inactiveRats.push(this);
 }
 
 Rat.prototype.shouldEat = function() {
@@ -238,7 +245,8 @@ Rat.prototype.eat = function() {
 Rat.prototype.isDead = function() {
     var deadStates = [ 
         RatStates.KILLED_BY_SHOVEL,
-        RatStates.KILLED_BY_FLASHLIGHT
+        RatStates.KILLED_BY_FLASHLIGHT,
+        RatStates.KILLED_BY_POISON
     ];
 
     return deadStates.indexOf(this.state) > -1;

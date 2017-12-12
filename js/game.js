@@ -210,11 +210,10 @@
         var targets = food.children.map(function(item) { return [item.x, item.y]; });
         for (var i = 0; i < rats.length; i++) {
             var rat = rats[i];
-            rat.update(targets, items, player);
+            rat.update(targets, items, player, gameState);
 
             if (rat.sprite.alive && !rat.sprite.inCamera) {
-                rat.kill(RatStates.ESCAPED);
-                gameState.inactiveRats.push(rat);
+                rat.kill(RatStates.ESCAPED, gameState);                
             }
         }
 
@@ -332,7 +331,7 @@
             // Keep track of the last swing index that hit the rat... this seems like a crummy way to do this but it works
             rodent.hitBySwing = gameState.swingCount;
             fxHit.play();
-            killRat(rat, RatStates.KILLED_BY_SHOVEL);
+            rat.kill(RatStates.KILLED_BY_SHOVEL, gameState);
 
             return false;         
         });
@@ -504,14 +503,8 @@
         for (var i = rodents.children.length - 1; i >= 0; i--) {
             var rodent = rodents.children[i];
             var rat = _.find(rats, function(r) { return r.id == rodent.id; });
-            killRat(rat, RatStates.KILLED_BY_FLASHLIGHT);
+            rat.kill(RatStates.KILLED_BY_FLASHLIGHT, gameState);
         }
-    }
-
-    function killRat(rat, newState) {
-        rat.kill(newState);
-        gameState.score += rat.type.score;
-        gameState.inactiveRats.push(rat);
     }
 
     function drawHud() {
