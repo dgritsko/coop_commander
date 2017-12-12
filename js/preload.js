@@ -2,6 +2,8 @@
     var loadingBar;
 
     function preload() {
+        Util.preloadState(game);
+
         setupLoadingScreen();
 
         // Sprites
@@ -64,8 +66,6 @@
     }
 
     function setupLoadingScreen() {
-        game.stage.disableVisibilityChange = true;
-        
         var titleLabel = game.add.bitmapText(game.world.centerX, 60, 'blackOpsOne', 'Coop Defender', 64);
         titleLabel.anchor.setTo(0.5, 0.5);
 

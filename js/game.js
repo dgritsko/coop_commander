@@ -57,12 +57,11 @@
     }
 
     function preload() {
+        Util.preloadState(game);
     }
 
     function create() {
         game.physics.startSystem(Phaser.Physics.ARCADE);
-        
-        game.stage.disableVisibilityChange = true;
 
         setupSounds();
 
@@ -590,8 +589,7 @@
         fxScream.stop();
         fxWhoosh.stop();
 
-        game.camera.onFadeComplete.removeAll();
-        game.time.events.removeAll();
+        Util.shutdownState(game);
     }
 
     CoopDefender.Game = {init: init, preload: preload, create: create, update: update, render: render, shutdown: shutdown};

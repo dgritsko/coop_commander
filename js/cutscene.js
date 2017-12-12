@@ -11,12 +11,13 @@
 
     function preload() {
         game.time.advancedTiming = true;
+
+        Util.preloadState(game);
     }
 
     function create() {
         updateGameState(gameState);
 
-        game.stage.disableVisibilityChange = true;
         game.stage.backgroundColor = '#000000';
 
         fxSuccess = game.add.sound('success00');
@@ -345,8 +346,7 @@
             predator = null;
         }
 
-        game.camera.onFadeComplete.removeAll();
-        game.time.events.removeAll();
+        Util.shutdownState(game);
     }
 
     function render() {

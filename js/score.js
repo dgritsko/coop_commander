@@ -4,7 +4,7 @@
     }
 
     function preload() {
-    
+        Util.preloadState(game);
     }
 
     var playerName;
@@ -15,8 +15,6 @@
     var remainingTime;
 
     function create() {
-        game.stage.disableVisibilityChange = true;
-        
         game.stage.backgroundColor = 0x001933;
 
         var args = CoopDefender.Score.args;
@@ -69,8 +67,7 @@
     }
 
     function shutdown() {
-        game.camera.onFadeComplete.removeAll();    
-        game.time.events.removeAll();    
+        Util.shutdownState(game); 
     }
 
     function showMenu() {

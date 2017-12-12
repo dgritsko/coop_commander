@@ -1,4 +1,14 @@
 class Util {
+    static preloadState(game) {
+        game.stage.disableVisibilityChange = true;
+    }
+
+    static shutdownState(game) {
+        game.camera.onFadeComplete.removeAll();   
+        game.time.events.removeAll();
+        game.input.keyboard.reset(true); 
+    }
+
     static drawGrass(game) {
         var ground = game.add.group();
 

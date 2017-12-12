@@ -1,7 +1,9 @@
 (function() {
+    function preload() {
+        Util.preloadState(game);
+    }
+
     function create() {
-        game.stage.disableVisibilityChange = true;
-        
         game.stage.backgroundColor = '#000000';
 
         addText('Story', 50, 50);
@@ -69,8 +71,7 @@
     }
 
     function shutdown() {
-        game.camera.onFadeComplete.removeAll();      
-        game.time.events.removeAll();  
+        Util.shutdownState(game); 
     }
     
     function showMenu() {
@@ -86,5 +87,5 @@
         game.add.bitmapText(x, y, 'blackOpsOne', text, size);
     }
 
-    CoopDefender.Help = {create: create, update: update, shutdown: shutdown};
+    CoopDefender.Help = {preload: preload, create: create, update: update, shutdown: shutdown};
 })();

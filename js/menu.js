@@ -17,7 +17,7 @@
     }
 
     function preload() {
-    
+        Util.preloadState(game);
     }
 
     function create() {
@@ -25,7 +25,6 @@
 
         game.camera.flash('#000000', 250);
         
-        game.stage.disableVisibilityChange = true;
         game.stage.backgroundColor = 0xa7d9ff;
 
         fxClick = game.add.sound('click00');
@@ -289,8 +288,7 @@
     }
 
     function shutdown() {
-        game.camera.onFadeComplete.removeAll();   
-        game.time.events.removeAll();     
+        Util.shutdownState(game);     
     }
 
     function render() {
