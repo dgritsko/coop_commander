@@ -285,6 +285,9 @@
                     case 2:
                         gameState.money += 1;
                         break;
+                    case 3:
+                        gameState.flashlights += 1;
+                        break;
                 }
             }
         }

@@ -10,6 +10,10 @@ PowerupTypes = [
     {
         id: 2,
         name: '$$$'
+    },
+    {
+        id: 3,
+        name: 'Flashlight'
     }
 ];
 

@@ -127,7 +127,7 @@ class Rat {
         return baseSpeed + levelSpeed + classSpeed + sizeSpeed;
     }
 
-    constructor(group, type, level) {
+    constructor(group, type, level, x, y) {
         this.group = group;
         this.type = Object.assign({}, type);
         this.level = level;
@@ -135,18 +135,21 @@ class Rat {
 
         this.state = RatStates.STOPPED;
 
-        this.setupSprite(game);
+        x = x || game.camera.bounds.x - (width / 10);
+        y = y || Math.random() * game.world.height;
+
+        this.setupSprite(game, x, y);
 
         this.speed = Rat.getSpeed(this.type, this.level);
     }
 }
 
-Rat.prototype.setupSprite = function(game) {
+Rat.prototype.setupSprite = function(game, x, y) {
     var spriteName = Rat.getSpriteName(this.type);
     var scale = Rat.getScale(this.type);
 
     var width = game.cache.getImage(spriteName).width;
-    this.sprite = game.add.sprite(game.camera.bounds.x - (width / 10), Math.random() * game.world.height, spriteName);
+    this.sprite = game.add.sprite(x, y, spriteName);
     this.sprite.scale.setTo(scale, scale);
     this.sprite.anchor.setTo(0.5, 0.5);
     this.sprite.id = this.id;
