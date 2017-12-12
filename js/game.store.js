@@ -7,6 +7,7 @@ var Items = [
         minLevel: 1,
         max: -1,
         menuSprite: 'poison',
+        menuScale: 1,
         create: function(info, isCurrent, x, y) { return new Poison(info, isCurrent, x, y); }
     },
     {
@@ -17,6 +18,7 @@ var Items = [
         minLevel: 1,
         max: -1,
         menuSprite: 'simpletrap',
+        menuScale: 1,
         create: function(info, isCurrent, x, y) { return new SmallTrap(info, isCurrent, x, y); }
     },
     {
@@ -27,6 +29,7 @@ var Items = [
         minLevel: 1,
         max: -1,
         menuSprite: 'simpletrap',
+        menuScale: 1,
         create: function(info, isCurrent, x, y) { return new LargeTrap(info, isCurrent, x, y); }
     },
     {
@@ -34,9 +37,10 @@ var Items = [
         name: 'Heavy-Duty Trap',
         description: '',
         cost: 10,
-        minLevel: 2,
+        minLevel: 1,
         max: -1,
         menuSprite: 'simpletrap',
+        menuScale: 1,
         create: function(info, isCurrent, x, y) { return new HeavyDutyTrap(info, isCurrent, x, y); }
     },
     {
@@ -47,6 +51,7 @@ var Items = [
         minLevel: 3,
         max: -1,
         menuSprite: 'simpletrap',
+        menuScale: 1,
         create: function(info, isCurrent, x, y) { return new HumaneTrap(info, isCurrent, x, y); }
     },
     {
@@ -57,6 +62,7 @@ var Items = [
         minLevel: 4,
         max: -1,
         menuSprite: 'simpletrap',
+        menuScale: 1,
         create: function(info, isCurrent, x, y) { return new Cat(info, isCurrent, x, y); }
     },
     {
@@ -67,6 +73,7 @@ var Items = [
         minLevel: 5,
         max: 1,
         menuSprite: 'simpletrap',
+        menuScale: 1,
         create: function(info, isCurrent, x, y) { return new John(info, isCurrent, x, y); }
     },
 ];
@@ -97,6 +104,7 @@ class Store {
             var index = that.availableItems.length;
             var y = that.getIndexY(index);
             var t = game.add.sprite(50, y, info.menuSprite);
+            t.scale.setTo(info.menuScale);
 
             var l = game.add.bitmapText(50 + 20, y + 28, 'blackOpsOne', '$' + info.cost, 18);
             l.itemId = info.id;
@@ -240,14 +248,23 @@ Store.prototype.update = function() {
         this.pointerDown = false;
 
         if (!this.currItem.canPlace()) {
-            this.error();
             return;
         }
 
-        if (this.currItem.info['cost'] <= this.money) {
+        // Make sure we aren't placing this on top of another item
+        if (this.currItem) {
+            var currPos = this.currItem.position;
+            var alreadyPlacedItems = _.filter(this.placedItems, function(i) { return i.position.equals(currPos); });
+            if (alreadyPlacedItems.length > 0) {
+                this.error();
+                return;
+            }
+        }
+
+        if (this.currItem.info.cost <= this.money) {
             this.currItem.isCurrent = false;   
 
-            this.money -= this.currItem.info['cost'];
+            this.money -= this.currItem.info.cost;
 
             this.placedItems.push(this.currItem);
 
