@@ -392,6 +392,17 @@
             game.paused = !game.paused;
         }, this);
 
+        var escKey = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
+        escKey.onDown.add(function() {
+            if (!game.paused) {
+                pauseMenu = drawMenu();
+            } else {
+                pauseMenu.kill();
+            }
+            
+            game.paused = !game.paused;
+        }, this);
+
         var debugKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
         debugKey.onDown.add(function() {
             // TODO: Add any debug functionality here

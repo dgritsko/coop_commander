@@ -159,6 +159,11 @@ class Store {
             } 
         }, this);
 
+        var escKey = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
+        escKey.onDown.add(function() {
+            this.done();
+        }, this);
+
         this.remainingTime = game.time.now + (1000 * 20);
 
         this.descriptionLabel = game.add.bitmapText(200, 20, 'blackOpsOne', '', 28);
