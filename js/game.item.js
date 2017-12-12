@@ -26,26 +26,29 @@ Item.prototype.update = function() {
         var x = game.input.x - (game.input.x % snapAmount) + (snapAmount / 2);
         var y = game.input.y - (game.input.y % snapAmount) + (snapAmount / 2);
 
-        // var alpha = 1.0;
-        // if (game.input.x >= menuWidth && game.input.x <= (menuWidth + fadeDistance)) {
-        //     alpha = (game.input.x - menuWidth) / fadeDistance;
-        // }
+        this.position = new Phaser.Point(x, y);
 
         if (this.graphics) {
-            //this.graphics.alpha = alpha;
             this.graphics.visible = isVisible;
-            this.graphics.x = x;
-            this.graphics.y = y;
+
+            if (this.updateGraphics) {
+                this.updateGraphics();
+            } else {
+                this.graphics.x = x;
+                this.graphics.y = y;
+            }
         }
 
         if (this.sprite) {
-            //this.sprite.alpha = alpha;
             this.sprite.visible = isVisible;
-            this.sprite.x = x;
-            this.sprite.y = y;
-        }
 
-        this.position = new Phaser.Point(x, y);
+            if (this.updateSprite) {
+                this.updateSprite();
+            } else {
+                this.sprite.x = x; 
+                this.sprite.y = y;
+            }
+        }
     }
 }
 
@@ -84,35 +87,82 @@ class SmallTrap extends Item {
 
         this.sprite = game.add.sprite(x, y, 'simpletrap');
         this.sprite.anchor.setTo(0.5, 0.5);
+
+        this.graphics = game.add.graphics(x, y);
+        this.graphics.lineStyle(2, 0x00d900, 1);
+        this.graphics.drawCircle(0, 0, 75);
     }
 }
 
 class LargeTrap extends Item {
     constructor(info, isCurrent, x, y) {
         super(info, isCurrent, x, y);
+
+        this.sprite = game.add.sprite(x, y, 'simpletrap');
+        this.sprite.anchor.setTo(0.5, 0.5);
+
+        this.graphics = game.add.graphics(x, y);
+        this.graphics.lineStyle(2, 0x00d900, 1);
+        this.graphics.drawCircle(0, 0, 75);
     }
 }
 
 class HeavyDutyTrap extends Item {
     constructor(info, isCurrent, x, y) {
         super(info, isCurrent, x, y);
+
+        this.sprite = game.add.sprite(x, y, 'simpletrap');
+        this.sprite.anchor.setTo(0.5, 0.5);
+
+        this.graphics = game.add.graphics(x, y);
+        this.graphics.lineStyle(2, 0x00d900, 1);
+        this.graphics.drawCircle(0, 0, 75);
     }
 }
 
 class HumaneTrap extends Item {
     constructor(info, isCurrent, x, y) {
         super(info, isCurrent, x, y);
+
+        this.sprite = game.add.sprite(x, y, 'simpletrap');
+        this.sprite.anchor.setTo(0.5, 0.5);
+
+        this.graphics = game.add.graphics(x, y);
+        this.graphics.lineStyle(2, 0x00d900, 1);
+        this.graphics.drawCircle(0, 0, 75);
     }
 }
 
 class Cat extends Item {
     constructor(info, isCurrent, x, y) {
         super(info, isCurrent, x, y);
+
+        this.sprite = game.add.sprite(x, y, 'simpletrap');
+        this.sprite.anchor.setTo(0.5, 0.5);
+
+        this.graphics = game.add.graphics(x, y);
+        this.graphics.lineStyle(2, 0xff0000, 1);
+        this.graphics.drawCircle(0, 0, 75);
     }
 }
 
 class John extends Item {
     constructor(info, isCurrent, x, y) {
         super(info, isCurrent, x, y);
+
+        this.graphics = game.add.graphics(x || 0, 0);
+        this.graphics.lineStyle(2, 0xffd900, 1);
+
+        var dashLength = 10;
+        for (var i = 0; i < game.world.height; i += dashLength) {
+            if ((i / dashLength) % 2 == 0) {
+                this.graphics.moveTo(0, i);
+                this.graphics.lineTo(0, i + dashLength);
+            }
+        }
     }
+}
+
+John.prototype.updateGraphics = function() {
+    this.graphics.x = this.position.x;
 }
