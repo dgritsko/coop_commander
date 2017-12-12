@@ -1,8 +1,20 @@
 <!doctype html> 
 <html lang="en"> 
 <head> 
-	<meta charset="UTF-8" />
+    <meta charset="UTF-8" />
     <title>Coop Defender</title>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-1628412-5"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-1628412-5');
+    </script>
+
+
     <script type="text/javascript">
         CoopDefender = {};
     </script>
@@ -30,10 +42,20 @@
         body {
             margin: 0;
         }
+
+        #fullscreen {
+            margin: auto;
+            width: 1280px;
+            text-align: right;
+            color: black;
+        }
     </style>
 </head>
 <body>
 
+<div id="fullscreen">
+    <a href="#">Fullscreen</a>
+</div>
 <div id="game"></div>
 
 </body>

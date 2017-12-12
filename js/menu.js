@@ -62,8 +62,12 @@
             startGame();
         });
 
-        addMenuItem('Help', menuItems, function() {
+        addMenuItem('How to Play', menuItems, function() {
             showHelp();
+        });
+
+        addMenuItem('Story', menuItems, function() {
+            window.open('story.html');
         });
 
         addMenuItem('Debug', menuItems, function() {

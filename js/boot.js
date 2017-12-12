@@ -11,7 +11,9 @@
     }
 
     function create() {
-        game.scale.scaleMode = Phaser.ScaleManager.NONE; // SHOW_ALL
+        var scaleMode = CoopDefender.fullscreen ? Phaser.ScaleManager.SHOW_ALL : Phaser.ScaleManager.NONE;
+
+        game.scale.scaleMode = scaleMode;
         game.scale.pageAlignHorizontally = true;
         game.scale.pageAlignVertically = true;
 

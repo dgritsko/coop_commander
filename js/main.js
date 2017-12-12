@@ -4,6 +4,21 @@ $(document).bind("keydown", function (e) {
     }
 });
 
+$(document).ready(function() {
+  var fullscreen = new URL(document.location).searchParams.get('fullscreen') === 'true';
+
+  if (fullscreen) {
+    $('#fullscreen a').hide();
+    CoopDefender.fullscreen = true;
+  } else {
+    $('#fullscreen a').click(function() {
+      if (confirm('Restart game in fullscreen mode?')) {
+        window.location.href = '?fullscreen=true';
+      }
+    });
+  }
+});
+
 var game = new Phaser.Game(1280, 720, Phaser.AUTO, 'game');
 
 game.state.add('Boot', CoopDefender.Boot);
