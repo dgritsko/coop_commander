@@ -159,26 +159,59 @@ Rat.prototype.setupSprite = function(game) {
     this.group.add(this.sprite);
 };
 
-Rat.prototype.move = function(food, items, player) {
+Rat.prototype.move = function(food) {
     if (food.length == 0) {
         return;
     }
 
     var target = food[Math.floor(Math.random() * food.length)];
-    this.state = RatStates.HUNGRY;
-    game.physics.arcade.moveToXY(this.sprite, target[0], target[1]);
 
-    this.sprite.body.velocity.x *= this.speed;
-    this.sprite.body.velocity.y *= this.speed;
+    this.target = new Phaser.Point(target[0], target[1]);
+
+    this.state = RatStates.HUNGRY;
+
+    game.physics.arcade.moveToXY(this.sprite, this.target.x, this.target.y, this.speed * 50);
 }
 
 Rat.prototype.update = function(food, items, player) {
     if (this.state == RatStates.STOPPED) {
-        this.move(food, items, player);
+        this.move(food);
     }
 
     if (this.state == RatStates.HUNGRY) {
-        this.sprite.animations.play('right');
+        var activeItems = _.where(items, { isActive : true });
+        
+        var itemVector = new Phaser.Point(0, 0);
+
+        for (var i = 0; i < activeItems.length; i++) {
+            var activeItem = activeItems[i];
+
+            if (activeItem.calculateVector) {
+                var vector = activeItem.calculateVector(this);
+
+                if (vector) {
+                    itemVector.add(vector.x, vector.y);
+                }
+            }
+
+            if (activeItem.affectRat) {
+                activeItem.affectRat(this);
+            }
+        }
+
+        if (this.state == RatStates.HUNGRY) {
+            var actualSpeed = this.sprite.body.velocity.getMagnitude();
+
+            if (itemVector.x != 0 || itemVector.y != 0) {
+                var desiredPosition = Phaser.Point.add(this.sprite.position, itemVector);
+
+                game.physics.arcade.moveToXY(this.sprite, desiredPosition.x, desiredPosition.y, actualSpeed);
+            } else {
+                game.physics.arcade.moveToXY(this.sprite, this.target.x, this.target.y, actualSpeed);
+            }
+
+            this.sprite.animations.play('right');
+        }
     }
 
     if (this.state == RatStates.ESCAPING) {

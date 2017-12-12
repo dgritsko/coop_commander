@@ -68,68 +68,86 @@ Item.prototype.canPlace = function() {
     return game.input.x >= 150 && game.input.x <= 850;
 }
 
-class Poison extends Item {
+class TrapItem extends Item {
+    constructor(info, isCurrent, x, y) {
+        super(info, isCurrent, x, y);
+    }
+}
+
+TrapItem.prototype.setup = function(radius) {
+    this.radius = radius;
+
+    this.graphics = game.add.graphics(this.position.x, this.position.y);
+    this.graphics.lineStyle(2, 0xffd900, 1);
+    this.graphics.drawCircle(0, 0, this.radius * 2);
+}
+
+TrapItem.prototype.calculateVector = function(rat) {
+    var dist = rat.sprite.position.distance(this.sprite.position);
+
+    if (dist <= this.radius) {
+        var vector = Phaser.Point.subtract(this.sprite.position, rat.sprite.position);
+
+        vector.normalize();
+        vector.setMagnitude(this.radius - dist);
+
+        return vector;
+    }
+}
+
+class Poison extends TrapItem {
     constructor(info, isCurrent, x, y) {
         super(info, isCurrent, x, y);
 
-        this.graphics = game.add.graphics(x, y);
-        this.graphics.lineStyle(2, 0xffd900, 1);
-        this.graphics.drawCircle(0, 0, 75);
+        this.setup(275);
 
         this.sprite = game.add.sprite(x, y, 'poison');
         this.sprite.anchor.setTo(0.5, 0.5);
+        this.sprite.scale.setTo(0.5);
     }
 }
 
-class SmallTrap extends Item {
+class SmallTrap extends TrapItem {
     constructor(info, isCurrent, x, y) {
         super(info, isCurrent, x, y);
 
+        this.setup(250);
+
         this.sprite = game.add.sprite(x, y, 'simpletrap');
         this.sprite.anchor.setTo(0.5, 0.5);
-
-        this.graphics = game.add.graphics(x, y);
-        this.graphics.lineStyle(2, 0x00d900, 1);
-        this.graphics.drawCircle(0, 0, 75);
     }
 }
 
-class LargeTrap extends Item {
+class LargeTrap extends TrapItem {
     constructor(info, isCurrent, x, y) {
         super(info, isCurrent, x, y);
 
+        this.setup(225);
+
         this.sprite = game.add.sprite(x, y, 'simpletrap');
         this.sprite.anchor.setTo(0.5, 0.5);
-
-        this.graphics = game.add.graphics(x, y);
-        this.graphics.lineStyle(2, 0x00d900, 1);
-        this.graphics.drawCircle(0, 0, 75);
     }
 }
 
-class HeavyDutyTrap extends Item {
+class HeavyDutyTrap extends TrapItem {
     constructor(info, isCurrent, x, y) {
         super(info, isCurrent, x, y);
 
+        this.setup(200);
+
         this.sprite = game.add.sprite(x, y, 'simpletrap');
         this.sprite.anchor.setTo(0.5, 0.5);
-
-        this.graphics = game.add.graphics(x, y);
-        this.graphics.lineStyle(2, 0x00d900, 1);
-        this.graphics.drawCircle(0, 0, 75);
     }
 }
 
-class HumaneTrap extends Item {
+class HumaneTrap extends TrapItem {
     constructor(info, isCurrent, x, y) {
         super(info, isCurrent, x, y);
 
+        this.setup(175);
+
         this.sprite = game.add.sprite(x, y, 'simpletrap');
         this.sprite.anchor.setTo(0.5, 0.5);
-
-        this.graphics = game.add.graphics(x, y);
-        this.graphics.lineStyle(2, 0x00d900, 1);
-        this.graphics.drawCircle(0, 0, 75);
     }
 }
 
@@ -140,9 +158,24 @@ class Cat extends Item {
         this.sprite = game.add.sprite(x, y, 'simpletrap');
         this.sprite.anchor.setTo(0.5, 0.5);
 
+        this.radius = 300;
+
         this.graphics = game.add.graphics(x, y);
         this.graphics.lineStyle(2, 0xff0000, 1);
-        this.graphics.drawCircle(0, 0, 75);
+        this.graphics.drawCircle(0, 0, this.radius * 2);
+    }
+}
+
+Cat.prototype.calculateVector = function(rat) {
+    var dist = rat.sprite.position.distance(this.sprite.position);
+
+    if (dist <= this.radius) {
+        var vector = Phaser.Point.subtract(rat.sprite.position, this.sprite.position);
+
+        vector.normalize();
+        //vector.setMagnitude(this.radius - dist);
+
+        return vector;
     }
 }
 

@@ -218,6 +218,13 @@
             }
         }
 
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            if (item.update) {
+                item.update(game);
+            }
+        }
+
         for (var i = 0; i < chickens.length; i++) {
             chickens[i].update();
         }
@@ -592,6 +599,12 @@
         // if (mode == Modes.Play) {
         //     game.debug.geom(player.sprite.getBounds(), 'rgba(0, 0, 255, 0.5)');
         // }
+
+        items.forEach(function(i) {
+            if (i.render) {
+                i.render(game);
+            }
+        });
     }
 
     function shutdown() {
