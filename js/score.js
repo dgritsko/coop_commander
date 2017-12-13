@@ -13,13 +13,15 @@
     var doneLabel;
 
     var remainingTime;
+    var isDone = false;
 
     function create() {
+        isDone = false;
         game.stage.backgroundColor = 0x001933;
 
         var args = CoopDefender.Score.args;
 
-        var gameOverText = game.add.bitmapText(game.world.centerX, game.world.centerY, 'blackOpsOne', 'Game Over', 28);
+        var gameOverText = game.add.bitmapText(game.world.centerX, game.world.centerY - 130, 'blackOpsOne', 'Game Over', 34);
         gameOverText.anchor.setTo(0.5, 0.5);
 
         enterKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
@@ -34,9 +36,12 @@
         game.camera.flash('#000000', 250);
 
         playerName = '';
-        scoreText = game.add.bitmapText(game.world.centerX, game.world.centerY + 34, 'blackOpsOne', '', 28);
+        scoreText = game.add.bitmapText(game.world.centerX, game.world.centerY + 50, 'blackOpsOne', '', 28);
         scoreText.anchor.setTo(0.5, 0.5);
         
+        scoreTextDescription = game.add.bitmapText(game.world.centerX, game.world.centerY + 10, 'blackOpsOne', 'Enter Your Name', 28);
+        scoreTextDescription.anchor.setTo(0.5, 0.5);
+
         getInput();
 
         remainingTime = game.time.now + (1000 * 20);
@@ -67,11 +72,11 @@
 
     function showMenu() {
         // Make sure this doesn't get called multiple times...
-        if (this.isDone) {
+        if (isDone) {
             return;
         }
 
-        this.isDone = true;
+        isDone = true;
         
         var score = CoopDefender.Score.args.score || 0;
         var level = CoopDefender.Score.args.level || 0;
