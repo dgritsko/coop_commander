@@ -195,8 +195,7 @@ Store.prototype.selectItem = function(index, silent) {
     }
 
     if (!silent) {
-        var fxClick = game.add.sound('click00');
-        fxClick.play();
+        game.audio.play(AudioEvents.STORE_SELECT_ITEM);
     }    
 }
 
@@ -225,11 +224,12 @@ Store.prototype.done = function() {
     
     this.state = StoreStates.DONE;
 
-    fxReload.play();
+    game.audio.play(AudioEvents.STORE_DONE);
 }
 
 Store.prototype.error = function() {
-    fxError.play();
+    game.audio.play(AudioEvents.STORE_ERROR);
+
     game.camera.flash(0x000000, 50);    
 }
 
@@ -278,7 +278,7 @@ Store.prototype.update = function() {
 
             this.updatePriceLabels();
 
-            fxPop.play();
+            game.audio.play(AudioEvents.PLACE_ITEM);
 
             for (var i = 0; i < this.itemAddedCallbacks.length; i++) {
                 this.itemAddedCallbacks[i]();

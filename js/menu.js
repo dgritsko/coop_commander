@@ -27,11 +27,7 @@
         
         game.stage.backgroundColor = 0xa7d9ff;
 
-        fxClick = game.add.sound('click00');
-        menuMusic = game.add.sound('music00');
-        menuMusic.volume = 0.1;
-        menuMusic.loop = true;
-        menuMusic.play();        
+        game.audio.playMusic(MusicEvents.MAIN_MENU);
 
         sun = game.add.sprite(500, 500, 'sun');
         sun.anchor.setTo(0.5, 0.5);
@@ -58,18 +54,22 @@
         menuItems = game.add.group();
 
         addMenuItem('Start', menuItems, function() {
+            game.audio.play(AudioEvents.MENU_CLICK);
             startGame();
         });
 
         addMenuItem('How to Play', menuItems, function() {
+            game.audio.play(AudioEvents.MENU_CLICK);
             showHelp();
         });
 
         addMenuItem('Story', menuItems, function() {
+            game.audio.play(AudioEvents.MENU_CLICK);
             window.open('story.html');
         });
 
         addMenuItem('Debug', menuItems, function() {
+            game.audio.play(AudioEvents.MENU_CLICK);
             debug();
         });
 
@@ -83,14 +83,14 @@
         upKey.onDown.add(function() { 
             selectedIndex = selectedIndex == 0 ? menuItems.children.length - 1 : selectedIndex-1;
             highlightIndex(selectedIndex);
-            fxClick.play();
+            game.audio.play(AudioEvents.MENU_CLICK);
         }, this);
 
         downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
         downKey.onDown.add(function() { 
             selectedIndex = selectedIndex < menuItems.children.length - 1 ? selectedIndex+1 : 0;
             highlightIndex(selectedIndex);
-            fxClick.play();
+            game.audio.play(AudioEvents.MENU_CLICK);
         }, this);
 
         enterKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
@@ -149,7 +149,7 @@
         isStarting = true;
 
         Util.drawSunset(sun, game, function() {
-            menuMusic.stop();
+            game.audio.playMusic(MusicEvents.GAME_START);
             
             game.camera.fade('#000000', 250);
             game.camera.onFadeComplete.add(function() { 
@@ -167,7 +167,7 @@
 
     function debug() {
         // Put any debug code here...
-        menuMusic.stop();
+        game.audio.playMusic(MusicEvents.GAME_START);
         game.state.start('Score', true, false, {'ratsKilled': 50});
     }
 

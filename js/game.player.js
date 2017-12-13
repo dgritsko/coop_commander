@@ -91,11 +91,9 @@ Player.prototype.move = function() {
     }
 
     if (xVelocity || yVelocity) {
-        if (!fxFootsteps.isPlaying) {
-            fxFootsteps.play();
-        }
+        game.audio.play(AudioEvents.WALKING);
     } else {
-        fxFootsteps.stop();
+        game.audio.play(AudioEvents.STOP_WALKING);
     }
 
     this.sprite.body.velocity.x += (xVelocity * this.speed);    

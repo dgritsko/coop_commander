@@ -62,8 +62,6 @@
     function create() {
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        setupSounds();
-
         beginStage();
         
         drawHud();
@@ -248,7 +246,8 @@
                 foodItem.kill();
                 food.remove(foodItem);
                 gameState.foodCount -= 1;
-                fxChomp.play();
+
+                game.audio.play(AudioEvents.RAT_EAT);
             }
 
             return false;
@@ -336,7 +335,7 @@
 
             // Keep track of the last swing index that hit the rat... this seems like a crummy way to do this but it works
             rodent.hitBySwing = gameState.swingCount;
-            fxHit.play();
+            game.audio.play(AudioEvents.RAT_HIT);
             rat.kill(RatStates.KILLED_BY_SHOVEL, gameState);
 
             return false;         
@@ -345,31 +344,11 @@
 
     function createRat(type) {
         rats.push(new Rat(rodents, type, gameState.level));
-        fxSqueak.play();
+        game.audio.play(AudioEvents.RAT_SPAWN);
     }
 
     function createChicken() {
         chickens.push(new Chicken(flock, chickens.length, pen));
-    }
-
-    function setupSounds() {
-        fxWhoosh = game.add.sound('whoosh00');
-        fxWhoosh.allowMultiple = true;
-        fxFootsteps = game.add.sound('footsteps00');
-        fxFootsteps.loop = true;
-        fxFootsteps.volume = 0.2;
-        fxSqueak = game.add.sound('squeak00');
-        fxHit = game.add.sound('bang00');
-        fxHit.allowMultiple = true;
-        fxScream = game.add.sound('scream00');
-        fxChomp = game.add.sound('chomp00');
-        fxPop = game.add.sound('pop00');
-        fxError = game.add.sound('error01');
-        fxReload = game.add.sound('reload00');
-        fxReload.volume = 0.5;
-        fxPunch = game.add.sound('punch00');
-        fxZap = game.add.sound('zap01');
-        fxZap.volume = 0.7;
     }
 
     function setupInput() {
@@ -378,7 +357,7 @@
         var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(function() { 
             gameState.swingCount += 1;
-            fxWhoosh.play();
+            game.audio.play(AudioEvents.SWING_SHOVEL);
             player.attack(game);
         }, this);
 
@@ -387,10 +366,10 @@
             useFlashlight();
         }, this);
 
+        // TODO: Implement this or take it out
         var shiftKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
         shiftKey.onDown.add(function() {
-            fxScream.play();
-            console.log('todo: yell (scare nearby rats)');
+            game.audio.play(AudioEvents.SCREAM);
         }, this);
 
         var pauseKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
@@ -496,7 +475,7 @@
             return;
         }
 
-        fxZap.play();
+        game.audio.play(AudioEvents.FLASHLIGHT);
         
         gameState.flashlights -= 1;
 
@@ -619,11 +598,6 @@
     }
 
     function shutdown() {
-        fxFootsteps.stop();
-        fxHit.stop();
-        fxScream.stop();
-        fxWhoosh.stop();
-
         Util.shutdownState(game);
     }
 

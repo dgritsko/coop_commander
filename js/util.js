@@ -7,6 +7,7 @@ class Util {
         game.camera.onFadeComplete.removeAll();   
         game.time.events.removeAll();
         game.input.keyboard.reset(true); 
+        game.audio.stopSounds();
     }
 
     static drawGrass(game) {
