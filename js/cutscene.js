@@ -275,6 +275,9 @@
     }
 
     function drawFox(duration) {
+        var fxFoxSay = game.add.sound('foxsay');
+        fxFoxSay.play();
+
         predator = game.add.sprite(-50, 535, 'fox00');
 
         predator.anchor.setTo(0.5, 0.5);

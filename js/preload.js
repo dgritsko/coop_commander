@@ -59,6 +59,7 @@
         game.load.audio('zap01', 'assets/sound/fx/zap01.wav');
         game.load.audio('thrum00', 'assets/sound/fx/thrum00.wav');
         game.load.audio('smash00', 'assets/sound/fx/smash00.wav');
+        game.load.audio('foxsay', 'assets/sound/fx/foxsayshort.mp3');
         
         // Music
         game.load.audio('music00', 'assets/sound/music/Rolemusic_-_Keiken_soku.mp3');
