@@ -212,7 +212,14 @@ Rat.prototype.update = function(food, items, player, gameState) {
 
                 game.physics.arcade.moveToXY(this.sprite, desiredPosition.x, desiredPosition.y, actualSpeed);
             } else {
-                game.physics.arcade.moveToXY(this.sprite, this.target.x, this.target.y, actualSpeed);
+                var distance = game.physics.arcade.distanceToXY(this.sprite, this.target.x, this.target.y);
+                
+                if (distance < 5) {
+                    // Food could have been eaten by another rat; in this case, just retreat so that rat is not stuck
+                    this.escape();
+                } else {
+                    game.physics.arcade.moveToXY(this.sprite, this.target.x, this.target.y, actualSpeed);
+                }
             }
 
             this.sprite.animations.play('right');
@@ -240,7 +247,7 @@ Rat.prototype.shouldEat = function() {
     return this.state == RatStates.HUNGRY;
 }
 
-Rat.prototype.eat = function() {
+Rat.prototype.escape = function() {
     this.state = RatStates.ESCAPING;
     this.sprite.body.velocity.x *= -1;
     this.sprite.body.velocity.y *= 0.25;

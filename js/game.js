@@ -242,7 +242,7 @@
             var rat = _.find(rats, function(r) { return r.id == rodent.id; });
 
             if (rat && rat.shouldEat()) {
-                rat.eat();
+                rat.escape();
                 foodItem.kill();
                 food.remove(foodItem);
                 gameState.foodCount -= 1;
