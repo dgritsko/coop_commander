@@ -3,6 +3,8 @@
     var updateCallbacks = [];
     var predator = undefined;
 
+    var scoreAdjustmentDuration = 350;
+
     function init(args) {
         updateCallbacks = [];
         gameState = args;
@@ -15,6 +17,8 @@
     }
 
     function create() {
+        var scoreAdjustments = createScoreAdjustments(gameState);
+
         updateGameState(gameState);
 
         game.stage.backgroundColor = '#000000';
@@ -26,13 +30,11 @@
 
         Util.drawSunrise(sun, game);
 
-        var stats = createStats(gameState);
-
-        levelComplete(stats);
+        levelComplete(scoreAdjustments);
 
         ground = Util.drawGrass(game);
 
-        var extraDelay = 500 * stats.length;
+        var extraDelay = scoreAdjustmentDuration * scoreAdjustments.length;
 
         var deadRats = _.where(gameState.currentRatInfo, { isDead: true }).length;
 
@@ -64,6 +66,9 @@
 
         // TODO: Scale this better?
         state.money += deadRats;
+
+        state.initialFoodCount = state.foodCount;
+        state.initialMoney = state.money;
     }
 
     function nextLevel() {
@@ -73,23 +78,89 @@
         }, this);
     }
 
-    function createStats(gameState) {
+    function createScoreAdjustments(gameState) {
         var result = [];
-        var killedByFlashlight = _.filter(gameState.inactiveRats, function(r) { return r.state == RatStates.KILLED_BY_FLASHLIGHT; }).length;
-        result.push('Killed by Flashlight: ' + killedByFlashlight);
 
-        var killedByShovel = _.filter(gameState.inactiveRats, function(r) { return r.state == RatStates.KILLED_BY_SHOVEL; }).length;
-        result.push('Killed by Shovel: ' + killedByShovel);
+        var scoreAdjustment = 0;
 
+        // Add stat line for the money earned
+        var totalKills = _.filter(gameState.inactiveRats, function(r) { return r.isDead; }).length;
+        result.push({ text: totalKills + ' Killed', value: '+$' + totalKills });
+
+        // -50 points for every rat escaped
         var escaped = _.filter(gameState.inactiveRats, function(r) { return r.state == RatStates.ESCAPED; }).length;
-        result.push('Escaped: ' + escaped);
+        if (escaped > 0) {
+            var escapedPenalty = escaped * -50;
+            scoreAdjustment += escapedPenalty;
 
-        // TODO: Moar stuff!
+            result.push({ text: escaped + ' Escaped', value: escapedPenalty, valueTint: 0xff0000 });
+        }
+
+        // -100 points for every rat poisoned
+        var poisonKills = _.filter(gameState.inactiveRats, function(r) { return r.state == RatStates.KILLED_BY_POISON; }).length;
+        if (poisonKills > 0) {
+            var poisonedPenalty = poisonKills * -100;
+            scoreAdjustment += poisonedPenalty;
+
+            result.push({ text: poisonKills + ' Poisoned', value: poisonedPenalty, valueTint: 0xff0000 });
+        }
+
+        // +500 for not losing any food
+        if (gameState.foodCount >= gameState.initialFoodCount) {
+            var cleanBonus = 250;
+            scoreAdjustment += cleanBonus; 
+
+            result.push({ text: 'Coop Defender', value: '+' + cleanBonus });
+        }
+
+        if (gameState.money >= gameState.initialMoney && gameState.initialMoney > 0) {
+            var investingBonus = 50;
+            scoreAdjustment += investingBonus; 
+
+            result.push({ text: 'A Penny Saved', value: '+' + investingBonus });
+        }
+
+        // +200 for every 10 rats killed
+        var bonusTier = Math.floor(totalKills / 10);
+        if (bonusTier > 0) {
+            var tierBonus = bonusTier * 200;
+            scoreAdjustment += tierBonus;
+
+            result.push({ text: 'Tier ' + bonusTier + ' Kill Bonus', value: '+' + tierBonus });
+        }
+
+        // +25 per rat for only using the shovel
+        var shovelKills = _.filter(gameState.inactiveRats, function(r) { return r.state == RatStates.KILLED_BY_POISON; }).length;
+        if (shovelKills == totalKills) {
+            var shovelBonus = shovelKills * 25;
+            scoreAdjustment += shovelBonus;
+
+            result.push({ text: 'School of Hard Knocks', value: '+' + shovelBonus });
+        }
+
+        // +10 per rat for only using the flashlight
+        var flashlightKills = _.filter(gameState.inactiveRats, function(r) { return r.state == RatStates.KILLED_BY_FLASHLIGHT; }).length;
+        if (flashlightKills == totalKills) {
+            var flashlightBonus = flashlightKills * 10;
+            scoreAdjustment += flashlightBonus;
+
+            result.push({ text: 'Blinding Light', value: '+' + flashlightBonus });
+        }
+
+        // +50 per rat for only using traps
+        if (escaped == 0 && shovelKills == 0 && flashlightKills == 0) {
+            var trapBonus = totalKills * 50;
+            scoreAdjustment += trapBonus;
+
+            result.push({ text: 'Impenetrable Fortress', value: '+' + trapBonus });
+        }
+
+        gameState.score += scoreAdjustment;
 
         return result;
     }
 
-    function levelComplete(stats) {
+    function levelComplete(scoreAdjustments) {
         game.audio.play(AudioEvents.LEVEL_COMPLETE);
 
         var label = game.add.bitmapText(game.world.centerX, 150, 'blackOpsOne', 'Level ' + gameState.level + ' Complete', 28);
@@ -100,28 +171,39 @@
         tween.delay(500);
 
         tween.onComplete.add(function() {
-            drawLevelStats(stats);
+            drawScoreAdjustments(scoreAdjustments);
         });        
 
         tween.start();
     }
 
-    function drawLevelStats(stats) {
+    function drawScoreAdjustments(scoreAdjustments) {
         var fontSize = 24;
         var margin = 2;
-        var delay = 500;
 
-        stats.forEach(function(stat, index) {
-            game.time.events.add(delay * (index + 1), function () {
+        scoreAdjustments.forEach(function(scoreAdjustment, index) {
+            game.time.events.add(scoreAdjustmentDuration * (index + 1), function () {
                 game.audio.play(AudioEvents.BONUS_REPORT);
 
-                var textLabel = game.add.bitmapText(game.world.centerX, 180 + (fontSize + margin) * index, 'blackOpsOne', stat, fontSize);
-                textLabel.anchor.setTo(0.5, 0.5);
+                var titleLabel = game.add.bitmapText(game.world.centerX - 150, 180 + (fontSize + margin) * index, 'blackOpsOne', scoreAdjustment.text, fontSize);
+                titleLabel.anchor.setTo(0, 0.5);
 
-                var t1 = game.add.tween(textLabel.scale).to({ x : 2, y : 2}, 150, Phaser.Easing.Cubic.Out);
-                var t2 = game.add.tween(textLabel.scale).to({ x : 1, y : 1}, 150, Phaser.Easing.Cubic.In);
-                t1.chain(t2);
-                t1.start();
+                var valueLabel = game.add.bitmapText(game.world.centerX + 150, 180 + (fontSize + margin) * index, 'blackOpsOne', scoreAdjustment.value + '', fontSize);
+                valueLabel.anchor.setTo(0, 0.5);
+
+                if (scoreAdjustment.valueTint) {
+                    valueLabel.tint = scoreAdjustment.valueTint;
+                }
+
+                var title_t1 = game.add.tween(titleLabel.scale).to({ x : 2, y : 2}, 150, Phaser.Easing.Cubic.Out);
+                var title_t2 = game.add.tween(titleLabel.scale).to({ x : 1, y : 1}, 150, Phaser.Easing.Cubic.In);
+                title_t1.chain(title_t2);
+                title_t1.start();
+
+                var value_t1 = game.add.tween(valueLabel.scale).to({ x : 2, y : 2}, 150, Phaser.Easing.Cubic.Out);
+                var value_t2 = game.add.tween(valueLabel.scale).to({ x : 1, y : 1}, 150, Phaser.Easing.Cubic.In);
+                value_t1.chain(value_t2);
+                value_t1.start();
             });
         });
     }
@@ -133,7 +215,7 @@
             drawVulture,
             drawFox,
             drawGarbageTruck,
-            drawAliens
+             drawAliens
             //drawOldLady,
             //drawBear
         ];

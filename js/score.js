@@ -52,6 +52,17 @@
 
         var margin = 10;
         doneLabel.hitArea = new Phaser.Rectangle(-margin, -margin, doneLabel.width + margin * 8, doneLabel.height + margin * 2); 
+
+
+        // TODO: Stats report
+        // var killedByFlashlight = _.filter(gameState.inactiveRats, function(r) { return r.state == RatStates.KILLED_BY_FLASHLIGHT; }).length;
+        // result.push({ text: 'Killed by Flashlight: ', value: killedByFlashlight});
+
+        // var killedByShovel = _.filter(gameState.inactiveRats, function(r) { return r.state == RatStates.KILLED_BY_SHOVEL; }).length;
+        // result.push({ text: 'Killed by Shovel: ', value: killedByShovel });
+
+        // var escaped = _.filter(gameState.inactiveRats, function(r) { return r.state == RatStates.ESCAPED; }).length;
+        // result.push({ text: 'Escaped: ', value: escaped, valueTint: 0xff0000 });
     }
 
     function update() {

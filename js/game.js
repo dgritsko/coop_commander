@@ -45,6 +45,9 @@
             _.extend(gameState, initialState);
         }
 
+        gameState.initialFoodCount = gameState.foodCount;
+        gameState.initialMoney = gameState.money;
+
         gameState.inactiveRats = [];
         gameState.activeRats = GameLevels.level(gameState.level);
 
