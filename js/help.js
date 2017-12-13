@@ -162,10 +162,12 @@
         var chickenTitle = addText('Chicken', chicken.centerX, chicken.y + chicken.height - 20);
         centerAnchor(chickenTitle);
 
-        var foodIndexes = [12,13,14];
+        var foodIndexes = [0,12,13,14,15,16,18,21,23,24,25,26,27,28,29,32,33,34,35,36,37,38,40,43,44,46,47,48,49,50,56,59,61,62,63];
 
-        for (var i = 0; i < foodIndexes.length; i++) {
-            var food = game.add.sprite(chicken.x + 100 + i * 40, chicken.y + 20, 'food', foodIndexes[i]);
+        for (var i = 0; i < 3; i++) {
+            var index = Phaser.ArrayUtils.removeRandomItem(foodIndexes);
+
+            var food = game.add.sprite(chicken.x + 100 + i * 40, chicken.y + 20, 'food', index);
             food.scale.setTo(2);
             centerAnchor(food);
         }

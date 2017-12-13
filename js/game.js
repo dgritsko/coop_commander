@@ -553,7 +553,10 @@
         var x = rect.x + 8 + (Math.random() * (rect.width - 96));
         var y = rect.y + 8 + (Math.random() * (rect.height - 96));
         
-        var f = game.add.sprite(x, y, 'food', Math.floor(Math.random() * 64))
+        var foodIndexes = [0,12,13,14,15,16,18,21,23,24,25,26,27,28,29,32,33,34,35,36,37,38,40,43,44,46,47,48,49,50,56,59,61,62,63];
+        var foodIndex = Phaser.ArrayUtils.getRandomItem(foodIndexes);
+
+        var f = game.add.sprite(x, y, 'food', foodIndex);
         f.scale.setTo(2, 2);
 
         game.physics.arcade.enable(f); 
