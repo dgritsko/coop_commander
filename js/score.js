@@ -29,6 +29,11 @@
             showMenu();
         }, this);
 
+        escKey = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
+        escKey.onDown.add(function() { 
+            showMenu();
+        }, this);
+
         var clouds = Util.drawClouds(game);
         
         Util.drawGrass(game);

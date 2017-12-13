@@ -374,10 +374,10 @@
         }, this);
 
         // TODO: Implement this or take it out
-        var shiftKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
-        shiftKey.onDown.add(function() {
-            game.audio.play(AudioEvents.SCREAM);
-        }, this);
+        // var shiftKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
+        // shiftKey.onDown.add(function() {
+        //     game.audio.play(AudioEvents.SCREAM);
+        // }, this);
 
         var pauseKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
         pauseKey.onDown.add(function() {

@@ -98,6 +98,11 @@
             menuItems.children[selectedIndex].events.onInputUp.dispatch();
         }, this);
 
+        spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        spaceKey.onDown.add(function() { 
+            menuItems.children[selectedIndex].events.onInputUp.dispatch();
+        }, this);
+
         quoteDisplay = game.add.bitmapText(quoteX, quoteY, 'blackOpsOne', '', 28);
         showQuote();
 
