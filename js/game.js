@@ -382,8 +382,8 @@
             player.attack(game);
         }, this);
 
-        var ctrlKey = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
-        ctrlKey.onDown.add(function() {
+        var fKey = game.input.keyboard.addKey(Phaser.Keyboard.F);
+        fKey.onDown.add(function() {
             useFlashlight();
         }, this);
 
