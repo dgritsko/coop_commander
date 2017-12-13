@@ -1,6 +1,11 @@
 class Util {
     static preloadState(game) {
         game.stage.disableVisibilityChange = true;
+
+        var mKey = game.input.keyboard.addKey(Phaser.Keyboard.M);
+        mKey.onDown.add(function() {
+            game.audio.toggleMute();
+        }, this);
     }
 
     static shutdownState(game) {
