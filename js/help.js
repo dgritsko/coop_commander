@@ -8,8 +8,11 @@
     function create() {
         game.stage.backgroundColor = '#000000';
 
-        var title = addText('How to Play', game.world.centerX, 34, 34);
+        var title = addText('How to Play', game.world.centerX, 14, 34);
         centerAnchor(title);
+
+        var subtitle = addText('Defend your chickens from starvation by defeating an onslaught of rats. Buy upgrades and grab powerups to gain the upper hand.', game.world.centerX, 48);
+        centerAnchor(subtitle);
 
         player = game.add.sprite(160, 120, 'player', 20);        
         player.scale.setTo(1.5);
