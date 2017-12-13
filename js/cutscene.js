@@ -2,7 +2,6 @@
     var gameState = {};
     var updateCallbacks = [];
     var predator = undefined;
-    var sounds = [];
 
     function init(args) {
         updateCallbacks = [];
@@ -19,8 +18,6 @@
         updateGameState(gameState);
 
         game.stage.backgroundColor = '#000000';
-
-        fxSuccess = game.add.sound('success00');
 
         Util.drawClouds(game);
 
@@ -52,24 +49,6 @@
             
             game.time.events.add(extraDelay + 3000, nextLevel, this);
         }
-
-        fxSmash = game.add.sound('smash00');
-        fxSmash.volume = 0.5;
-        sounds.push(fxSmash);
-        fxScore = game.add.sound('punch00');
-        fxScore.allowMultiple = true;
-        sounds.push(fxScore);
-        fxPunch = game.add.sound('punch01');
-        sounds.push(fxPunch);
-        fxChomp = game.add.sound('chomp01');
-        fxChomp.volume = 0.5;
-        sounds.push(fxChomp);
-        fxZap = game.add.sound('zap00');
-        fxZap.volume = 0.5;
-        sounds.push(fxZap);
-        fxSquawk = game.add.sound('squawk00');
-        fxSquawk.volume = 0.5;
-        sounds.push(fxSquawk);
     }
 
     function update() {
@@ -111,7 +90,7 @@
     }
 
     function levelComplete(stats) {
-        fxSuccess.play();
+        game.audio.play(AudioEvents.LEVEL_COMPLETE);
 
         var label = game.add.bitmapText(game.world.centerX, 150, 'blackOpsOne', 'Level ' + gameState.level + ' Complete', 28);
         label.anchor.setTo(0.5, 0.5);
@@ -134,7 +113,7 @@
 
         stats.forEach(function(stat, index) {
             game.time.events.add(delay * (index + 1), function () {
-                fxScore.play();
+                game.audio.play(AudioEvents.BONUS_REPORT);
 
                 var textLabel = game.add.bitmapText(game.world.centerX, 180 + (fontSize + margin) * index, 'blackOpsOne', stat, fontSize);
                 textLabel.anchor.setTo(0.5, 0.5);
@@ -185,7 +164,7 @@
 
             if (predator.x >= game.world.centerX && !hasPlayedChomp) {
                 hasPlayedChomp = true;
-                fxChomp.play();
+                game.audio.play(AudioEvents.CHOMP);
             }
         });
 
@@ -197,7 +176,7 @@
         t1.start();
         t2.start();
 
-        fxSquawk.play();
+        game.audio.play(AudioEvents.VULTURE);
     }
 
     function drawGarbageTruck(duration) {
@@ -213,7 +192,8 @@
         var t1 = game.add.tween(predator).to({ x : game.world.width / 2 + 150 }, duration/2, Phaser.Easing.Cubic.Out);
         
         t1.onComplete.add(function() {
-            fxSmash.play();
+            game.audio.play(AudioEvents.GARBAGE_TRUCK_SMASH);
+
             rats.children.forEach(function(r) {
                 r.alpha = 0;
             });
@@ -224,10 +204,7 @@
         t1.chain(t2);
         t1.start();
 
-        var fxEngine = game.add.sound('engine00');
-        fxEngine.play();
-
-        sounds.push(fxEngine);
+        game.audio.play(AudioEvents.GARBAGE_TRUCK);
     }
 
     function drawAliens(duration) {
@@ -256,7 +233,7 @@
         });
 
         t1.onComplete.add(function() {
-            fxZap.play();
+            game.audio.play(AudioEvents.UFO_BEAM);
 
             for (var i = 0; i < rats.children.length; i++) {
                 var rat = rats.children[i];
@@ -268,15 +245,11 @@
 
         t1.start();
 
-        var fxThrum = game.add.sound('thrum00');
-        fxThrum.play();
-
-        sounds.push(fxThrum);
+        game.audio.play(AudioEvents.UFO);
     }
 
     function drawFox(duration) {
-        var fxFoxSay = game.add.sound('foxsay');
-        fxFoxSay.play();
+        game.audio.play(AudioEvents.FOX);
 
         predator = game.add.sprite(-50, 535, 'fox00');
 
@@ -302,7 +275,7 @@
 
             if (predator.x >= game.world.centerX && !hasPlayedChomp) {
                 hasPlayedChomp = true;
-                fxChomp.play();
+                game.audio.play(AudioEvents.CHOMP);
             }
         });
 

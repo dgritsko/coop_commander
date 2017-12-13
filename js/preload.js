@@ -88,7 +88,8 @@
     }
 
     function create() {
-        game.state.start('Menu');   
+        game.audio = new AudioManager(game);
+        game.state.start('Menu');
     }
 
     function loadUpdate() {
