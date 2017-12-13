@@ -31,6 +31,8 @@ class Player {
         this.sprite.animations.add('left', [9, 10, 11, 12, 13, 14, 15, 16, 17], 10, true);
         this.sprite.animations.add('down', [18, 19, 20, 21, 22, 23, 24, 25, 26], 10, true);
         this.sprite.animations.add('right', [27, 28, 29, 30, 31, 32, 33, 34, 35], 10, true);
+
+        this.direction = 'up';
     }
 }
 
@@ -53,8 +55,8 @@ Player.prototype.move = function() {
             xVelocity = -diagonalVelocity;
             yVelocity = diagonalVelocity;
         } else {
-            this.shovel.x = -8;
-            this.shovel.y = 8;
+            this.shovel.x = 0;
+            this.shovel.y = 14;
             xVelocity = -1;
         }
     } else if (cursors.right.isDown) {
@@ -66,16 +68,26 @@ Player.prototype.move = function() {
             xVelocity = diagonalVelocity;
             yVelocity = diagonalVelocity;
         } else {
-            this.shovel.x = 8;
-            this.shovel.y = 8;
+            this.shovel.x = 0;
+            this.shovel.y = 14;
             xVelocity = 1;
         }
     } else if (cursors.up.isDown) {
         animation = 'up';
         yVelocity = -1;
+
+        this.shovel.x = -10;
+        this.shovel.y = 14;
     } else if (cursors.down.isDown) {
         animation = 'down';
         yVelocity = 1;
+
+        this.shovel.x = 10;
+        this.shovel.y = 14;
+    }
+
+    if (animation) {
+        this.direction = animation;
     }
 
     if (xVelocity || yVelocity) {
@@ -99,11 +111,10 @@ Player.prototype.move = function() {
 Player.prototype.attack = function(game) {
     // TODO: Cancel previous tween so that it doesn't kill the shovel mid-swing
 
-    // TODO: Appropriate direction swing if player is not moving
     this.shovel.alpha = 1;
 
-    if (this.sprite.body.velocity.x == 0) {
-        if (this.sprite.body.velocity.y > 0) {
+    if (this.direction == 'up' || this.direction == 'down') {
+        if (this.direction == 'down') {
             this.shovel.scale.y = -0.5;
             endY = 0.5;
         } else {
@@ -115,23 +126,24 @@ Player.prototype.attack = function(game) {
         
         tween.onComplete.add(function() {
             this.shovel.alpha = 0;
+            this.shovel.scale.y = 0.5;
         }, this);
     
         tween.start();
     } else {            
-        if (this.sprite.body.velocity.x > 0) {
-            startAngle = 180;
-            endAngle = 0;
-        } else {
-            startAngle = 179;
-            endAngle = 0;
+        if (this.direction == 'right') {
+            rotation = Math.PI * 2;
+        } else if (this.direction == 'left') {
+            rotation = 0;
         }            
 
-        this.shovel.angle = startAngle;
-        var tween = game.add.tween(this.shovel).to({ angle: endAngle }, 200, Phaser.Easing.Quartic.InOut);
+        this.shovel.rotation = Math.PI;
+        
+        var tween = game.add.tween(this.shovel).to({ rotation: rotation }, 200, Phaser.Easing.Quartic.InOut);
         
         tween.onComplete.add(function() {
             this.shovel.alpha = 0;
+            this.shovel.rotation = 0;
         }, this);
     
         tween.start();
