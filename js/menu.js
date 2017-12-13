@@ -214,6 +214,10 @@
     }
 
     function showHighScores(highScores) {
+        if (game.state.current != 'Menu') {
+            return;
+        }
+
         var labels = game.add.group();
 
         highScores = highScores || [];
