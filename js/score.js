@@ -22,11 +22,6 @@
         var gameOverText = game.add.bitmapText(game.world.centerX, game.world.centerY, 'blackOpsOne', 'Game Over', 28);
         gameOverText.anchor.setTo(0.5, 0.5);
 
-        // var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        // spaceKey.onDown.add(function() {
-        //     showMenu();
-        // }, this);
-       
         enterKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
         enterKey.onDown.add(function() { 
             showMenu();
@@ -71,6 +66,13 @@
     }
 
     function showMenu() {
+        // Make sure this doesn't get called multiple times...
+        if (this.isDone) {
+            return;
+        }
+
+        this.isDone = true;
+        
         var score = CoopDefender.Score.args.score || 0;
         var level = CoopDefender.Score.args.level || 0;
 
