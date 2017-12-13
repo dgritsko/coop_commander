@@ -25,6 +25,8 @@
         hud = {};
         rats = [];
         chickens = [];
+        items = [];
+        powerups = [];
 
         gameState = { };
 
@@ -45,9 +47,6 @@
 
         gameState.inactiveRats = [];
         gameState.activeRats = GameLevels.level(gameState.level);
-
-        var ratSpawns = _.pluck(gameState.activeRats, 'spawn');
-        spawnPowerups(ratSpawns);
 
         if (gameState.money <= 0) {
             mode = Modes.Intro;
@@ -96,6 +95,9 @@
     }
 
     function beginGame() {
+        var ratSpawns = _.pluck(gameState.activeRats, 'spawn');
+        spawnPowerups(ratSpawns);
+
         rodents = game.add.group();
         food = game.add.group();
         flock = game.add.group();
@@ -287,6 +289,7 @@
                         break;
                     case 3:
                         gameState.flashlights += 1;
+                        addFlashlight();
                         break;
                 }
             }
@@ -527,12 +530,16 @@
 
         for (var i = 0; i < gameState.flashlights; i++) {
             //var x = 44 + i * 30;
-            var x = 10 + i * 30;
-
-            var f = game.add.sprite(x, 130, 'flashlight');
-            f.scale.setTo(1/3.8, 1/3.8);
-            hud.flashlights.push(f);
+            addFlashlight();
         }
+    }
+
+    function addFlashlight() {
+        var x = 10 + hud.flashlights.length * 30;
+        
+        var f = game.add.sprite(x, 130, 'flashlight');
+        f.scale.setTo(1/3.8, 1/3.8);
+        hud.flashlights.push(f);
     }
 
     function updateHud() {
@@ -567,13 +574,18 @@
         var spawns = [];
 
         for (var i = firstSpawn; i <= lastRatSpawn; i += spawnInterval) {
-            // default powerup type is $$$
-            var id = 2;
+            
+            var id = -1;
             if (availableIds.length > 0) {
                 id = Phaser.ArrayUtils.removeRandomItem(availableIds);
+            } else {
+                // $$$ or flashlight
+                id = Phaser.ArrayUtils.getRandomItem([2, 3]);
             }
 
-            spawns.push({ id: id, time: i });
+            if (id >= 0) {
+                spawns.push({ id: id, time: i });
+            }
         }
 
         spawns.forEach(function(spawn) {
