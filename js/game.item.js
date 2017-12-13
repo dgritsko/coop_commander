@@ -169,14 +169,51 @@ class Cat extends Item {
     constructor(info, isCurrent, x, y) {
         super(info, isCurrent, x, y);
 
-        this.sprite = game.add.sprite(x, y, 'simpletrap');
+        var types = {
+            whiteAndGray: { x: 0, y: 0 },
+            white: { x: 3, y: 0 },
+            darkGray: { x : 6, y: 0 },
+            beige: { x: 9, y: 0 },
+            gray: { x: 0, y: 4 },
+            darkBrown: { x: 3, y: 4 },
+            orange: { x : 6, y: 4 },
+            lightBrown: { x: 9, y: 4 }
+        };
+
+        var keys = _.keys(types);
+        var key = Phaser.ArrayUtils.getRandomItem(keys);
+        var type = types[key];
+
+        function getFrames(x, y) {
+            var results = [];
+            for (var i = 0; i < 3; i++) {
+                results.push(x + i + y * 12);
+            }
+            return results;
+        }
+
+        var downFrames = getFrames(type.x, type.y);
+        var leftFrames = getFrames(type.x, type.y + 1);
+        var rightFrames = getFrames(type.x, type.y + 2);
+        var upFrames = getFrames(type.x, type.y + 3);
+
+        this.sprite = game.add.sprite(x, y, 'cat00', downFrames[0]);
         this.sprite.anchor.setTo(0.5, 0.5);
 
-        this.radius = 300;
+        this.sprite.animations.add('down', downFrames, 10, true);
+        this.sprite.animations.add('left', leftFrames, 10, true);
+        this.sprite.animations.add('right', rightFrames, 10, true);
+        this.sprite.animations.add('up', upFrames, 10, true);
+
+        this.radius = 100;
+        this.patrolRadius = 200;
 
         this.graphics = game.add.graphics(x, y);
         this.graphics.lineStyle(2, 0xff0000, 1);
         this.graphics.drawCircle(0, 0, this.radius * 2);
+
+        this.graphics.lineStyle(2, 0x333333, 1);
+        this.graphics.drawCircle(0, 0, this.patrolRadius * 2);
     }
 }
 
