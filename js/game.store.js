@@ -1,8 +1,8 @@
 var Items = [
     {
         id: 0,
-        name: 'Poison',
-        description: '',
+        name: 'Rat-X Poison',
+        description: 'Cheap and effective, but frowned upon by the Geneva Conventions.\nLasts for 1 night, killing up to 10 rats.\nBe forwarned -- using it comes with consequences.',
         cost: 2,
         minLevel: 1,
         max: -1,
@@ -12,8 +12,8 @@ var Items = [
     },
     {
         id: 1,
-        name: 'Small Trap',
-        description: '',
+        name: 'Basic Wooden Trap',
+        description: 'Just a humble rat trap.\nCatches 1 small rat per night.',
         cost: 2,
         minLevel: 1,
         max: -1,
@@ -23,8 +23,8 @@ var Items = [
     },
     {
         id: 2,
-        name: 'Large Trap',
-        description: '',
+        name: 'Strong Wooden Trap',
+        description: 'Better, faster, stronger.\nCatches 1 small or medium rat per night.',
         cost: 1,
         minLevel: 1,
         max: -1,
@@ -34,8 +34,8 @@ var Items = [
     },
     {
         id: 3,
-        name: 'Heavy-Duty Trap',
-        description: '',
+        name: 'Heavy-Duty Snap Trap',
+        description: 'Quick killing. 100% effective.\nCatches 1 rat of any size per night.',
         cost: 10,
         minLevel: 1,
         max: -1,
@@ -45,8 +45,8 @@ var Items = [
     },
     {
         id: 4,
-        name: 'Humane Trap',
-        description: '',
+        name: '"Humane" Trap',
+        description: 'Non-lethal -- you\'ll have to finish the job.\nCatches up to 5 rats of any size per night.',
         cost: 15,
         minLevel: 3,
         max: -1,
@@ -57,7 +57,7 @@ var Items = [
     {
         id: 5,
         name: 'Cat',
-        description: '',
+        description: 'Nature\'s own rat repellent.\nRats will avoid cats at all costs.',
         cost: 15,
         minLevel: 4,
         max: -1,
@@ -68,7 +68,7 @@ var Items = [
     {
         id: 6,
         name: 'John',
-        description: '',
+        description: 'The Tonto to your Lone Ranger, the Robin to your Batman.\nJohn will "take care" of any rats he encounters.',
         cost: 15,
         minLevel: 5,
         max: 1,
@@ -166,7 +166,8 @@ class Store {
 
         this.remainingTime = game.time.now + (1000 * 20);
 
-        this.descriptionLabel = game.add.bitmapText(200, 20, 'blackOpsOne', '', 28);
+        this.nameLabel = game.add.bitmapText(170, 20, 'blackOpsOne', '', 28);
+        this.descriptionLabel = game.add.bitmapText(170, 48, 'blackOpsOne', '', 24);
 
         this.selectItem(0, true);
     }
@@ -189,13 +190,11 @@ Store.prototype.selectItem = function(index, silent) {
 
     this.selectedIndex = index;
 
-    this.descriptionLabel.text = info['name'];
-    if (info['description']) {
-        this.descriptionLabel.text += ': ' + info['description'];
-    }
+    this.nameLabel.text = info.name;
+    this.descriptionLabel.text = info.description;
 
     if (!silent) {
-        game.audio.play(AudioEvents.STORE_SELECT_ITEM);
+        game.audio.play(AudioEvents.MENU_CLICK);
     }    
 }
 
@@ -220,6 +219,7 @@ Store.prototype.done = function() {
 
     this.doneLabel.kill();
     this.currItem.kill();
+    this.nameLabel.kill();
     this.descriptionLabel.kill();
     
     this.state = StoreStates.DONE;
