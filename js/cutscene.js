@@ -246,9 +246,13 @@
             beam.scale.setTo(1.0, 2.0);
             beam.anchor.setTo(0.5, 0);
             predator.bringToTop();
-            game.time.events.add(600, function() {
+            game.time.events.add(800, function() {
                 beam.alpha = 0;
             }, this);
+
+            updateCallbacks.push(function() {
+                beam.x = predator.x;
+            });
         });
 
         t1.onComplete.add(function() {
@@ -257,8 +261,8 @@
             for (var i = 0; i < rats.children.length; i++) {
                 var rat = rats.children[i];
                 rat.body.moves = false;
-                game.add.tween(rat).to({y : rat.y - 200}, duration / 10, Phaser.Easing.Cubic.Out).start();
-                game.add.tween(rat).to({alpha : 0}, duration / 15, Phaser.Easing.Cubic.Out).start();
+                game.add.tween(rat).to({y : rat.y - 200}, 800, Phaser.Easing.Cubic.Out).start();
+                game.add.tween(rat).to({alpha : 0}, 800, Phaser.Easing.Cubic.Out).start();
             }
         });
 
