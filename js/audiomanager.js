@@ -19,7 +19,12 @@ AudioEvents = {
     STORE_ERROR: 17,
     STORE_DONE: 18,
     MENU_CLICK: 19,
-    FLASHLIGHT: 20
+    FLASHLIGHT: 20,
+    POWERUP_SPAWN: 21,
+    POWERUP_EGG_PICKUP: 22,
+    POWERUP_BOOTS_PICKUP: 23,
+    POWERUP_MONEY_PICKUP: 24,
+    POWERUP_FLASHLIGHT_PICKUP: 25
 };
 
 MusicEvents = {
@@ -161,6 +166,21 @@ AudioManager.prototype.play = function(id) {
             break;
         case AudioEvents.FLASHLIGHT:
             this.fxZap01.play();
+            break;
+        case AudioEvents.POWERUP_SPAWN:
+            console.log('TODO: Powerup Spawn sound effect');
+            break;
+        case AudioEvents.POWERUP_EGG_PICKUP:
+            console.log('TODO: Powerup Egg pickup sound effect');
+            break;
+        case AudioEvents.POWERUP_BOOTS_PICKUP:
+            console.log('TODO: Powerup Boots pickup sound effect');
+            break;
+        case AudioEvents.POWERUP_MONEY_PICKUP:
+            console.log('TODO: Powerup Money pickup sound effect');
+            break;
+        case AudioEvents.POWERUP_FLASHLIGHT_PICKUP:
+            console.log('TODO: Powerup Flashlight pickup sound effect');
             break;
     }
 }

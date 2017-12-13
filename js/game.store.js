@@ -2,7 +2,7 @@ var Items = [
     {
         id: 0,
         name: 'Rat-X Poison',
-        description: 'Cheap and effective, but frowned upon by the Geneva Conventions.\nLasts for 1 night, killing up to 10 rats.\nBe forwarned -- using it comes with consequences.',
+        description: 'Cheap and effective, but frowned upon by the Geneva Conventions.\nLasts for 1 night, killing up to 10 rats. Be forewarned -- using it comes with consequences.',
         cost: 2,
         minLevel: 1,
         max: -1,
@@ -60,7 +60,7 @@ var Items = [
         description: 'Nature\'s own rat repellent.\nRats will avoid cats at all costs.',
         cost: 15,
         minLevel: 4,
-        max: -1,
+        max: 2,
         menuSprite: 'simpletrap',
         menuScale: 1,
         create: function(info, isCurrent, x, y) { return new Cat(info, isCurrent, x, y); }
@@ -69,7 +69,7 @@ var Items = [
         id: 6,
         name: 'John',
         description: 'The Tonto to your Lone Ranger, the Robin to your Batman.\nJohn will "take care" of any rats he encounters.',
-        cost: 15,
+        cost: 100,
         minLevel: 5,
         max: 1,
         menuSprite: 'simpletrap',
@@ -166,8 +166,8 @@ class Store {
 
         this.remainingTime = game.time.now + (1000 * 20);
 
-        this.nameLabel = game.add.bitmapText(170, 20, 'blackOpsOne', '', 28);
-        this.descriptionLabel = game.add.bitmapText(170, 48, 'blackOpsOne', '', 24);
+        this.nameLabel = game.add.bitmapText(145, 10, 'blackOpsOne', '', 28);
+        this.descriptionLabel = game.add.bitmapText(145, 38, 'blackOpsOne', '', 24);
 
         this.selectItem(0, true);
     }
@@ -192,6 +192,13 @@ Store.prototype.selectItem = function(index, silent) {
 
     this.nameLabel.text = info.name;
     this.descriptionLabel.text = info.description;
+
+    if (info.max > 0) {
+        this.descriptionLabel.text += '\nMax: ' + info.max;
+    } else {
+        this.descriptionLabel.text += '\nMax: Unlimited';
+    }
+
 
     if (!silent) {
         game.audio.play(AudioEvents.MENU_CLICK);

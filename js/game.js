@@ -275,20 +275,24 @@
                 switch (powerup.id) {
                     case 0:
                         gameState.foodCount += 1;
-                        createFood(pen, food);                
+                        createFood(pen, food);    
+                        game.audio.play(AudioEvents.POWERUP_EGG_PICKUP);
                         break;
                     case 1:
                         player.increaseSpeed();
-                        game.time.events.add(1000 * 10, function() {
-                            player.resetSpeed();
-                        });
+                        // game.time.events.add(1000 * 10, function() {
+                        //     player.resetSpeed();
+                        // });
+                        game.audio.play(AudioEvents.POWERUP_BOOTS_PICKUP);
                     break;
                     case 2:
-                        gameState.money += 1;
+                        gameState.money += 25;
+                        game.audio.play(AudioEvents.POWERUP_MONEY_PICKUP);
                         break;
                     case 3:
                         gameState.flashlights += 1;
                         addFlashlight();
+                        game.audio.play(AudioEvents.POWERUP_FLASHLIGHT_PICKUP);
                         break;
                 }
             }
@@ -573,6 +577,8 @@
         spawns.forEach(function(spawn) {
             game.time.events.add(1000 * spawn.time, function() {
                 var powerup = new Powerup(game, spawn.id);
+                game.audio.play(AudioEvents.POWERUP_SPAWN);
+
                 powerups.push(powerup);
 
                 game.time.events.add(1000 * lifetime, function() {
