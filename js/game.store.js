@@ -193,7 +193,7 @@ Store.prototype.setupInput = function() {
 
 Store.prototype.addExistingItems = function(existingItems) {
     // Poison does not persist between levels
-    existingItems = _.filter((existingItems || []), function(i) { i.id != ItemTypes.POISON });
+    existingItems = _.filter((existingItems || []), function(i) { return i.id != ItemTypes.POISON; });
     
     for (var i = 0; i < existingItems.length; i++) {
         var info = Items[existingItems[i]['id']];
@@ -255,6 +255,14 @@ Store.prototype.done = function() {
         l.kill();
     });
 
+    _.each(this.placedItems, function(i) {
+        if (i.destroyGraphics) {
+            i.destroyGraphics();
+        } else if (i.graphics) {
+            i.graphics.destroy();
+        }
+    });    
+
     this.doneLabel.kill();
     this.currItem.kill();
     this.nameLabel.kill();
@@ -283,7 +291,7 @@ Store.prototype.update = function() {
     }
     this.doneLabel.text = 'Done (' + remainingSeconds + ')';
 
-    this.currItem.update();
+    this.currItem.move();
 
     if (game.input.activePointer.isDown) {
         this.pointerDown = true;

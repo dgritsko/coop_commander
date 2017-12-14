@@ -294,6 +294,12 @@
             handleAttacks();
         }
 
+        for (var i = 0; i < items.length; i++) {
+            if (typeof(items[i].update) != 'undefined') {
+                items[i].update();
+            }
+        }
+
         var gameOver = food.children.length == 0;
         var levelComplete = gameState.inactiveRats.length == gameState.activeRats.length;
 

@@ -14,7 +14,7 @@ class Item {
     }
 }
 
-Item.prototype.update = function() {
+Item.prototype.move = function() {
     if (this.isCurrent) {
         var menuWidth = 100;
         var fadeDistance = 50;
@@ -28,15 +28,12 @@ Item.prototype.update = function() {
 
         this.position = new Phaser.Point(x, y);
 
-        if (this.graphics) {
+        if (this.updateGraphics) {
+            this.updateGraphics(isVisible);
+        } else if (this.graphics) {
             this.graphics.visible = isVisible;
-
-            if (this.updateGraphics) {
-                this.updateGraphics();
-            } else {
-                this.graphics.x = x;
-                this.graphics.y = y;
-            }
+            this.graphics.x = x;
+            this.graphics.y = y;
         }
 
         if (this.sprite) {
@@ -59,7 +56,9 @@ Item.prototype.kill = function() {
         this.sprite.destroy();
     }
 
-    if (this.graphics) {
+    if (this.destroyGraphics) {
+        this.destroyGraphics();
+    } else if (this.graphics) {
         this.graphics.destroy();
     }
 }
@@ -283,6 +282,7 @@ class Cat extends Item {
 
         this.sprite = game.add.sprite(x, y, 'cat00', downFrames[0]);
         this.sprite.anchor.setTo(0.5, 0.5);
+        game.physics.arcade.enable(this.sprite);
 
         this.sprite.animations.add('down', downFrames, 10, true);
         this.sprite.animations.add('left', leftFrames, 10, true);
@@ -296,8 +296,9 @@ class Cat extends Item {
         this.graphics.lineStyle(2, 0xff0000, 1);
         this.graphics.drawCircle(0, 0, this.radius * 2);
 
-        this.graphics.lineStyle(2, 0x333333, 1);
-        this.graphics.drawCircle(0, 0, this.patrolRadius * 2);
+        this.patrolGraphics = game.add.graphics(x, y);
+        this.patrolGraphics.lineStyle(2, 0x333333, 1);
+        this.patrolGraphics.drawCircle(0, 0, this.patrolRadius * 2);
     }
 }
 
@@ -311,6 +312,50 @@ Cat.prototype.calculateVector = function(rat) {
         vector.setMagnitude(this.radius - dist);
 
         return vector;
+    }
+}
+
+Cat.prototype.destroyGraphics = function() {
+    this.graphics.destroy();
+    this.patrolGraphics.destroy();
+}
+
+Cat.prototype.updateGraphics = function(isVisible) {
+    this.graphics.visible = isVisible;
+    this.patrolGraphics.visible = isVisible;
+
+    this.graphics.x = this.position.x;
+    this.graphics.y = this.position.y;
+    this.patrolGraphics.x = this.position.x;
+    this.patrolGraphics.y = this.position.y;
+}
+
+Cat.prototype.update = function() {
+    if (typeof(this.destination) == 'undefined' || Math.abs(this.sprite.position.distance(this.destination)) <= 10) {
+        var point = new Phaser.Point(Math.random() - 0.5, Math.random() - 0.5);
+        point.setMagnitude(Math.random() * this.patrolRadius);
+        this.destination = Phaser.Point.add(this.position, point);
+
+        game.physics.arcade.moveToXY(this.sprite, this.destination.x, this.destination.y);        
+    }
+
+    this.graphics.x = this.sprite.x;
+    this.graphics.y = this.sprite.y;
+
+    var yVel = this.sprite.body.velocity.y;
+    var xVel = this.sprite.body.velocity.x;
+    if (Math.abs(xVel) > Math.abs(yVel)) {
+        if (xVel > 0) {
+            this.sprite.animations.play('right');
+        } else {
+            this.sprite.animations.play('left');
+        }
+    } else {
+        if (yVel > 0) {
+            this.sprite.animations.play('down');
+        } else {
+            this.sprite.animations.play('up');
+        }
     }
 }
 
@@ -331,6 +376,8 @@ class John extends Item {
     }
 }
 
-John.prototype.updateGraphics = function() {
+John.prototype.updateGraphics = function(isVisible) {
+    this.graphics.isVisible = isVisible;
+
     this.graphics.x = this.position.x;
 }
