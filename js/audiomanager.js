@@ -24,7 +24,8 @@ AudioEvents = {
     POWERUP_EGG_PICKUP: 22,
     POWERUP_BOOTS_PICKUP: 23,
     POWERUP_MONEY_PICKUP: 24,
-    POWERUP_FLASHLIGHT_PICKUP: 25
+    POWERUP_FLASHLIGHT_PICKUP: 25,
+    CHICKEN_CLUCK: 26
 };
 
 MusicEvents = {
@@ -63,6 +64,7 @@ AudioManager.prototype.setupSounds = function() {
     this.fxSqueak = setupSound(this, 'squeak00');
     this.fxSquawk = setupSound(this, 'squawk00', 0.5);
     this.fxCluck = setupSound(this, 'cluck00');
+    this.fxCluck.allowMultiple = false;
     this.fxEating = setupSound(this, 'eating00');
     this.fxBang = setupSound(this, 'bang00');
     this.fxBang.allowMultiple = true;
@@ -181,6 +183,9 @@ AudioManager.prototype.play = function(id) {
             break;
         case AudioEvents.POWERUP_FLASHLIGHT_PICKUP:
             console.log('TODO: Powerup Flashlight pickup sound effect');
+            break;
+        case AudioEvents.CHICKEN_CLUCK:
+            this.fxCluck.play();
             break;
     }
 }

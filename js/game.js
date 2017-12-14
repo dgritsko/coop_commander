@@ -216,6 +216,11 @@
             }
         }
 
+        // Occasionally play a cluck.
+        if (Math.random() < 0.001) {
+            game.audio.play(AudioEvents.CHICKEN_CLUCK);
+        }
+
         for (var i = 0; i < chickens.length; i++) {
             chickens[i].update();
         }
