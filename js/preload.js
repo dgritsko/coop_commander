@@ -31,7 +31,8 @@
         game.load.image('ufo00', 'assets/ufo00.gif');
         game.load.image('beam00', 'assets/beam00.png');
         game.load.spritesheet('powerups', 'assets/powerups.png', 24, 24);
-        game.load.spritesheet('cat00', 'assets/cat00.png', 48, 48);1
+        game.load.spritesheet('cat00', 'assets/cat00.png', 48, 48);
+        game.load.spritesheet('john', 'assets/john.png', 32, 48);
         
         // Sounds
         game.load.audio('whoosh00', 'assets/sound/fx/whoosh00.mp3');

@@ -82,7 +82,7 @@ var Items = [
         cost: 100,
         minLevel: 5,
         max: 1,
-        menuSprite: 'simpletrap',
+        menuSprite: 'john',
         menuScale: 1,
         create: function(info, isCurrent, x, y) { return new John(info, isCurrent, x, y); }
     },

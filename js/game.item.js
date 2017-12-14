@@ -373,11 +373,34 @@ class John extends Item {
                 this.graphics.lineTo(0, i + dashLength);
             }
         }
+
+        this.sprite = game.add.sprite(x, y, 'john', 0);
+        this.sprite.anchor.setTo(0.5, 0.5);
+        this.sprite.scale.setTo(1.75);
+        game.physics.arcade.enable(this.sprite);
+        this.sprite.body.collideWorldBounds = true;
+
+        this.sprite.animations.add('down', [0, 1, 2, 3], 8, true);
+        this.sprite.animations.add('left', [4, 5, 6, 7], 8, true);
+        this.sprite.animations.add('right', [8, 9, 10, 11], 8, true);
+        this.sprite.animations.add('up', [12, 13, 14, 15], 8, true);
     }
 }
 
 John.prototype.updateGraphics = function(isVisible) {
-    this.graphics.isVisible = isVisible;
+    this.graphics.visible = isVisible;
 
     this.graphics.x = this.position.x;
+}
+
+John.prototype.update = function() {
+    if (this.sprite.body.velocity.y == 0) {
+        this.sprite.body.velocity.y = this.sprite.y > game.world.centerY ? -100 : 100;
+    }
+
+    if (this.sprite.body.velocity.y > 0) {
+        this.sprite.animations.play('down');
+    } else {
+        this.sprite.animations.play('up');
+    }
 }
