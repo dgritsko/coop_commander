@@ -287,9 +287,13 @@
         t1.onComplete.add(function() {
             game.audio.play(AudioEvents.GARBAGE_TRUCK_SMASH);
 
-            rats.children.forEach(function(r) {
-                r.alpha = 0;
-            });
+            for (var i = 0; i < rats.children.length; i++) {
+                var rat = rats.children[i];
+                rat.body.moves = false;
+                game.add.tween(rat).to({x : game.world.width / 2 + 150}, 800, Phaser.Easing.Cubic.Out).start();
+                game.add.tween(rat).to({y : 535}, 800, Phaser.Easing.Cubic.Out).start();
+                game.add.tween(rat).to({alpha : 0}, 800, Phaser.Easing.Linear.None).start();
+            }
         });
 
         var t2 = game.add.tween(predator).to({ x : game.world.width + 150 }, duration/2, Phaser.Easing.Cubic.In)
