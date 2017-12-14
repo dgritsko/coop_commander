@@ -62,13 +62,17 @@
     function updateGameState(state) {
         state.level += 1;
 
-        var deadRats = _.where(state.currentRatInfo, { isDead: true }).length;
+        var currentDeadRats = _.where(state.currentRatInfo, { isDead: true });
+
+        var currentDeadRatCount = currentDeadRats.length;
+
+        state.allDeadRats = (state.allDeadRats || []).concat(currentDeadRats);
 
         // TODO: Scale this better?
-        state.money += deadRats;
+        state.money += currentDeadRatCount;
 
         state.initialFoodCount = state.foodCount;
-        state.initialMoney = state.money;
+        state.initialMoney = state.money;        
     }
 
     function nextLevel() {
@@ -130,7 +134,7 @@
         }
 
         // +25 per rat for only using the shovel
-        var shovelKills = _.filter(gameState.inactiveRats, function(r) { return r.state == RatStates.KILLED_BY_POISON; }).length;
+        var shovelKills = _.filter(gameState.inactiveRats, function(r) { return r.state == RatStates.KILLED_BY_SHOVEL; }).length;
         if (shovelKills == totalKills) {
             var shovelBonus = shovelKills * 25;
             scoreAdjustment += shovelBonus;

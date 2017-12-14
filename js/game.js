@@ -39,7 +39,8 @@
                 foodCount: 10,
                 score: 0,
                 money: 0,
-                swingCount: 0
+                swingCount: 0,
+                allDeadRats: []
             };
 
             _.extend(gameState, initialState);
@@ -148,19 +149,7 @@
         game.time.events.add(1500, function() {
             game.camera.fade('#000000', 250);
             game.camera.onFadeComplete.add(function() { 
-        
-                var ratInfos = _.map(gameState.inactiveRats, function(r) { return { 
-                        level: r.level, 
-                        state: r.state, 
-                        rank: r.type.rank, 
-                        class: r.type.class, 
-                        size: r.type.size, 
-                        spriteName: r.sprite.key, 
-                        scale: r.sprite.scale,
-                        isDead: r.isDead()
-                    }; 
-                });
-                gameState.currentRatInfo = ratInfos;
+                gameState.currentRatInfo = GameUtil.getRatInfos(gameState.inactiveRats);
 
                 var itemInfos = _.map(items, function(i) { return { id: i.info.id, x: i.position.x, y: i.position.y }; })
                 gameState.currentItemInfo = itemInfos;
@@ -317,6 +306,11 @@
                 money: gameState.money,
                 swingCount: gameState.swingCount,
             };
+
+            // Add anything killed this level to the list of previously killed rats
+            var currentRatInfo = GameUtil.getRatInfos(gameState.inactiveRats);
+            var currentDeadRats = _.where(currentRatInfo, { isDead: true });
+            state.allDeadRats = (gameState.allDeadRats || []).concat(currentDeadRats);
 
             game.state.start('Score', true, false, state);
             return;

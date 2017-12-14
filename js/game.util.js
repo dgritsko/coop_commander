@@ -135,4 +135,18 @@ class GameUtil {
 
         return t;
     }
+
+    static getRatInfos(rats) {
+        return _.map(rats, function(r) { return { 
+                level: r.level, 
+                state: r.state, 
+                rank: r.type.rank, 
+                class: r.type.class, 
+                size: r.type.size, 
+                spriteName: r.sprite.key, 
+                scale: r.sprite.scale,
+                isDead: r.isDead()
+            }; 
+        });
+    }
 }
