@@ -5,7 +5,12 @@ RatStates = {
     ESCAPED: 3,
     KILLED_BY_SHOVEL: 4,
     KILLED_BY_FLASHLIGHT: 5,
-    KILLED_BY_POISON: 6
+    KILLED_BY_POISON: 6,
+    KILLED_BY_BASIC_TRAP: 7,
+    KILLED_BY_STRONG_TRAP: 8,
+    KILLED_BY_SNAP_TRAP: 9,
+    KILLED_IN_HUMANE_TRAP: 10,
+    KILLED_BY_JOHN: 11
 };
 
 RatTypes = [
@@ -257,7 +262,12 @@ Rat.prototype.isDead = function() {
     var deadStates = [ 
         RatStates.KILLED_BY_SHOVEL,
         RatStates.KILLED_BY_FLASHLIGHT,
-        RatStates.KILLED_BY_POISON
+        RatStates.KILLED_BY_POISON,
+        RatStates.KILLED_BY_BASIC_TRAP,
+        RatStates.KILLED_BY_STRONG_TRAP,
+        RatStates.KILLED_BY_SNAP_TRAP,
+        RatStates.KILLED_IN_HUMANE_TRAP,
+        RatStates.KILLED_BY_JOHN
     ];
 
     return deadStates.indexOf(this.state) > -1;
