@@ -30,11 +30,18 @@ class GameLevels {
             var c = p[0];
             var s = p[1];
             var t = parts[1];
+            var x = game.camera.bounds.x - 10;
+            var y = Math.random() * game.world.height;
+            if (parts.length == 3) {
+                y = parseFloat(parts[2]) * game.world.height;
+            }
 
             return {
-                'class': parseInt(c, 10),
-                'size': GameLevels.parseSize(s),
-                'spawn': parseFloat(t)
+                class: parseInt(c, 10),
+                size: GameLevels.parseSize(s),
+                spawn: parseFloat(t),
+                x: x,
+                y: y
             };
         });
 

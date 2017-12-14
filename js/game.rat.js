@@ -141,11 +141,7 @@ class Rat {
         this.state = RatStates.STOPPED;
 
         this.spriteName = Rat.getSpriteName(this.type);
-        var width = game.cache.getImage(this.spriteName).width;
         
-        x = x || game.camera.bounds.x - (width / 10);
-        y = y || Math.random() * game.world.height;
-
         this.setupSprite(game, x, y);
 
         this.speed = Rat.getSpeed(this.type, this.level);
