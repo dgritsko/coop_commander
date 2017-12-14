@@ -404,3 +404,19 @@ John.prototype.update = function() {
         this.sprite.animations.play('up');
     }
 }
+
+
+John.prototype.affectRat = function(rat, gameState) {
+    if (!this.isActive) {
+        return;
+    }
+
+    var johnBounds = this.sprite.getBounds();
+    var ratBounds = rat.sprite.getBounds();
+
+    if (!Phaser.Rectangle.intersects(johnBounds, ratBounds)) {
+        return;
+    }
+
+    rat.kill(RatStates.KILLED_BY_JOHN, gameState);
+}
