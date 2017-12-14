@@ -30,7 +30,8 @@ AudioEvents = {
 
 MusicEvents = {
     MAIN_MENU: 0,
-    GAME_START: 1
+    GAME_START: 1,
+    INTRO_START: 2
 }
 
 class AudioManager {
@@ -65,6 +66,7 @@ AudioManager.prototype.setupSounds = function() {
     this.fxSquawk = setupSound(this, 'squawk00', 0.5);
     this.fxCluck = setupSound(this, 'cluck00');
     this.fxCluck.allowMultiple = false;
+
     this.fxEating = setupSound(this, 'eating00');
     this.fxBang = setupSound(this, 'bang00');
     this.fxBang.allowMultiple = true;
@@ -96,6 +98,8 @@ AudioManager.prototype.setupMusic = function() {
     this.menuMusic = game.add.sound('music00');
     this.menuMusic.volume = 0.1;
     this.menuMusic.loop = true;
+
+    this.musicSandman = game.add.sound('sandman');
 }
 
 AudioManager.prototype.toggleMute = function() {
@@ -193,12 +197,22 @@ AudioManager.prototype.play = function(id) {
 AudioManager.prototype.playMusic = function(id) {
     switch (id) {
         case MusicEvents.MAIN_MENU:
+            this.musicSandman.stop();
             if (!this.menuMusic.isPlaying) {
                 this.menuMusic.play();
             }
+
+            this.currentMusic = this.menuMusic;
             break;
         case MusicEvents.GAME_START:
             this.menuMusic.stop();
+
+            break;
+        case MusicEvents.INTRO_START:
+            this.menuMusic.stop();
+            if (!this.musicSandman.isPlaying) {
+                this.musicSandman.play();
+            }     
             break;
     }
 }

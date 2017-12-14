@@ -58,14 +58,14 @@
             startGame();
         });
 
+        addMenuItem('Intro', menuItems, function() {
+            game.audio.play(AudioEvents.MENU_CLICK);
+            showIntro();
+        });
+
         addMenuItem('How to Play', menuItems, function() {
             game.audio.play(AudioEvents.MENU_CLICK);
             showHelp();
-        });
-
-        addMenuItem('Story', menuItems, function() {
-            game.audio.play(AudioEvents.MENU_CLICK);
-            window.open('story.html');
         });
 
         addMenuItem('Debug', menuItems, function() {
@@ -159,6 +159,20 @@
             game.camera.fade('#000000', 250);
             game.camera.onFadeComplete.add(function() { 
                 game.state.start('Game');
+            }, this);
+        })
+    }
+
+    function showIntro() {
+        if (isStarting) {
+            return;
+        }
+        isStarting = true;
+
+        Util.drawSunset(sun, game, function() {
+            game.camera.fade('#000000', 250);
+            game.camera.onFadeComplete.add(function() { 
+                game.state.start('Intro');
             }, this);
         })
     }

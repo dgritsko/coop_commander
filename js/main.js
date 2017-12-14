@@ -28,4 +28,5 @@ game.state.add('Game', CoopDefender.Game);
 game.state.add('Score', CoopDefender.Score);
 game.state.add('Cutscene', CoopDefender.Cutscene);
 game.state.add('Help', CoopDefender.Help);
+game.state.add('Intro', CoopDefender.Intro);
 game.state.start('Boot');
