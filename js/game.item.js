@@ -142,7 +142,7 @@ Poison.prototype.affectRat = function(rat, gameState) {
     rat.kill(RatStates.KILLED_BY_POISON, gameState);
 }
 
-class SmallTrap extends TrapItem {
+class BasicTrap extends TrapItem {
     constructor(info, isCurrent, x, y) {
         super(info, isCurrent, x, y);
 
@@ -150,10 +150,41 @@ class SmallTrap extends TrapItem {
 
         this.sprite = game.add.sprite(x, y, 'simpletrap');
         this.sprite.anchor.setTo(0.5, 0.5);
+        this.sprite.scale.setTo(0.5);
+
+        this.sprite.animations.add('snap', [0, 1, 2, 3, 4, 5, 6, 7], 60, false);
     }
 }
 
-class LargeTrap extends TrapItem {
+BasicTrap.prototype.calculateVector = function(rat) {
+    if (rat.type.size == 'medium' || rat.type.size == 'large') {
+        return;
+    }
+    
+    return TrapItem.prototype.calculateVector.call(this, rat);    
+}
+
+BasicTrap.prototype.affectRat = function(rat, gameState) {
+    if (!this.isActive) {
+        return;
+    }
+
+    if (rat.type.size == 'medium' || rat.type.size == 'large') {
+        return;
+    }
+
+    if (!this.intersects(rat)) {
+        return;
+    }
+
+    this.isActive = false;
+
+    this.sprite.animations.play('snap');
+
+    rat.kill(RatStates.KILLED_BY_BASIC_TRAP, gameState);
+}
+
+class StrongTrap extends TrapItem {
     constructor(info, isCurrent, x, y) {
         super(info, isCurrent, x, y);
 
@@ -161,10 +192,42 @@ class LargeTrap extends TrapItem {
 
         this.sprite = game.add.sprite(x, y, 'simpletrap');
         this.sprite.anchor.setTo(0.5, 0.5);
+
+        this.sprite.scale.setTo(0.8);
+        
+        this.sprite.animations.add('snap', [0, 1, 2, 3, 4, 5, 6, 7], 60, false);
     }
 }
 
-class HeavyDutyTrap extends TrapItem {
+StrongTrap.prototype.calculateVector = function(rat) {
+    if (rat.type.size == 'large') {
+        return;
+    }
+    
+    return TrapItem.prototype.calculateVector.call(this, rat);    
+}
+
+StrongTrap.prototype.affectRat = function(rat, gameState) {
+    if (!this.isActive) {
+        return;
+    }
+
+    if (rat.type.size == 'large') {
+        return;
+    }
+
+    if (!this.intersects(rat)) {
+        return;
+    }
+
+    this.isActive = false;
+
+    this.sprite.animations.play('snap');
+
+    rat.kill(RatStates.KILLED_BY_STRONG_TRAP, gameState);
+}
+
+class SnapTrap extends TrapItem {
     constructor(info, isCurrent, x, y) {
         super(info, isCurrent, x, y);
 

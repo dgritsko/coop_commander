@@ -88,8 +88,15 @@
         var scoreAdjustment = 0;
 
         // Add stat line for the money earned
-        var totalKills = _.filter(gameState.inactiveRats, function(r) { return r.isDead; }).length;
-        result.push({ text: totalKills + ' Killed', value: '+$' + totalKills });
+        var totalKills = _.filter(gameState.inactiveRats, function(r) { return r.isDead(); }).length;
+        if (totalKills > 0) {
+            result.push({ text: totalKills + ' Killed', value: '+$' + totalKills });
+        } else {
+            var pacifistBonus = 500;
+            scoreAdjustment += pacifistBonus;
+
+            result.push({ text: 'Pacifist', value: pacifistBonus });
+        }
 
         // -50 points for every rat escaped
         var escaped = _.filter(gameState.inactiveRats, function(r) { return r.state == RatStates.ESCAPED; }).length;
@@ -135,7 +142,7 @@
 
         // +25 per rat for only using the shovel
         var shovelKills = _.filter(gameState.inactiveRats, function(r) { return r.state == RatStates.KILLED_BY_SHOVEL; }).length;
-        if (shovelKills == totalKills) {
+        if (totalKills > 0 && shovelKills == totalKills) {
             var shovelBonus = shovelKills * 25;
             scoreAdjustment += shovelBonus;
 
@@ -144,7 +151,7 @@
 
         // +10 per rat for only using the flashlight
         var flashlightKills = _.filter(gameState.inactiveRats, function(r) { return r.state == RatStates.KILLED_BY_FLASHLIGHT; }).length;
-        if (flashlightKills == totalKills) {
+        if (totalKills > 0 && flashlightKills == totalKills) {
             var flashlightBonus = flashlightKills * 10;
             scoreAdjustment += flashlightBonus;
 

@@ -28,8 +28,8 @@ var Items = [
         minLevel: 1,
         max: -1,
         menuSprite: 'simpletrap',
-        menuScale: 1,
-        create: function(info, isCurrent, x, y) { return new SmallTrap(info, isCurrent, x, y); }
+        menuScale: 0.5,
+        create: function(info, isCurrent, x, y) { return new BasicTrap(info, isCurrent, x, y); }
     },
     {
         id: ItemTypes.STRONG,
@@ -39,8 +39,8 @@ var Items = [
         minLevel: 1,
         max: -1,
         menuSprite: 'simpletrap',
-        menuScale: 1,
-        create: function(info, isCurrent, x, y) { return new LargeTrap(info, isCurrent, x, y); }
+        menuScale: 0.9,
+        create: function(info, isCurrent, x, y) { return new StrongTrap(info, isCurrent, x, y); }
     },
     {
         id: ItemTypes.SNAP,
@@ -51,7 +51,7 @@ var Items = [
         max: -1,
         menuSprite: 'simpletrap',
         menuScale: 1,
-        create: function(info, isCurrent, x, y) { return new HeavyDutyTrap(info, isCurrent, x, y); }
+        create: function(info, isCurrent, x, y) { return new SnapTrap(info, isCurrent, x, y); }
     },
     {
         id: ItemTypes.HUMANE,
