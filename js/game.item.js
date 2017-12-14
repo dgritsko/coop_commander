@@ -83,6 +83,10 @@ TrapItem.prototype.setup = function(radius) {
 }
 
 TrapItem.prototype.calculateVector = function(rat) {
+    if (!this.isActive) {
+        return;
+    }
+
     var dist = rat.sprite.position.distance(this.sprite.position);
 
     if (dist <= this.radius) {
@@ -109,13 +113,30 @@ class Poison extends TrapItem {
 
         this.sprite = game.add.sprite(x, y, 'poison');
         this.sprite.anchor.setTo(0.5, 0.5);
-        this.sprite.scale.setTo(0.5);
+        this.sprite.scale.setTo(0.6);
+
+        this.capacity = 10;
     }
 }
 
 Poison.prototype.affectRat = function(rat, gameState) {
+    if (!this.isActive) {
+        return;
+    }
+
     if (!this.intersects(rat)) {
         return;
+    }
+
+    this.capacity -= 1;
+
+    if (this.capacity == 0) {
+        this.sprite.frame = 2;
+        this.isActive = false;
+    } else if (this.capacity <= 6) {
+        this.sprite.frame = 1;
+    } else {
+        this.sprite.frame = 0;
     }
 
     rat.kill(RatStates.KILLED_BY_POISON, gameState);

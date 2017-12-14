@@ -23,7 +23,7 @@
         game.load.image('shovel', 'assets/shovel.png');
         game.load.image('hitbox00', 'assets/hitbox00.png');
         game.load.spritesheet('simpletrap', 'assets/simpletrap.png', 48, 48);
-        game.load.image('poison', 'assets/ratpoison.png');
+        game.load.spritesheet('poison', 'assets/ratpoison.png', 48, 48);
         game.load.image('cloud00', 'assets/cloud00.png');
         game.load.spritesheet('fox00', 'assets/fox00.png', 47, 44);
         game.load.spritesheet('vulture00', 'assets/vulture00.png', 40, 40);

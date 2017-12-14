@@ -237,9 +237,22 @@ Rat.prototype.update = function(food, items, player, gameState) {
 }
 
 Rat.prototype.kill = function(newState, gameState) {
-    this.sprite.kill();
-    this.group.remove(this.sprite);
+    if (this.isDead()) {
+        console.log('TODO: Fix this (how can you kill that which has no life)');
+        return;
+    }
+
     this.state = newState;
+
+    this.sprite.body.stop();
+    this.sprite.animations.stop();
+
+    if (newState == RatStates.KILLED_BY_POISON) {
+        this.sprite.tint = 0x008000;
+    } else {
+        this.sprite.kill();
+        this.group.remove(this.sprite);
+    }
     
     if (newState != RatStates.ESCAPED) {
         gameState.score += this.type.score;

@@ -1,17 +1,27 @@
+var ItemTypes = {
+    POISON: 0,
+    BASIC: 1,
+    STRONG: 2,
+    SNAP: 3,
+    HUMANE: 4,
+    CAT: 5,
+    JOHN: 6
+}
+
 var Items = [
     {
-        id: 0,
+        id: ItemTypes.POISON,
         name: 'Rat-X Poison',
         description: 'Cheap and effective, but frowned upon by the Geneva Conventions.\nLasts for 1 night, killing up to 10 rats. Be forewarned -- using it comes with consequences.',
         cost: 2,
         minLevel: 1,
         max: -1,
         menuSprite: 'poison',
-        menuScale: 1,
+        menuScale: 0.8,
         create: function(info, isCurrent, x, y) { return new Poison(info, isCurrent, x, y); }
     },
     {
-        id: 1,
+        id: ItemTypes.BASIC,
         name: 'Basic Wooden Trap',
         description: 'Just a humble rat trap.\nCatches 1 small rat per night.',
         cost: 2,
@@ -22,7 +32,7 @@ var Items = [
         create: function(info, isCurrent, x, y) { return new SmallTrap(info, isCurrent, x, y); }
     },
     {
-        id: 2,
+        id: ItemTypes.STRONG,
         name: 'Strong Wooden Trap',
         description: 'Better, faster, stronger.\nCatches 1 small or medium rat per night.',
         cost: 1,
@@ -33,7 +43,7 @@ var Items = [
         create: function(info, isCurrent, x, y) { return new LargeTrap(info, isCurrent, x, y); }
     },
     {
-        id: 3,
+        id: ItemTypes.SNAP,
         name: 'Heavy-Duty Snap Trap',
         description: 'Quick killing. 100% effective.\nCatches 1 rat of any size per night.',
         cost: 10,
@@ -44,7 +54,7 @@ var Items = [
         create: function(info, isCurrent, x, y) { return new HeavyDutyTrap(info, isCurrent, x, y); }
     },
     {
-        id: 4,
+        id: ItemTypes.HUMANE,
         name: '"Humane" Trap',
         description: 'Non-lethal -- you\'ll have to finish the job.\nCatches up to 5 rats of any size per night.',
         cost: 15,
@@ -55,7 +65,7 @@ var Items = [
         create: function(info, isCurrent, x, y) { return new HumaneTrap(info, isCurrent, x, y); }
     },
     {
-        id: 5,
+        id: ItemTypes.CAT,
         name: 'Cat',
         description: 'Nature\'s own rat repellent.\nRats will avoid cats at all costs.',
         cost: 15,
@@ -66,7 +76,7 @@ var Items = [
         create: function(info, isCurrent, x, y) { return new Cat(info, isCurrent, x, y); }
     },
     {
-        id: 6,
+        id: ItemTypes.JOHN,
         name: 'John',
         description: 'The Tonto to your Lone Ranger, the Robin to your Batman.\nJohn will "take care" of any rats he encounters.',
         cost: 100,
@@ -96,73 +106,16 @@ class Store {
         this.placedItems = [];
         this.itemAddedCallbacks = [];
         
-        this.selection = game.add.graphics(50, this.getIndexY(0));
-        this.selection.lineStyle(2, 0xffd900, 1);
-        this.selection.drawRect(0, 0, 48, 48);
+        this.setupStoreMenu();
 
-        function addItem(info, that) {
-            var index = that.availableItems.length;
-            var y = that.getIndexY(index);
-            var t = game.add.sprite(50, y, info.menuSprite);
-            t.scale.setTo(info.menuScale);
-
-            var l = game.add.bitmapText(50 + 20, y + 28, 'blackOpsOne', '$' + info.cost, 18);
-            l.itemId = info.id;
-
-            t.inputEnabled = true;
-            t.events.onInputDown.add(function() {
-                that.selectItem(index);
-            }, this);
-
-            that.availableItems.push(t);
-            that.itemLabels.push(l);
-        }
-
-        for (var i = 0; i < Items.length; i++) {
-            if (this.level >= Items[i].minLevel) {
-                addItem(Items[i], this);
-            }
-        }
-
-        for (var i = 0; i < (existingItems || []).length; i++) {
-            var info = Items[existingItems[i]['id']];
-            var x = existingItems[i]['x'];
-            var y = existingItems[i]['y'];
-            
-            this.placedItems.push(info.create(info, false, x, y));
-        }
+        this.addExistingItems(existingItems);
 
         this.updatePriceLabels();
 
         var currInfo = Items[this.selectedIndex];
         this.currItem = currInfo.create(currInfo, true);
-        
-        this.doneLabel = GameUtil.drawTextButton(game, game.world.width - 170, 20, 'Done', function() {
-            this.done();
-        }, this);
-        var margin = 10;
-        this.doneLabel.hitArea = new Phaser.Rectangle(-margin, -margin, this.doneLabel.width + margin * 8, this.doneLabel.height + margin * 2);
 
-        var upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-        upKey.onDown.add(function() { 
-            if (this.state == StoreStates.ACTIVE) {
-                var newIndex = this.selectedIndex > 0 ? this.selectedIndex - 1 : this.availableItems.length - 1;
-                this.selectItem(newIndex);
-            }
-        }, this);
-
-        var downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-        downKey.onDown.add(function() { 
-            if (this.state == StoreStates.ACTIVE) {
-                var newIndex = this.selectedIndex < this.availableItems.length - 1 ? this.selectedIndex + 1 : 0;
-                this.selectItem(newIndex);
-            } 
-        }, this);
-
-        var escKey = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
-        escKey.onDown.add(function() {
-            this.done();
-        }, this);
+        this.setupInput();
 
         this.remainingTime = game.time.now + (1000 * 20);
 
@@ -170,6 +123,84 @@ class Store {
         this.descriptionLabel = game.add.bitmapText(145, 38, 'blackOpsOne', '', 24);
 
         this.selectItem(0, true);
+    }
+}
+
+Store.prototype.setupStoreMenu = function() {
+    var menuX = 50;
+
+    this.selection = game.add.graphics(menuX - 24, this.getIndexY(0));
+    this.selection.lineStyle(2, 0xffd900, 1);
+    this.selection.drawRect(0, 0, 48, 48);
+
+    function addItem(info, that) {
+        var index = that.availableItems.length;
+        var y = that.getIndexY(index);
+        var t = game.add.sprite(menuX, y, info.menuSprite);
+        t.scale.setTo(info.menuScale);
+        t.anchor.setTo(0.5, 0);
+
+        var l = game.add.bitmapText(menuX + 28, y + 24, 'blackOpsOne', '$' + info.cost, 18);
+        l.itemId = info.id;
+        l.anchor.setTo(0, 0.5);
+        
+        t.inputEnabled = true;
+        t.events.onInputDown.add(function() {
+            that.selectItem(index);
+        }, this);
+
+        that.availableItems.push(t);
+        that.itemLabels.push(l);
+    }
+
+    for (var i = 0; i < Items.length; i++) {
+        if (this.level >= Items[i].minLevel) {
+            addItem(Items[i], this);
+        }
+    }
+}
+
+Store.prototype.setupInput = function() {
+    this.doneLabel = GameUtil.drawTextButton(game, game.world.width - 170, 20, 'Done', function() {
+        this.done();
+    }, this);
+    var margin = 10;
+    this.doneLabel.hitArea = new Phaser.Rectangle(-margin, -margin, this.doneLabel.width + margin * 8, this.doneLabel.height + margin * 2);
+
+    var upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+    upKey.onDown.add(function() { 
+        if (this.state == StoreStates.ACTIVE) {
+            var newIndex = this.selectedIndex > 0 ? this.selectedIndex - 1 : this.availableItems.length - 1;
+            this.selectItem(newIndex);
+        }
+    }, this);
+
+    var downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+    downKey.onDown.add(function() { 
+        if (this.state == StoreStates.ACTIVE) {
+            var newIndex = this.selectedIndex < this.availableItems.length - 1 ? this.selectedIndex + 1 : 0;
+            this.selectItem(newIndex);
+        } 
+    }, this);
+
+    var escKey = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
+    escKey.onDown.add(function() {
+        this.done();
+    }, this);
+
+
+}
+
+Store.prototype.addExistingItems = function(existingItems) {
+    // Poison does not persist between levels
+    existingItems = _.filter((existingItems || []), function(i) { i.id != ItemTypes.POISON });
+    
+    for (var i = 0; i < existingItems.length; i++) {
+        var info = Items[existingItems[i]['id']];
+        var x = existingItems[i]['x'];
+        var y = existingItems[i]['y'];
+        
+        this.placedItems.push(info.create(info, false, x, y));
     }
 }
 
