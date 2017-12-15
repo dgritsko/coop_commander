@@ -28,6 +28,7 @@ if ($method == 'GET') {
 	$score = $_GET['score'];
 	$name = $_GET['name'];
 	$level = $_GET['level'];
+	$kills = $_GET['kills'];
 		
 	if (empty($score) || empty($name) || empty($level)) {
 		header("Access-Control-Allow-Origin: *");
@@ -40,7 +41,8 @@ if ($method == 'GET') {
 			'score' => (int)$score, 
 			'name' => $name,
 			'level' => (int)$level,
-			'date' => array('$date' => $date)
+			'date' => array('$date' => $date),
+			'kills' => (int)$kills
 			);
 		
 		$json = json_encode($request);

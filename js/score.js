@@ -174,8 +174,9 @@
         
         var score = CoopDefender.Score.args.score || 0;
         var level = CoopDefender.Score.args.level || 0;
+        var kills = CoopDefender.Score.args.allDeadRats.length || 0;
 
-        $.post('http://gritsko.com/coop_defender/api/scores?name=' + playerName + '&score=' + score + '&level=' + level).always(function() {
+        $.post('http://gritsko.com/coop_defender/api/scores?name=' + playerName + '&score=' + score + '&level=' + level + '&kills=' + kills).always(function() {
             game.camera.fade('#000000', 250);
             game.camera.onFadeComplete.add(function() { 
                 game.state.start('Menu');
