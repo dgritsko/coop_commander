@@ -143,7 +143,7 @@
             var tierBonus = bonusTier * 200;
             scoreAdjustment += tierBonus;
 
-            result.push({ text: 'Tier ' + bonusTier + ' Kill Bonus', value: '+' + tierBonus });
+            result.push({ text: 'Kill Bonus', value: '+' + tierBonus });
         }
 
         // +25 per rat for only using the shovel
