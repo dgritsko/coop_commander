@@ -90,6 +90,12 @@ class GameUtil {
         }
     }
 
+    static drawCoop(game, rect) {
+        var coop = game.add.sprite(rect.x + rect.width - 230, rect.y - 30, 'shed');
+        coop.scale.setTo(1.5, 1.5);
+        return coop;
+    }
+
     static drawKey(game, x, y, width, height, label, onInputDown) {
         var radius = 4;
         var borderWidth = 2;

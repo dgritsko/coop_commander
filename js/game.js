@@ -94,6 +94,8 @@
 
         fence = game.add.group();
         GameUtil.drawFence(game, pen, fence);
+
+        GameUtil.drawCoop(game, pen);
     }
 
     function beginGame() {

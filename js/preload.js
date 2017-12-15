@@ -34,6 +34,7 @@
         game.load.spritesheet('cat00', 'assets/cat00.png', 48, 48);
         game.load.spritesheet('john', 'assets/john.png', 32, 48);
         game.load.spritesheet('hat', 'assets/hat.png', 48, 48);
+        game.load.image('shed', 'assets/shed.png');
         
         // Sounds
         game.load.audio('whoosh00', 'assets/sound/fx/whoosh00.mp3');
