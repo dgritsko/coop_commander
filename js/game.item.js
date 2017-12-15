@@ -151,7 +151,7 @@ class BasicTrap extends TrapItem {
         this.sprite.anchor.setTo(0.5, 0.5);
         this.sprite.scale.setTo(0.5);
 
-        this.sprite.animations.add('snap', [0, 1, 2, 3, 4, 5, 6, 7], 60, false);
+        this.sprite.animations.add('snap', [0, 1, 2, 3], 30, false);
     }
 }
 
@@ -194,7 +194,7 @@ class StrongTrap extends TrapItem {
 
         this.sprite.scale.setTo(0.8);
         
-        this.sprite.animations.add('snap', [0, 1, 2, 3, 4, 5, 6, 7], 60, false);
+        this.sprite.animations.add('snap', [0, 1, 2, 3], 30, false);
     }
 }
 
