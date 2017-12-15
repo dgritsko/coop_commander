@@ -4,6 +4,15 @@ class Player {
 
         this.sprite = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
 
+        this.sprite.scale.setTo(2, 2);
+        this.sprite.anchor.setTo(0.5, 0.5);
+
+        this.hat = game.make.sprite(-1, -16, 'hat');
+        this.hat.anchor.setTo(0.5);
+        this.hat.scale.setTo(0.65);
+        this.hat.frame = 0;
+        this.sprite.addChild(this.hat);
+
         // TODO: Add shovel to group so that we can set the z-index correctly
         // TODO: Adjust the scaling so that it's the appropriate size for the player
         this.shovel = game.make.sprite(0, 0, 'shovel');
@@ -17,9 +26,8 @@ class Player {
         this.shovelHead.alpha = 0;
         this.shovelHead.anchor.setTo(0.5, 0.5);
         this.shovel.addChild(this.shovelHead);
-        
-        this.sprite.scale.setTo(2, 2);
-        this.sprite.anchor.setTo(0.5, 0.5);
+
+
 
         game.physics.arcade.enable(this.shovel);
         game.physics.arcade.enable(this.shovelHead);
@@ -103,6 +111,31 @@ Player.prototype.move = function() {
         this.sprite.animations.play(animation);
     } else {
         this.sprite.animations.stop();
+    }
+
+    this.sprite
+
+    switch (this.direction) {
+        case 'down':
+            this.hat.frame = 2;
+            this.hat.x = 0;
+            this.hat.y = -15;
+            break;
+        case 'left':
+            this.hat.frame = 1;
+            this.hat.x = 0;
+            this.hat.y = -16;
+            break;
+        case 'right':
+            this.hat.frame = 3;
+            this.hat.x = 0;
+            this.hat.y = -16;
+            break;
+        case 'up':
+            this.hat.frame = 0;
+            this.hat.x = -1;
+            this.hat.y = -16;
+            break;
     }
 }
 
