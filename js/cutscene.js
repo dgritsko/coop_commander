@@ -86,6 +86,7 @@
         var result = [];
 
         var scoreAdjustment = 0;
+        var foodAdjustment = 0;
 
         // Add stat line for the money earned
         var totalKills = _.filter(gameState.inactiveRats, function(r) { return r.isDead(); }).length;
@@ -96,6 +97,11 @@
             scoreAdjustment += pacifistBonus;
 
             result.push({ text: 'Pacifist', value: pacifistBonus });
+        }
+
+        if (gameState.level % 10 == 0) {
+            foodAdjustment += 1;
+            result.push({ text: 'Bonus Chicken', value: 'Yes'});
         }
 
         // -50 points for every rat escaped
@@ -167,6 +173,7 @@
         }
 
         gameState.score += scoreAdjustment;
+        gameState.foodCount += foodAdjustment;
 
         return result;
     }
