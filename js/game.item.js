@@ -232,9 +232,26 @@ class SnapTrap extends TrapItem {
 
         this.setup(200);
 
-        this.sprite = game.add.sprite(x, y, 'simpletrap');
+        this.sprite = game.add.sprite(x, y, 'snaptrap');
         this.sprite.anchor.setTo(0.5, 0.5);
+        this.sprite.frame = 0;
     }
+}
+
+SnapTrap.prototype.affectRat = function(rat, gameState) {
+    if (!this.isActive) {
+        return;
+    }
+
+    if (!this.intersects(rat)) {
+        return;
+    }
+
+    this.isActive = false;
+
+    this.sprite.frame = 1;
+
+    rat.kill(RatStates.KILLED_BY_SNAP_TRAP, gameState);
 }
 
 class HumaneTrap extends TrapItem {
@@ -243,7 +260,7 @@ class HumaneTrap extends TrapItem {
 
         this.setup(175);
 
-        this.sprite = game.add.sprite(x, y, 'simpletrap');
+        this.sprite = game.add.sprite(x, y, 'humanetrap');
         this.sprite.anchor.setTo(0.5, 0.5);
     }
 }

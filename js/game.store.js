@@ -49,7 +49,7 @@ var Items = [
         cost: 10,
         minLevel: 1,
         max: -1,
-        menuSprite: 'simpletrap',
+        menuSprite: 'snaptrap',
         menuScale: 1,
         create: function(info, isCurrent, x, y) { return new SnapTrap(info, isCurrent, x, y); }
     },
@@ -60,8 +60,8 @@ var Items = [
         cost: 15,
         minLevel: 3,
         max: -1,
-        menuSprite: 'simpletrap',
-        menuScale: 1,
+        menuSprite: 'humanetrap',
+        menuScale: 0.5,
         create: function(info, isCurrent, x, y) { return new HumaneTrap(info, isCurrent, x, y); }
     },
     {
