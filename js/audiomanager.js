@@ -20,12 +20,13 @@ AudioEvents = {
     STORE_DONE: 18,
     MENU_CLICK: 19,
     FLASHLIGHT: 20,
-    POWERUP_SPAWN: 21,
-    POWERUP_EGG_PICKUP: 22,
-    POWERUP_BOOTS_PICKUP: 23,
-    POWERUP_MONEY_PICKUP: 24,
-    POWERUP_FLASHLIGHT_PICKUP: 25,
-    CHICKEN_CLUCK: 26
+    NO_FLASHLIGHTS: 21,
+    POWERUP_SPAWN: 22,
+    POWERUP_EGG_PICKUP: 23,
+    POWERUP_BOOTS_PICKUP: 24,
+    POWERUP_MONEY_PICKUP: 25,
+    POWERUP_FLASHLIGHT_PICKUP: 26,
+    CHICKEN_CLUCK: 27
 };
 
 MusicEvents = {
@@ -79,7 +80,7 @@ AudioManager.prototype.setupSounds = function() {
     this.fxSuccess01 = setupSound(this, 'success01');
     this.fxSuccess02 = setupSound(this, 'success02');
     this.fxSuccess03 = setupSound(this, 'success03');
-    this.fxError00 = setupSound(this, 'error00');
+    this.fxError00 = setupSound(this, 'error00', 0.7);
     this.fxError01 = setupSound(this, 'error01');
     this.fxPop00 = setupSound(this, 'pop00');
     this.fxPop01 = setupSound(this, 'pop01');
@@ -188,6 +189,9 @@ AudioManager.prototype.play = function(id) {
             break;
         case AudioEvents.FLASHLIGHT:
             this.fxZap01.play();
+            break;
+        case AudioEvents.NO_FLASHLIGHTS:
+            this.fxError01.play();
             break;
         case AudioEvents.POWERUP_SPAWN:
             this.fxPowerupSpawn.play();

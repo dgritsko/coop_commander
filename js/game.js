@@ -284,6 +284,7 @@
                     case 0:
                         gameState.foodCount += 1;
                         createFood();    
+                        createChicken();
                         game.audio.play(AudioEvents.POWERUP_EGG_PICKUP);
                         break;
                     case 1:
@@ -499,6 +500,8 @@
     
     function useFlashlight() {
         if (gameState.flashlights <= 0) {
+            game.camera.flash(0x000000, 250);
+            game.audio.play(AudioEvents.NO_FLASHLIGHTS);
             return;
         }
 
