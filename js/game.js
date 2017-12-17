@@ -362,6 +362,21 @@
             game.audio.play(AudioEvents.RAT_HIT);
             rat.kill(RatStates.KILLED_BY_SHOVEL, gameState);
 
+            var vector = Phaser.Point.subtract(rat.sprite.position, player.sprite.position);
+            vector.normalize();
+
+            var emitter = game.add.emitter(rat.sprite.position.x, rat.sprite.position.y, 10);
+            emitter.particleDrag = new Phaser.Point(400, 400);
+            var maxVelocity = 500;
+
+            var xVal = maxVelocity * vector.x;
+            var yVal = maxVelocity * vector.y;
+
+            emitter.setXSpeed(Math.min(0, xVal), Math.max(0, xVal));
+            emitter.setYSpeed(Math.min(0, yVal), Math.max(0, yVal));
+            emitter.makeParticles('blood', [0,1,2,3,4]);
+            emitter.start(true, 1250, null, 10);
+
             return false;         
         });
     }
