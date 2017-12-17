@@ -81,7 +81,7 @@
 
         game.camera.fade('#000000', 4000);
         game.camera.onFadeComplete.add(function() { 
-            game.state.start('Game');
+            game.state.start('Game', true, false, { showHints: true });
         }, this);
     }
 

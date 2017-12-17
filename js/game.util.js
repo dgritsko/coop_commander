@@ -155,4 +155,73 @@ class GameUtil {
             }; 
         });
     }
+
+
+    static setupHints(game) {
+        var hints = game.add.group();
+        var items = [];
+
+        function clearHints() {
+            items.forEach(function (i) { i.kill(); });
+            items = [];
+        }
+
+        var keySize = 45;
+
+        var keySeparator = 3;
+        var keyX = game.world.centerX - keySize * 1.5 - 2;
+        var keyY = 550;
+        var firstRowY = keyY - 30;
+
+        var interval = 3000;
+        var displayInterval = 2000;        
+
+        game.time.events.add(interval, function() {    
+            var upKey = GameUtil.drawKey(game, keyX + keySize + keySeparator, keyY, keySize, keySize, '↑');
+            items.push(upKey);
+
+            var downKey = GameUtil.drawKey(game, keyX + keySize + keySeparator, keyY + keySeparator + keySize, keySize, keySize, '↓');
+            items.push(downKey);
+
+            var leftKey = GameUtil.drawKey(game, keyX, keyY + keySeparator + keySize, keySize, keySize, '←');
+            items.push(leftKey);
+
+            var rightKey = GameUtil.drawKey(game, keyX + keySize * 2 + keySeparator * 2, keyY + keySeparator + keySize, keySize, keySize, '→');
+            items.push(rightKey);
+
+            var movementLabel = game.add.bitmapText(keyX + 68, keyY + 108, 'blackOpsOne', 'Move', 28);
+            movementLabel.anchor.setTo(0.5, 0.5);
+            items.push(movementLabel);
+        });
+
+        game.time.events.add(interval + displayInterval, function() {
+            clearHints();
+        });
+
+        game.time.events.add(interval * 2, function() {
+            var spaceKey = GameUtil.drawKey(game, game.world.centerX - keySize * 2.5, keyY + keySize + keySeparator, keySize * 5, keySize);
+            items.push(spaceKey);
+
+            var attackLabel = game.add.bitmapText(keyX + 68, keyY + 108, 'blackOpsOne', 'Attack', 28);
+            attackLabel.anchor.setTo(0.5, 0.5);
+            items.push(attackLabel);
+        });
+
+        game.time.events.add(interval * 2 + displayInterval, function() {
+            clearHints();
+        });
+
+        game.time.events.add(interval * 3, function() {
+            var flashlightKey = GameUtil.drawKey(game, game.world.centerX - keySize * .5, keyY + keySize + keySeparator, keySize, keySize, 'F');
+            items.push(flashlightKey);
+
+            var flashlightLabel = game.add.bitmapText(keyX + 68, keyY + 108, 'blackOpsOne', 'Flashlight', 28);
+            flashlightLabel.anchor.setTo(0.5, 0.5);
+            items.push(flashlightLabel);
+        });
+
+        game.time.events.add(interval * 3 + displayInterval, function() {
+            clearHints();
+        });
+    }
 }

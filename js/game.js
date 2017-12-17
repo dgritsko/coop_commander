@@ -32,6 +32,10 @@
 
         gameState = { };
 
+        if (args && args.showHints) {
+            GameUtil.setupHints(game);
+        }
+
         if (args && args.previousState) {
             _.extend(gameState, args.previousState);
         } else {
