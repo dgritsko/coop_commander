@@ -18,6 +18,9 @@
         player.scale.setTo(1.5);
         centerAnchor(player);
 
+        hat = game.add.sprite(player.x - player.width / 4, player.y - (2 + player.height / 2), 'hat');
+        hat.frame = 2;
+
         var playerTitle = addText('Papa G', player.centerX, player.y + player.height - 30);
         var playerSubtitle = addText('Defender of the Coop', player.centerX, playerTitle.y + playerTitle.height + 6);
         centerAnchor(playerTitle);
