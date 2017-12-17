@@ -26,7 +26,13 @@ AudioEvents = {
     POWERUP_BOOTS_PICKUP: 24,
     POWERUP_MONEY_PICKUP: 25,
     POWERUP_FLASHLIGHT_PICKUP: 26,
-    CHICKEN_CLUCK: 27
+    CHICKEN_CLUCK: 27,
+    RAT_POISONED: 28,
+    WOODEN_TRAP_CLOSED: 29,
+    SNAP_TRAP_CLOSED: 30,
+    HUMANE_TRAP_CLOSED: 31,
+    MEOW: 32,
+    JOHN_KILL_RAT: 33
 };
 
 MusicEvents = {
@@ -109,6 +115,7 @@ AudioManager.prototype.setupSounds = function() {
     this.fxSpeedup02 = setupSound(this, 'speedup02');
     this.fxSplat00 = setupSound(this, 'splat00');
     this.fxSplat01 = setupSound(this, 'splat01');
+    this.fxMeow00 = setupSound(this, 'meow00');
 }
 
 AudioManager.prototype.setupMusic = function() {
@@ -210,6 +217,24 @@ AudioManager.prototype.play = function(id) {
             break;
         case AudioEvents.CHICKEN_CLUCK:
             this.fxCluck.play();
+            break;
+        case AudioEvents.RAT_POISONED:
+            this.fxSplat00.play();
+            break;
+        case AudioEvents.WOODEN_TRAP_CLOSED:
+            this.fxCrunch.play();
+            break;
+        case AudioEvents.SNAP_TRAP_CLOSED:
+            this.fxSnap00.play();
+            break;
+        case AudioEvents.HUMANE_TRAP_CLOSED:
+            this.fxSnap01.play();
+            break;
+        case AudioEvents.MEOW:
+            this.fxMeow00.play();
+            break;
+        case AudioEvents.JOHN_KILL_RAT:
+            this.fxSplat01.play();
             break;
     }
 }

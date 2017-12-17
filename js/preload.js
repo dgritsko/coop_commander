@@ -81,6 +81,7 @@
         game.load.audio('success01', 'assets/sound/fx/success01.wav');
         game.load.audio('success02', 'assets/sound/fx/success02.wav');
         game.load.audio('success03', 'assets/sound/fx/success03.wav');
+        game.load.audio('meow00', 'assets/sound/fx/meow00.mp3');
         
         // Music
         game.load.audio('music00', 'assets/sound/music/Rolemusic_-_Keiken_soku.mp3');

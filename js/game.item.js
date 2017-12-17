@@ -137,7 +137,8 @@ Poison.prototype.affectRat = function(rat, gameState) {
     } else {
         this.sprite.frame = 0;
     }
-
+    
+    game.audio.play(AudioEvents.RAT_POISONED);
     rat.kill(RatStates.KILLED_BY_POISON, gameState);
 }
 
@@ -150,7 +151,7 @@ class BasicTrap extends TrapItem {
         this.sprite = game.add.sprite(x, y, 'simpletrap');
         this.sprite.anchor.setTo(0.5, 0.5);
         this.sprite.scale.setTo(0.5);
-
+       
         this.sprite.animations.add('snap', [0, 1, 2, 3], 30, false);
     }
 }
@@ -180,6 +181,7 @@ BasicTrap.prototype.affectRat = function(rat, gameState) {
 
     this.sprite.animations.play('snap');
 
+    game.audio.play(AudioEvents.WOODEN_TRAP_CLOSED);
     rat.kill(RatStates.KILLED_BY_BASIC_TRAP, gameState);
 }
 
@@ -223,6 +225,7 @@ StrongTrap.prototype.affectRat = function(rat, gameState) {
 
     this.sprite.animations.play('snap');
 
+    game.audio.play(AudioEvents.WOODEN_TRAP_CLOSED);
     rat.kill(RatStates.KILLED_BY_STRONG_TRAP, gameState);
 }
 
@@ -251,6 +254,7 @@ SnapTrap.prototype.affectRat = function(rat, gameState) {
 
     this.sprite.frame = 1;
 
+    game.audio.play(AudioEvents.SNAP_TRAP_CLOSED);
     rat.kill(RatStates.KILLED_BY_SNAP_TRAP, gameState);
 }
 
@@ -279,7 +283,8 @@ HumaneTrap.prototype.affectRat = function(rat, gameState) {
     //this.isActive = false;
 
     this.sprite.frame = 0;
-
+    
+    game.audio.play(AudioEvents.HUMANE_TRAP_CLOSED);
     rat.setState(RatStates.TRAPPED_IN_HUMANE_TRAP, gameState);
 }
 
@@ -392,6 +397,11 @@ Cat.prototype.update = function() {
             this.sprite.animations.play('up');
         }
     }
+
+    // Occasionally play a meow.
+    if (Math.random() < 0.0075) {
+        game.audio.play(AudioEvents.MEOW);
+    }
 }
 
 class John extends Item {
@@ -453,5 +463,6 @@ John.prototype.affectRat = function(rat, gameState) {
         return;
     }
 
+    game.audio.play(AudioEvents.JOHN_KILL_RAT);
     rat.kill(RatStates.KILLED_BY_JOHN, gameState);
 }
