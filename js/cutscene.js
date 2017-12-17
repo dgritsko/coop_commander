@@ -404,6 +404,11 @@
             rat.body.velocity.y = (Math.random() * 200) - 150;
             rat.angle = (Math.random() * 180) - 90;
             rat.body.drag = new Phaser.Point(20, 200);
+
+            if (ratInfo.state == RatStates.KILLED_BY_POISON) {
+                rat.tint = 0x008000;
+            }
+
             rats.add(rat);
         };
 
