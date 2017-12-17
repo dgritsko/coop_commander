@@ -354,8 +354,12 @@
             
         }, function(weapon, rodent) {
             var rat = _.find(rats, function(r) { return r.id == rodent.id; });
-
+            
             if (rodent.hitBySwing && rodent.hitBySwing >= gameState.swingCount) {
+                return false;
+            }
+
+            if (rat.isDead()) {
                 return false;
             }
 
