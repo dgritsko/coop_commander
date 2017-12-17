@@ -99,9 +99,12 @@ TrapItem.prototype.calculateVector = function(rat) {
 }
 
 TrapItem.prototype.intersects = function(rat) {
-    var trapBounds = this.sprite.getBounds();
-    var ratBounds = rat.sprite.getBounds();
-    return Phaser.Rectangle.intersects(trapBounds, ratBounds);
+    var distance = Phaser.Point.distance(this.sprite, rat.sprite);
+    return distance <= 10;
+
+    // var trapBounds = this.sprite.getBounds();
+    // var ratBounds = rat.sprite.getBounds();
+    // return Phaser.Rectangle.intersects(trapBounds, ratBounds);
 }
 
 class Poison extends TrapItem {

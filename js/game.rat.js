@@ -250,13 +250,20 @@ Rat.prototype.kill = function(newState, gameState) {
     this.sprite.body.stop();
     this.sprite.animations.stop();
 
-    if (newState == RatStates.KILLED_BY_POISON) {
-        this.sprite.tint = 0x008000;
-    } else {
-        this.sprite.kill();
-        this.group.remove(this.sprite);
+    switch (newState) {
+        case RatStates.KILLED_BY_POISON:
+            this.sprite.tint = 0x008000;
+            break;
+        case RatStates.KILLED_BY_BASIC_TRAP:
+        case RatStates.KILLED_BY_STRONG_TRAP:
+        case RatStates.KILLED_BY_SNAP_TRAP:
+            break;
+        default:
+            this.sprite.kill();
+            this.group.remove(this.sprite);
+            break;
     }
-    
+
     if (newState != RatStates.ESCAPED) {
         gameState.score += this.type.score;
     }
