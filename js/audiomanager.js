@@ -115,7 +115,7 @@ AudioManager.prototype.setupSounds = function() {
     this.fxSpeedup02 = setupSound(this, 'speedup02');
     this.fxSplat00 = setupSound(this, 'splat00');
     this.fxSplat01 = setupSound(this, 'splat01');
-    this.fxMeow00 = setupSound(this, 'meow00');
+    this.fxMeow00 = setupSound(this, 'meow00', 0.5);
 }
 
 AudioManager.prototype.setupMusic = function() {
