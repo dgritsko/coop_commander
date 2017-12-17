@@ -38,6 +38,7 @@
         game.load.spritesheet('snaptrap', 'assets/snaptrap.png', 48, 48);
         game.load.spritesheet('humanetrap', 'assets/humanetrap.png', 96, 48);
         game.load.spritesheet('blood', 'assets/blood.png', 8, 8);
+        game.load.spritesheet('bear', 'assets/bear.png', 123, 139);
         
         // Sounds
         game.load.audio('whoosh00', 'assets/sound/fx/whoosh00.mp3');
@@ -83,6 +84,7 @@
         game.load.audio('success02', 'assets/sound/fx/success02.wav');
         game.load.audio('success03', 'assets/sound/fx/success03.wav');
         game.load.audio('meow00', 'assets/sound/fx/meow00.mp3');
+        game.load.audio('roar', 'assets/sound/fx/roar.wav');
         
         // Music
         game.load.audio('music00', 'assets/sound/music/Rolemusic_-_Keiken_soku.mp3');

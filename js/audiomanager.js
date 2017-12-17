@@ -32,7 +32,8 @@ AudioEvents = {
     SNAP_TRAP_CLOSED: 30,
     HUMANE_TRAP_CLOSED: 31,
     MEOW: 32,
-    JOHN_KILL_RAT: 33
+    JOHN_KILL_RAT: 33,
+    BEAR: 34
 };
 
 MusicEvents = {
@@ -116,6 +117,7 @@ AudioManager.prototype.setupSounds = function() {
     this.fxSplat00 = setupSound(this, 'splat00');
     this.fxSplat01 = setupSound(this, 'splat01');
     this.fxMeow00 = setupSound(this, 'meow00', 0.5);
+    this.fxRoar = setupSound(this, 'roar');
 }
 
 AudioManager.prototype.setupMusic = function() {
@@ -235,6 +237,9 @@ AudioManager.prototype.play = function(id) {
             break;
         case AudioEvents.JOHN_KILL_RAT:
             this.fxSplat01.play();
+            break;
+        case AudioEvents.BEAR:
+            this.fxRoar.play();
             break;
     }
 }

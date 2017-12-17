@@ -233,9 +233,9 @@
             drawVulture,
             drawFox,
             drawGarbageTruck,
-             drawAliens
+            drawAliens,
+            drawBear
             //drawOldLady,
-            //drawBear
         ];
 
         predators[Math.floor(Math.random() * predators.length)](duration);
@@ -383,6 +383,42 @@
 
         var t1 = game.add.tween(predator).to({ x : game.world.width + 50 }, duration, Phaser.Easing.Linear.None);
         t1.start();
+    }
+
+    function drawBear(duration) {
+        predator = game.add.sprite(game.world.centerX - 500, game.world.height + 130, 'bear');
+
+        predator.anchor.setTo(0.5, 0.5);
+        
+        predator.animations.add('run', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
+        
+        var hasPlayedChomp = false;
+        updateCallbacks.push(function() {
+            predator.animations.play('run');
+
+            rats.children.forEach(function(r) {
+                if (predator.x >= r.x && r.alpha > 0) {
+                    r.alpha = 0;
+                }
+            });
+
+            if (predator.x >= game.world.centerX && !hasPlayedChomp) {
+                hasPlayedChomp = true;
+                game.audio.play(AudioEvents.CHOMP);
+            }
+        });
+
+        var t1 = game.add.tween(predator).to({ x : game.world.centerX }, duration/2, Phaser.Easing.Linear.None);
+        var t2 = game.add.tween(predator).to({ x : game.world.centerX + 500 }, duration/2, Phaser.Easing.Linear.None);
+        var t3 = game.add.tween(predator).to({ y : 525 }, duration/2, Phaser.Easing.Linear.None)
+        var t4 = game.add.tween(predator).to({ y : game.world.height + 130 }, duration/2, Phaser.Easing.Cubic.InOut);
+
+        t1.chain(t2);
+        t3.chain(t4);
+        t1.start();
+        t3.start();
+
+        game.audio.play(AudioEvents.BEAR);
     }
 
     function drawRats(ratInfos) {
