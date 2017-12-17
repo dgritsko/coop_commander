@@ -262,7 +262,25 @@ class HumaneTrap extends TrapItem {
 
         this.sprite = game.add.sprite(x, y, 'humanetrap');
         this.sprite.anchor.setTo(0.5, 0.5);
+
+        this.sprite.frame = 1;
     }
+}
+
+HumaneTrap.prototype.affectRat = function(rat, gameState) {
+    if (!this.isActive) {
+        return;
+    }
+
+    if (!this.intersects(rat)) {
+        return;
+    }
+
+    //this.isActive = false;
+
+    this.sprite.frame = 0;
+
+    rat.setState(RatStates.TRAPPED_IN_HUMANE_TRAP, gameState);
 }
 
 class Cat extends Item {

@@ -36,7 +36,7 @@
         game.load.spritesheet('hat', 'assets/hat.png', 48, 48);
         game.load.image('shed', 'assets/shed.png');
         game.load.spritesheet('snaptrap', 'assets/snaptrap.png', 48, 48);
-        game.load.image('humanetrap', 'assets/humanetrap.png');
+        game.load.spritesheet('humanetrap', 'assets/humanetrap.png', 96, 48);
         
         // Sounds
         game.load.audio('whoosh00', 'assets/sound/fx/whoosh00.mp3');

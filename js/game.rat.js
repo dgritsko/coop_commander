@@ -9,8 +9,9 @@ RatStates = {
     KILLED_BY_BASIC_TRAP: 7,
     KILLED_BY_STRONG_TRAP: 8,
     KILLED_BY_SNAP_TRAP: 9,
-    KILLED_IN_HUMANE_TRAP: 10,
-    KILLED_BY_JOHN: 11
+    TRAPPED_IN_HUMANE_TRAP: 10,
+    KILLED_IN_HUMANE_TRAP: 11,
+    KILLED_BY_JOHN: 12
 };
 
 RatTypes = [
@@ -184,7 +185,9 @@ Rat.prototype.update = function(food, items, player, gameState) {
         this.move(food);
     }
 
-    if (this.state == RatStates.HUNGRY) {
+    var activeStates = [RatStates.HUNGRY, RatStates.KILLED_BY_POISON, RatStates.TRAPPED_IN_HUMANE_TRAP];
+
+    if (activeStates.indexOf(this.state) > -1) {
         var activeItems = _.where(items, { isActive : true });
         
         var itemVector = new Phaser.Point(0, 0);
@@ -205,7 +208,7 @@ Rat.prototype.update = function(food, items, player, gameState) {
             }
         }
 
-        if (this.state == RatStates.HUNGRY) {
+        if (activeStates.indexOf(this.state) > -1) {
             var actualSpeed = this.sprite.body.velocity.getMagnitude();
 
             if (itemVector.x != 0 || itemVector.y != 0) {
@@ -232,13 +235,17 @@ Rat.prototype.update = function(food, items, player, gameState) {
     }
 }
 
+Rat.prototype.setState = function(newState, gameState) {
+    this.state = newState;
+}
+
 Rat.prototype.kill = function(newState, gameState) {
     if (this.isDead()) {
         console.log('TODO: Fix this (how can you kill that which has no life)');
         return;
     }
 
-    this.state = newState;
+    this.setState(newState, gameState);
 
     this.sprite.body.stop();
     this.sprite.animations.stop();
