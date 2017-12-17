@@ -288,6 +288,10 @@ HumaneTrap.prototype.calculateVector = function(rat) {
         return;
     }
 
+    if (this.remainingCapacity <= 0 && this.trappedRats.indexOf(rat) < 0) {
+        return;
+    }
+
     var doorPosition = new Phaser.Point(this.sprite.x, this.sprite.centerY);
 
     var dist = rat.sprite.position.distance(doorPosition);
@@ -312,6 +316,10 @@ HumaneTrap.prototype.affectRat = function(rat, gameState) {
     }
 
     if (rat.state != RatStates.HUNGRY) {
+        return;
+    }
+
+    if (this.remainingCapacity <= 0) {
         return;
     }
 

@@ -185,7 +185,7 @@ Rat.prototype.update = function(food, items, player, gameState) {
         this.move(food);
     }
 
-    var activeStates = [RatStates.HUNGRY, RatStates.KILLED_BY_POISON, RatStates.TRAPPED_IN_HUMANE_TRAP];
+    var activeStates = [RatStates.HUNGRY, RatStates.TRAPPED_IN_HUMANE_TRAP];
 
     if (activeStates.indexOf(this.state) > -1) {
         var activeItems = _.where(items, { isActive : true });
@@ -245,20 +245,32 @@ Rat.prototype.kill = function(newState, gameState) {
         return;
     }
 
-    this.setState(newState, gameState);
+    if (this.state == RatStates.TRAPPED_IN_HUMANE_TRAP) {
+        newState = RatStates.KILLED_IN_HUMANE_TRAP;
+    }
 
-    this.sprite.body.stop();
-    this.sprite.animations.stop();
+    this.setState(newState, gameState);
 
     switch (newState) {
         case RatStates.KILLED_BY_POISON:
             this.sprite.tint = 0x008000;
+
+            game.time.events.add(1000, function() {
+                this.sprite.body.stop();
+                this.sprite.animations.stop();
+            }, this);
+
             break;
         case RatStates.KILLED_BY_BASIC_TRAP:
         case RatStates.KILLED_BY_STRONG_TRAP:
         case RatStates.KILLED_BY_SNAP_TRAP:
+            this.sprite.body.stop();
+            this.sprite.animations.stop();
             break;
         default:
+            this.sprite.body.stop();
+            this.sprite.animations.stop();
+
             this.sprite.kill();
             this.group.remove(this.sprite);
             break;
