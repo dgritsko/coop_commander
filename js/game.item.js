@@ -268,6 +268,34 @@ class HumaneTrap extends TrapItem {
         this.sprite.anchor.setTo(0.5, 0.5);
 
         this.sprite.frame = 1;
+
+        this.remainingCapacity = 5;
+        this.initialCapacity = 5;
+
+        this.capacityText = game.add.bitmapText(48, 22, 'blackOpsOne', '0/' + this.initialCapacity, 18);
+        this.capacityText.anchor.setTo(1, 0.5);
+        this.sprite.addChild(this.capacityText);
+
+        this.trappedRats = [];
+    }
+}
+
+HumaneTrap.prototype.calculateVector = function(rat) {
+    if (!this.isActive) {
+        return;
+    }
+
+    var doorPosition = new Phaser.Point(this.sprite.x, this.sprite.centerY);
+
+    var dist = rat.sprite.position.distance(doorPosition);
+
+    if (dist <= this.radius) {
+        var vector = Phaser.Point.subtract(doorPosition, rat.sprite.position);
+
+        vector.normalize();
+        vector.setMagnitude(this.radius - dist);
+
+        return vector;
     }
 }
 
@@ -280,12 +308,22 @@ HumaneTrap.prototype.affectRat = function(rat, gameState) {
         return;
     }
 
-    //this.isActive = false;
+    if (rat.state != RatStates.HUNGRY) {
+        return;
+    }
 
-    this.sprite.frame = 0;
-    
-    game.audio.play(AudioEvents.HUMANE_TRAP_CLOSED);
     rat.setState(RatStates.TRAPPED_IN_HUMANE_TRAP, gameState);
+    this.trappedRats.push(rat);
+
+    this.remainingCapacity -= 1;
+
+    this.capacityText.text = (this.initialCapacity - this.remainingCapacity) + '/' + this.initialCapacity;
+
+    if (this.remainingCapacity <= 0) {
+        this.sprite.frame = 0;
+    
+        game.audio.play(AudioEvents.HUMANE_TRAP_CLOSED);
+    }
 }
 
 class Cat extends Item {
