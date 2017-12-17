@@ -112,8 +112,7 @@ class Store {
 
         this.updatePriceLabels();
 
-        var currInfo = Items[this.selectedIndex];
-        this.currItem = currInfo.create(currInfo, true);
+        this.currItem = null;
 
         this.setupInput();
 
@@ -121,8 +120,6 @@ class Store {
 
         this.nameLabel = game.add.bitmapText(145, 10, 'blackOpsOne', '', 28);
         this.descriptionLabel = game.add.bitmapText(145, 38, 'blackOpsOne', '', 24);
-
-        this.selectItem(0, true);
     }
 }
 
@@ -132,6 +129,7 @@ Store.prototype.setupStoreMenu = function() {
     this.selection = game.add.graphics(menuX - 24, this.getIndexY(0));
     this.selection.lineStyle(2, 0xffd900, 1);
     this.selection.drawRect(0, 0, 48, 48);
+    this.selection.visible = false;
 
     function addItem(info, that) {
         var index = that.availableItems.length;
@@ -214,7 +212,11 @@ Store.prototype.selectItem = function(index, silent) {
     var info = Items[index];
     var y = this.getIndexY(index);
 
-    this.currItem.kill();
+    if (this.currItem) {
+        this.currItem.kill();
+    }
+
+    this.selection.visible = true;
 
     this.currItem = info.create(info, true);
     this.selection.y = y;
@@ -291,6 +293,10 @@ Store.prototype.update = function() {
     }
     this.doneLabel.text = 'Done (' + remainingSeconds + ')';
 
+    if (!this.currItem) {
+        return;
+    }
+
     this.currItem.move();
 
     if (game.input.activePointer.isDown) {
@@ -318,9 +324,9 @@ Store.prototype.update = function() {
             this.money -= this.currItem.info.cost;
 
             this.placedItems.push(this.currItem);
+            this.currItem = null;
 
-            var currInfo = Items[this.selectedIndex];
-            this.currItem = currInfo.create(currInfo, true);
+            this.selection.visible = false; 
 
             this.updatePriceLabels();
 
