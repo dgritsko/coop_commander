@@ -95,7 +95,7 @@
         fence = game.add.group();
         GameUtil.drawFence(game, pen, fence);
 
-        GameUtil.drawCoop(game, pen);
+        coop = GameUtil.drawCoop(game, pen);
     }
 
     function beginGame() {
@@ -105,8 +105,10 @@
         rodents = game.add.group();
         food = game.add.group();
         flock = game.add.group();
+
+        var coopBounds = coop.getBounds();
         for (var i = 0; i < gameState.foodCount; i++) {
-            createFood(pen, food);
+            createFood();
             createChicken();
         }
 
@@ -147,6 +149,8 @@
 
     function beginOutro() {
         mode = Modes.Outro;
+
+        chickens.forEach(function(c) { c.stop(); });
 
         game.time.events.add(1500, function() {
             game.camera.fade('#000000', 250);
@@ -223,34 +227,39 @@
             game.audio.play(AudioEvents.CHICKEN_CLUCK);
         }
 
+        var coopBounds = coop.getBounds();
         for (var i = 0; i < chickens.length; i++) {
             chickens[i].update();
-        }
 
-        game.physics.arcade.collide(fence, flock, function(fenceSegment, chicken) {
-            var actualChicken = _.find(chickens, function(c) { return c.id == chicken.id; });
-
-            if (actualChicken && actualChicken.isMoving()) {
-                actualChicken.stop();
+            if (Phaser.Rectangle.containsPoint(coopBounds, chickens[i].sprite)) {
+                if (chickens[i].isMoving()) {
+                    chickens[i].stop();
+                }
+            } else {
+                game.physics.arcade.collide(fence, chickens[i].sprite, function(fenceSegment, c) {
+                    if (chickens[i].isMoving()) {
+                        chickens[i].stop();
+                    }
+                });
             }
-        });
+        }
 
         game.physics.arcade.collide(rodents, food, function(rodent, foodItem) {
             
         }, function(rodent, foodItem) {
             var rat = _.find(rats, function(r) { return r.id == rodent.id; });
 
-            if (rat && rat.shouldEat()) {
-                rat.escape();
-                foodItem.kill();
-                food.remove(foodItem);
-                gameState.foodCount -= 1;
-
-                game.audio.play(AudioEvents.RAT_EAT);
-            }
+                if (rat && rat.shouldEat()) {
+                    rat.escape();
+                    foodItem.kill();
+                    food.remove(foodItem);
+                    gameState.foodCount -= 1;
+    
+                    game.audio.play(AudioEvents.RAT_EAT);
+                }    
 
             return false;
-        });
+            });
 
         var playerBounds = player.sprite.getBounds();
         var originalWidth = playerBounds.width;
@@ -274,7 +283,7 @@
                 switch (powerup.id) {
                     case 0:
                         gameState.foodCount += 1;
-                        createFood(pen, food);    
+                        createFood();    
                         game.audio.play(AudioEvents.POWERUP_EGG_PICKUP);
                         break;
                     case 1:
@@ -362,7 +371,11 @@
     }
 
     function createChicken() {
-        chickens.push(new Chicken(flock, chickens.length, pen));
+        var spawnArea = new Phaser.Rectangle();
+        spawnArea.copyFrom(pen);
+        spawnArea.scale(0.85, 0.9);
+
+        chickens.push(new Chicken(flock, chickens.length, spawnArea));
     }
 
     function setupInput() {
@@ -542,9 +555,28 @@
         hud.upgradePointText.setText('$' + gameState.money);
     }
 
-    function createFood(rect, group) {
-        var x = rect.x + 8 + (Math.random() * (rect.width - 96));
-        var y = rect.y + 8 + (Math.random() * (rect.height - 96));
+    function createFood() {
+        var group = food;
+        var rect = pen;
+        var excludeRect = coop.getBounds();
+
+        var getCoordinates = function() {
+            var x = rect.x + 8 + (Math.random() * (rect.width - 96));
+            var y = rect.y + 8 + (Math.random() * (rect.height - 96));
+            return new Phaser.Point(x, y);
+        }
+
+        var coordinates;
+        while (true) {
+            coordinates = getCoordinates();
+
+            if (!Phaser.Rectangle.containsPoint(excludeRect, coordinates)) {
+                break;
+            }
+        }
+
+        var x = coordinates.x;
+        var y = coordinates.y;
         
         var foodIndexes = [0,12,13,14,15,16,18,21,23,24,25,26,27,28,29,32,33,34,35,36,37,38,40,43,44,46,47,48,49,50,56,59,61,62,63];
         var foodIndex = Phaser.ArrayUtils.getRandomItem(foodIndexes);

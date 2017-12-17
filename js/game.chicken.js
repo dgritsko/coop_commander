@@ -10,8 +10,8 @@ class Chicken {
         this.state = ChickenStates.STOPPED;
         this.group = group;
 
-        var x = bounds.x + (bounds.width / 4) + (Math.random() * (bounds.width / 2));
-        var y = bounds.y + (bounds.height / 4) + (Math.random() * (bounds.height / 2));
+            var x = bounds.x + (bounds.width / 4) + (Math.random() * (bounds.width / 2));
+            var y = bounds.y + (bounds.height / 2.5) + (Math.random() * (bounds.height / 3));
 
         this.sprite = game.add.sprite(x, y, 'chicken00');
         this.sprite.id = id;
@@ -38,7 +38,7 @@ Chicken.prototype.update = function() {
 
         var waitDuration = (Phaser.Timer.SECOND * 2) + (Phaser.Timer.SECOND * 8 * Math.random());
         game.time.events.add(waitDuration, this.move, this);
-    } else if (this.state == ChickenStates.MOVING_TO_POINT && game.physics.arcade.distanceToXY(this.sprite, this.dest[0], this.dest[1]) < 1) {
+    } else if (this.state == ChickenStates.MOVING_TO_POINT && game.physics.arcade.distanceToXY(this.sprite, this.dest[0], this.dest[1]) < 10) {
         this.stop();
     }
 }
