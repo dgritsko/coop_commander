@@ -68,11 +68,6 @@
             showHelp();
         });
 
-        addMenuItem('Debug', menuItems, function() {
-            game.audio.play(AudioEvents.MENU_CLICK);
-            debug();
-        });
-
         menuArrow = game.add.sprite(menuMinX - 16, 0, 'menu_arrow');
         menuArrow.scale.setTo(0.5, 0.5);
         menuArrow.anchor.setTo(0.5, 0.5);
@@ -182,12 +177,6 @@
         game.camera.onFadeComplete.add(function() { 
             game.state.start('Help');
         }, this);
-    }
-
-    function debug() {
-        // Put any debug code here...
-        game.audio.playMusic(MusicEvents.GAME_START);
-        game.state.start('Score', true, false, {'ratsKilled': 50});
     }
 
     function showQuote(index) {

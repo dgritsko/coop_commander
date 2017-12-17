@@ -18,8 +18,6 @@
     var rodents;
     var powerups = [];
 
-    var blood = true;
-
     var mode = Modes.Setup;
     var pauseMenu;
 
@@ -46,7 +44,9 @@
                 score: 0,
                 money: 0,
                 swingCount: 0,
-                allDeadRats: []
+                allDeadRats: [],
+                blood: true,
+                debug: false
             };
 
             _.extend(gameState, initialState);
@@ -372,7 +372,7 @@
             game.audio.play(AudioEvents.RAT_HIT);
             rat.kill(RatStates.KILLED_BY_SHOVEL, gameState);
 
-            if (blood) {
+            if (gameState.blood) {
                 var vector = Phaser.Point.subtract(rat.sprite.position, player.sprite.position);
                 vector.normalize();
 
@@ -449,15 +449,18 @@
             game.paused = !game.paused;
         }, this);
 
-        var debugKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
-        debugKey.onDown.add(function() {
-            // TODO: Add any debug functionality here
-            food = game.add.group();
-        });
-
         var bKey = game.input.keyboard.addKey(Phaser.Keyboard.B);
         bKey.onDown.add(function() {
-            blood = !blood;
+            gameState.blood = !(gameState.blood || false);
+        });
+
+        var debugKey = game.input.keyboard.addKey(Phaser.Keyboard.TILDE);
+        debugKey.onDown.add(function() {
+            gameState.debug = !(gameState.debug || false);
+            
+            if (!gameState.debug) {
+                game.debug.reset();
+            }
         });
     }
 
@@ -667,17 +670,19 @@
     }
 
     function render() {
-        game.debug.text(gameState.inactiveRats.length + ' / ' + gameState.activeRats.length, 2, 14, "#00ff00");   
+        if (gameState.debug) {
+            game.debug.text(gameState.inactiveRats.length + ' / ' + gameState.activeRats.length, 2, 14, "#00ff00");   
 
-        // if (mode == Modes.Play) {
-        //     game.debug.geom(player.sprite.getBounds(), 'rgba(0, 0, 255, 0.5)');
-        // }
+            // if (mode == Modes.Play) {
+            //     game.debug.geom(player.sprite.getBounds(), 'rgba(0, 0, 255, 0.5)');
+            // }
 
-        items.forEach(function(i) {
-            if (i.render) {
-                i.render(game);
-            }
-        });
+            items.forEach(function(i) {
+                if (i.render) {
+                    i.render(game);
+                }
+            });
+        } 
     }
 
     function shutdown() {
