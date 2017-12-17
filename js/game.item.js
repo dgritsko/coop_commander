@@ -448,7 +448,7 @@ Cat.prototype.update = function() {
     }
 
     // Occasionally play a meow.
-    if (Math.random() < 0.001) {
+    if (Math.random() < 0.0005) {
         game.audio.play(AudioEvents.MEOW);
     }
 }

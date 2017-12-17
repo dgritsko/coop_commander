@@ -103,6 +103,7 @@ class Store {
         this.selectedIndex = 0;
         this.availableItems = [];
         this.itemLabels = [];
+        this.quantityLabels = [];
         this.placedItems = [];
         this.itemAddedCallbacks = [];
         
@@ -110,7 +111,7 @@ class Store {
 
         this.addExistingItems(existingItems);
 
-        this.updatePriceLabels();
+        this.updateItemLabels();
 
         this.currItem = null;
 
@@ -140,10 +141,18 @@ Store.prototype.setupStoreMenu = function() {
         t.scale.setTo(info.menuScale);
         t.anchor.setTo(0.5, 0);
 
-        var l = game.add.bitmapText(menuX + 28, y + 24, 'blackOpsOne', '$' + info.cost, 18);
+        var l = game.add.bitmapText(menuX + 28, y + 14, 'blackOpsOne', '$' + info.cost, 18);
         l.itemId = info.id;
         l.anchor.setTo(0, 0.5);
         
+        var q = game.add.bitmapText(menuX + 28, y + 28, 'blackOpsOne', '', 18);
+        q.itemId = info.id;
+        q.anchor.setTo(0, 0.5);
+
+        if (info.max == -1) {
+            l.y = y + 28;
+        }
+
         t.inputEnabled = true;
         t.events.onInputDown.add(function() {
             that.selectItem(index);
@@ -151,6 +160,7 @@ Store.prototype.setupStoreMenu = function() {
 
         that.availableItems.push(t);
         that.itemLabels.push(l);
+        that.quantityLabels.push(q);
     }
 
     for (var i = 0; i < Items.length; i++) {
@@ -220,7 +230,6 @@ Store.prototype.selectItem = function(index, silent) {
 
     this.selection.visible = true;
 
-    this.currItem = info.create(info, true);
     this.selection.y = y;
 
     this.selectedIndex = index;
@@ -234,18 +243,39 @@ Store.prototype.selectItem = function(index, silent) {
         this.descriptionLabel.text += '\nMax: Unlimited';
     }
 
-
     if (!silent) {
         game.audio.play(AudioEvents.MENU_CLICK);
     }    
+
+    var existingCount = _.filter(this.placedItems, function(item) { return item.info.id == info.id; }).length;
+    if (info.max != -1 && existingCount >= info.max) {
+        // Already placed the max quantity
+        game.audio.play(AudioEvents.STORE_ERROR);
+        return;
+    }
+
+    this.currItem = info.create(info, true);
 }
 
-Store.prototype.updatePriceLabels = function() {
+Store.prototype.updateItemLabels = function() {
     var money = this.money;
+    var that = this;
 
     this.itemLabels.forEach(function(label) { 
         var item = Items[label.itemId];
         label.tint = item['cost'] <= money ? 0xffffff : 0xff0000;
+    });
+
+    this.quantityLabels.forEach(function(label) {
+        var item = Items[label.itemId];
+
+        var existing = _.filter(that.placedItems, function(item) { return item.info.id == label.itemId; }).length;
+
+        if (item.max == -1) {
+            // noop?
+        } else {
+            label.text = existing + ' of ' + item.max;
+        }
     });
 }
 
@@ -256,6 +286,10 @@ Store.prototype.done = function() {
     });
 
     _.each(this.itemLabels, function(l) {
+        l.kill();
+    });
+
+    _.each(this.quantityLabels, function(l) {
         l.kill();
     });
 
@@ -334,7 +368,7 @@ Store.prototype.update = function() {
 
             this.selection.visible = false; 
 
-            this.updatePriceLabels();
+            this.updateItemLabels();
 
             game.audio.play(AudioEvents.PLACE_ITEM);
 
