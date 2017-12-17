@@ -120,6 +120,8 @@ class Store {
 
         this.nameLabel = game.add.bitmapText(145, 10, 'blackOpsOne', '', 28);
         this.descriptionLabel = game.add.bitmapText(145, 38, 'blackOpsOne', '', 24);
+        this.instructionsLabel = game.add.bitmapText(game.world.centerX, game.world.height - 40, 'blackOpsOne', 'Purchase Items', 34);
+        this.instructionsLabel.anchor.setTo(0.5, 0.5);
     }
 }
 
@@ -266,9 +268,13 @@ Store.prototype.done = function() {
     });    
 
     this.doneLabel.kill();
-    this.currItem.kill();
+    if (this.currItem) {
+        this.currItem.kill();
+    }
     this.nameLabel.kill();
     this.descriptionLabel.kill();
+
+    this.instructionsLabel.kill();
     
     this.state = StoreStates.DONE;
 
