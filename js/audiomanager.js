@@ -76,6 +76,9 @@ AudioManager.prototype.setupSounds = function() {
     this.fxChomp00 = setupSound(this, 'chomp00');
     this.fxChomp01 = setupSound(this, 'chomp01', 0.5);
     this.fxSuccess = setupSound(this, 'success00');
+    this.fxSuccess01 = setupSound(this, 'success01');
+    this.fxSuccess02 = setupSound(this, 'success02');
+    this.fxSuccess03 = setupSound(this, 'success03');
     this.fxError00 = setupSound(this, 'error00');
     this.fxError01 = setupSound(this, 'error01');
     this.fxPop00 = setupSound(this, 'pop00');
@@ -92,6 +95,19 @@ AudioManager.prototype.setupSounds = function() {
     this.fxThrum = setupSound(this, 'thrum00');
     this.fxSmash = setupSound(this, 'smash00', 0.5);
     this.fxFoxSay = setupSound(this, 'foxsay');
+
+    this.fxAlert = setupSound(this, 'alert00');
+    this.fxBonus = setupSound(this, 'bonus00', 0.5);
+    this.fxCash = setupSound(this, 'cash');
+    this.fxCrunch = setupSound(this, 'crunch00');
+    this.fxPowerupSpawn = setupSound(this, 'powerupspawn');
+    this.fxSnap00 = setupSound(this, 'snap00');
+    this.fxSnap01 = setupSound(this, 'snap01');
+    this.fxSpeedup00 = setupSound(this, 'speedup00');
+    this.fxSpeedup01 = setupSound(this, 'speedup01');
+    this.fxSpeedup02 = setupSound(this, 'speedup02');
+    this.fxSplat00 = setupSound(this, 'splat00');
+    this.fxSplat01 = setupSound(this, 'splat01');
 }
 
 AudioManager.prototype.setupMusic = function() {
@@ -174,19 +190,19 @@ AudioManager.prototype.play = function(id) {
             this.fxZap01.play();
             break;
         case AudioEvents.POWERUP_SPAWN:
-            console.log('TODO: Powerup Spawn sound effect');
+            this.fxPowerupSpawn.play();
             break;
         case AudioEvents.POWERUP_EGG_PICKUP:
-            console.log('TODO: Powerup Egg pickup sound effect');
+            this.fxCluck.play();
             break;
         case AudioEvents.POWERUP_BOOTS_PICKUP:
-            console.log('TODO: Powerup Boots pickup sound effect');
+            this.fxSpeedup02.play();
             break;
         case AudioEvents.POWERUP_MONEY_PICKUP:
-            console.log('TODO: Powerup Money pickup sound effect');
+            this.fxCash.play();
             break;
         case AudioEvents.POWERUP_FLASHLIGHT_PICKUP:
-            console.log('TODO: Powerup Flashlight pickup sound effect');
+            this.fxBonus.play();
             break;
         case AudioEvents.CHICKEN_CLUCK:
             this.fxCluck.play();

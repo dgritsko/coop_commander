@@ -66,6 +66,21 @@
         game.load.audio('thrum00', 'assets/sound/fx/thrum00.wav');
         game.load.audio('smash00', 'assets/sound/fx/smash00.wav');
         game.load.audio('foxsay', 'assets/sound/fx/foxsayshort.mp3');
+        game.load.audio('alert00', 'assets/sound/fx/alert00.wav');
+        game.load.audio('bonus00', 'assets/sound/fx/bonus00.wav');
+        game.load.audio('cash', 'assets/sound/fx/cash.wav');
+        game.load.audio('crunch00', 'assets/sound/fx/crunch00.wav');
+        game.load.audio('powerupspawn', 'assets/sound/fx/powerupspawn.mp3');
+        game.load.audio('snap00', 'assets/sound/fx/snap00.wav');
+        game.load.audio('snap01', 'assets/sound/fx/snap01.mp3');
+        game.load.audio('speedup00', 'assets/sound/fx/speedup00.mp3');
+        game.load.audio('speedup01', 'assets/sound/fx/speedup01.wav');
+        game.load.audio('speedup02', 'assets/sound/fx/speedup02.wav');
+        game.load.audio('splat00', 'assets/sound/fx/splat00.wav');
+        game.load.audio('splat01', 'assets/sound/fx/splat01.wav');
+        game.load.audio('success01', 'assets/sound/fx/success01.wav');
+        game.load.audio('success02', 'assets/sound/fx/success02.wav');
+        game.load.audio('success03', 'assets/sound/fx/success03.wav');
         
         // Music
         game.load.audio('music00', 'assets/sound/music/Rolemusic_-_Keiken_soku.mp3');
