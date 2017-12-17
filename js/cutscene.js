@@ -365,8 +365,6 @@
         predator.animations.add('right', [8, 9, 10, 11], 10, true);
         predator.animations.add('up', [12, 13, 14, 15], 10, true);
 
-        // TODO: "What does the Fox say?"
-
         var hasPlayedChomp = false;
         updateCallbacks.push(function() {
             predator.animations.play('right');
@@ -434,7 +432,7 @@
     }
 
     function render() {
-        game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");   
+        //game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");   
     }
 
     CoopDefender.Cutscene = {init: init, preload: preload, create: create, update: update, shutdown: shutdown, render: render};

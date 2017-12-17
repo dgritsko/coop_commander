@@ -55,8 +55,8 @@ var Items = [
     },
     {
         id: ItemTypes.HUMANE,
-        name: '"Humane" Trap',
-        description: 'Non-lethal -- you\'ll have to finish the job.\nCatches up to 5 rats of any size per night.',
+        name: '"Catch \'em Alive" Trap',
+        description: 'This "humane" trap is non-lethal -- you\'ll have to finish the job.\nCatches up to 5 rats of any size per night.',
         cost: 15,
         minLevel: 3,
         max: -1,
