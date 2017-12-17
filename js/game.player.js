@@ -40,7 +40,9 @@ class Player {
         this.sprite.animations.add('down', [18, 19, 20, 21, 22, 23, 24, 25, 26], 10, true);
         this.sprite.animations.add('right', [27, 28, 29, 30, 31, 32, 33, 34, 35], 10, true);
 
-        this.direction = 'up';
+        this.hat.frame = 2;
+        this.sprite.frame = 18;
+        this.direction = 'down';
     }
 }
 
