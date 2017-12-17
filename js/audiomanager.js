@@ -91,7 +91,7 @@ AudioManager.prototype.setupSounds = function() {
     this.fxPop00 = setupSound(this, 'pop00');
     this.fxPop01 = setupSound(this, 'pop01');
     this.fxReload = setupSound(this, 'reload00', 0.5);
-    this.fxPunch00 = setupSound(this, 'punch00');
+    this.fxPunch00 = setupSound(this, 'punch00', 0.7);
     this.fxPunch00.allowMultiple = true;
 
     this.fxPunch01 = setupSound(this, 'punch01');
@@ -100,7 +100,7 @@ AudioManager.prototype.setupSounds = function() {
     this.fxZap00 = setupSound(this, 'zap00', 0.3);
     this.fxZap01 = setupSound(this, 'zap01', 0.7);
     this.fxThrum = setupSound(this, 'thrum00');
-    this.fxSmash = setupSound(this, 'smash00', 0.5);
+    this.fxSmash = setupSound(this, 'smash00', 0.25);
     this.fxFoxSay = setupSound(this, 'foxsay');
 
     this.fxAlert = setupSound(this, 'alert00');
