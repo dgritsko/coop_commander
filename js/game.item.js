@@ -174,6 +174,7 @@ class BasicTrap extends TrapItem {
        
         this.sprite.animations.add('snap', [0, 1, 2, 3], 30, false);
         this.deadRats = [];
+        this.remainingResets = 3;
     }
 }
 
@@ -209,6 +210,10 @@ BasicTrap.prototype.affectRat = function(rat, gameState) {
 }
 
 BasicTrap.prototype.reset = function() {
+    if (this.remainingResets <= 0) {
+        return;
+    }
+
     if (this.deadRats.length == 0) {
         return;
     }
@@ -222,6 +227,7 @@ BasicTrap.prototype.reset = function() {
     this.isActive = true;
     this.sprite.animations.stop();
     this.sprite.frame = 0;    
+    this.remainingResets -= 1;
 }
 
 class StrongTrap extends TrapItem {
@@ -238,6 +244,8 @@ class StrongTrap extends TrapItem {
         this.sprite.animations.add('snap', [0, 1, 2, 3], 30, false);
 
         this.deadRats = [];
+
+        this.remainingResets = 3;
     }
 }
 
@@ -273,6 +281,10 @@ StrongTrap.prototype.affectRat = function(rat, gameState) {
 }
 
 StrongTrap.prototype.reset = function() {
+    if (this.remainingResets <= 0) {
+        return;
+    }
+
     if (this.deadRats.length == 0) {
         return;
     }
@@ -286,6 +298,7 @@ StrongTrap.prototype.reset = function() {
     this.isActive = true;
     this.sprite.animations.stop();
     this.sprite.frame = 0;    
+    this.remainingResets -= 1;
 }
 
 class SnapTrap extends TrapItem {
@@ -299,10 +312,16 @@ class SnapTrap extends TrapItem {
         this.sprite.frame = 0;
 
         this.deadRats = [];
+
+        this.remainingResets = 3;
     }
 }
 
 SnapTrap.prototype.affectRat = function(rat, gameState) {
+    if (this.remainingResets <= 0) {
+        return;
+    }
+
     if (!this.isActive) {
         return;
     }
@@ -319,6 +338,7 @@ SnapTrap.prototype.affectRat = function(rat, gameState) {
     rat.kill(RatStates.KILLED_BY_SNAP_TRAP, gameState);
     this.showBlood(gameState);
     this.deadRats = [rat];
+    this.remainingResets -= 1;    
 }
 
 SnapTrap.prototype.reset = function() {
@@ -355,6 +375,8 @@ class HumaneTrap extends TrapItem {
         this.sprite.addChild(this.capacityText);
 
         this.trappedRats = [];
+
+        this.remainingResets = 3;
     }
 }
 
@@ -413,6 +435,10 @@ HumaneTrap.prototype.affectRat = function(rat, gameState) {
 }
 
 HumaneTrap.prototype.reset = function() {
+    if (this.remainingResets <= 0) {
+        return;
+    }
+
     if (this.trappedRats.length < this.initialCapacity) {
         return;
     }
@@ -425,6 +451,8 @@ HumaneTrap.prototype.reset = function() {
     this.trappedRats = [];
     this.remainingCapacity = this.initialCapacity;
     this.sprite.frame = 1;
+    this.remainingResets -= 1;
+    this.capacityText.text = (this.initialCapacity - this.remainingCapacity) + '/' + this.initialCapacity;
 }
 
 class Cat extends Item {
