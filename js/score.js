@@ -62,6 +62,10 @@
         doneLabel.hitArea = new Phaser.Rectangle(-margin, -margin, doneLabel.width + margin * 8, doneLabel.height + margin * 2); 
 
         drawStats(args.allDeadRats || []);
+
+        game.time.events.add(20 * 1000, function() {
+            showMenu();
+        });
     }
 
     function drawStats(rats) {
@@ -153,11 +157,11 @@
 
         var remainingSeconds = Math.floor((remainingTime - game.time.now) / 1000);
 
-        if (remainingSeconds <= 0) {
-            showMenu();
+        if (remainingSeconds >= 0) {
+            doneLabel.text = 'Done (' + remainingSeconds + ')';
+        } else {
+            doneLabel.text = 'Done';
         }
-
-        doneLabel.text = 'Done (' + remainingSeconds + ')';
     }
 
     function shutdown() {
