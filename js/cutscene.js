@@ -234,14 +234,16 @@
             drawFox,
             drawGarbageTruck,
             drawAliens,
-            drawBear
-            //drawOldLady,
+            drawBear,
+            drawRaccoon
         ];
 
         predators[Math.floor(Math.random() * predators.length)](duration);
     }
 
     function drawVulture(duration) {
+        var emitters = setupEmitters();
+
         predator = game.add.sprite(-50, 150, 'vulture00');
 
         predator.anchor.setTo(0.5, 0.5);
@@ -259,6 +261,8 @@
             rats.children.forEach(function(r) {
                 if (predator.x >= r.x && r.alpha > 0) {
                     r.alpha = 0;
+    
+                    updateEmitters(emitters, new Phaser.Point(r.x, r.y), r.key);
                 }
             });
 
@@ -353,6 +357,8 @@
     }
 
     function drawFox(duration) {
+        var emitters = setupEmitters();
+
         game.audio.play(AudioEvents.FOX);
 
         predator = game.add.sprite(-50, 535, 'fox00');
@@ -372,6 +378,8 @@
             rats.children.forEach(function(r) {
                 if (predator.x >= r.x && r.alpha > 0) {
                     r.alpha = 0;
+
+                    updateEmitters(emitters, new Phaser.Point(r.x, r.y), r.key);
                 }
             });
 
@@ -386,6 +394,8 @@
     }
 
     function drawBear(duration) {
+        var emitters = setupEmitters();
+
         predator = game.add.sprite(game.world.centerX - 500, game.world.height + 130, 'bear');
 
         predator.anchor.setTo(0.5, 0.5);
@@ -399,6 +409,8 @@
             rats.children.forEach(function(r) {
                 if (predator.x >= r.x && r.alpha > 0) {
                     r.alpha = 0;
+
+                    updateEmitters(emitters, new Phaser.Point(r.x, r.y), r.key);
                 }
             });
 
@@ -419,6 +431,40 @@
         t3.start();
 
         game.audio.play(AudioEvents.BEAR);
+    }
+
+    function drawRaccoon(duration) {
+        var emitters = setupEmitters();
+        
+        game.audio.play(AudioEvents.RACCOON);
+        
+        predator = game.add.sprite(-50, 535, 'raccoon');
+
+        predator.anchor.setTo(0.5, 0.5);
+        predator.scale.setTo(0.75, 0.75);
+        
+        predator.animations.add('run', [0, 1, 2, 3, 4, 5, 6], 15, true);
+        
+        var hasPlayedChomp = false;
+        updateCallbacks.push(function() {
+            predator.animations.play('run');
+
+            rats.children.forEach(function(r) {
+                if (predator.x >= r.x && r.alpha > 0) {
+                    r.alpha = 0;
+
+                    updateEmitters(emitters, new Phaser.Point(r.x, r.y), r.key);
+                }
+            });
+
+            if (predator.x >= game.world.centerX && !hasPlayedChomp) {
+                hasPlayedChomp = true;
+                game.audio.play(AudioEvents.CHOMP);
+            }
+        });
+
+        var t1 = game.add.tween(predator).to({ x : game.world.width + 50 }, duration, Phaser.Easing.Linear.None);
+        t1.start();
     }
 
     function drawRats(ratInfos) {
@@ -474,6 +520,41 @@
 
     function render() {
         //game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");   
+    }
+
+    function setupEmitters() {
+        function makeEmitter(spriteName) {
+            var emitter = game.add.emitter(0, 0, 100);
+            //emitter.particleDrag = new Phaser.Point(100, 50);
+    
+            emitter.setXSpeed(-100, 100);
+            emitter.setYSpeed(-100, 20);
+            emitter.makeParticles(spriteName, [0,1,2,3,4]);
+            return emitter;
+        }
+
+        return [makeEmitter('fur00'), makeEmitter('fur01'), makeEmitter('fur02')];
+    }
+
+    function updateEmitters(emitters, location, spriteKey) {
+        var emitterIndex = -1;
+        switch (spriteKey) {
+            case 'rat00':
+                emitterIndex = 0;
+            break;
+            case 'rat01':
+                emitterIndex = 1;
+                break;
+            case 'rat02':
+                emitterIndex = 2;
+                break;
+        }
+
+        if (emitterIndex >= 0) {
+            emitters[emitterIndex].x = location.x;
+            emitters[emitterIndex].y = location.y;
+            emitters[emitterIndex].start(true, 500, null, 10);
+        }
     }
 
     CoopDefender.Cutscene = {init: init, preload: preload, create: create, update: update, shutdown: shutdown, render: render};

@@ -14,6 +14,9 @@
         game.load.spritesheet('rat00', 'assets/rat00.png', 32, 32);
         game.load.spritesheet('rat01', 'assets/rat01.png', 32, 32);
         game.load.spritesheet('rat02', 'assets/rat02.png', 32, 32);
+        game.load.spritesheet('fur00', 'assets/fur00.png', 8, 8);
+        game.load.spritesheet('fur01', 'assets/fur01.png', 8, 8);
+        game.load.spritesheet('fur02', 'assets/fur02.png', 8, 8);
         game.load.spritesheet('chicken00', 'assets/chicken00.png', 48, 48);
         game.load.spritesheet('fence00', 'assets/fence00.png', 48, 48);
         game.load.spritesheet('food', 'assets/food.png', 16, 16);
@@ -39,6 +42,7 @@
         game.load.spritesheet('humanetrap', 'assets/humanetrap.png', 96, 48);
         game.load.spritesheet('blood', 'assets/blood.png', 8, 8);
         game.load.spritesheet('bear', 'assets/bear.png', 123, 139);
+        game.load.spritesheet('raccoon', 'assets/raccoon.png', 160, 192);
         
         // Sounds
         game.load.audio('whoosh00', 'assets/sound/fx/whoosh00.mp3');

@@ -43,6 +43,8 @@ class Player {
         this.hat.frame = 2;
         this.sprite.frame = 18;
         this.direction = 'down';
+        this.shovel.x = 10;
+        this.shovel.y = 14;
     }
 }
 

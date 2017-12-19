@@ -33,7 +33,8 @@ AudioEvents = {
     HUMANE_TRAP_CLOSED: 31,
     MEOW: 32,
     JOHN_KILL_RAT: 33,
-    BEAR: 34
+    BEAR: 34,
+    RACCOON: 35
 };
 
 MusicEvents = {
@@ -240,6 +241,10 @@ AudioManager.prototype.play = function(id) {
             break;
         case AudioEvents.BEAR:
             this.fxRoar.play();
+            break;
+        case AudioEvents.RACCOON:
+            // TODO: Unique audio for raccoon?
+            this.fxFoxSay.play();
             break;
     }
 }
