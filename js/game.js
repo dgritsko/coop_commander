@@ -3,7 +3,8 @@
         Setup: 0,
         Intro: 1,
         Play: 2,
-        Outro: 3
+        Outro: 3,
+        GameOver: 4
     };
 
     var pen = new Phaser.Rectangle(860, 120, 8 * 48, 11 * 48);
@@ -91,6 +92,10 @@
         if (mode == Modes.Outro) {
             beginOutro();
         }
+
+        if (mode == Modes.GameOver) {
+            beginGameOver();
+        }
     }
 
     function beginStage() {
@@ -169,6 +174,34 @@
                 game.state.start('Cutscene', true, false, gameState);
             }, this);            
         });
+    }
+
+    function beginGameOver() {
+        mode = Modes.GameOver;
+
+        var state = { 
+            foodCount: food.children.length,
+            level: gameState.level,
+            flashlights: gameState.flashlights,
+            score: gameState.score,
+            money: gameState.money,
+            swingCount: gameState.swingCount,
+        };
+
+        // Add anything killed this level to the list of previously killed rats
+        var currentRatInfo = GameUtil.getRatInfos(gameState.inactiveRats);
+        var currentDeadRats = _.where(currentRatInfo, { isDead: true });
+        state.allDeadRats = (gameState.allDeadRats || []).concat(currentDeadRats);
+
+        game.camera.fade('#000000', 1500);
+        game.camera.onFadeComplete.add(function() { 
+            gameState.currentRatInfo = GameUtil.getRatInfos(gameState.inactiveRats);
+
+            var itemInfos = _.map(items, function(i) { return { id: i.info.id, x: i.position.x, y: i.position.y }; })
+            gameState.currentItemInfo = itemInfos;
+
+            game.state.start('Score', true, false, state);
+        }, this);            
     }
 
     function beginSetup() {
@@ -327,21 +360,7 @@
         var levelComplete = gameState.inactiveRats.length == gameState.activeRats.length;
 
         if (gameOver) {
-            var state = { 
-                foodCount: food.children.length,
-                level: gameState.level,
-                flashlights: gameState.flashlights,
-                score: gameState.score,
-                money: gameState.money,
-                swingCount: gameState.swingCount,
-            };
-
-            // Add anything killed this level to the list of previously killed rats
-            var currentRatInfo = GameUtil.getRatInfos(gameState.inactiveRats);
-            var currentDeadRats = _.where(currentRatInfo, { isDead: true });
-            state.allDeadRats = (gameState.allDeadRats || []).concat(currentDeadRats);
-
-            game.state.start('Score', true, false, state);
+            beginGameOver();
             return;
         }
 
