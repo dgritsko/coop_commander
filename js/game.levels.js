@@ -112,9 +112,21 @@ class GameLevels {
         return result;
     }
 
-    static level(num) {
-        var levelIndex = num - 1;
+    static random(types, startTime, interval, total) {
+        var result = [];
+        
+        for (var i = 0; i < total; i++) {
+            var t = startTime + interval * i;
 
+            var type = Phaser.ArrayUtils.getRandomItem(types);
+
+            result.push(type +  ':' + t);
+        }
+
+        return result;
+    }
+
+    static create(level) {
         // Example of linear wave:
         //return GameLevels.parseLevel(GameLevels.linearWave(['3s'], 0.5, 0, 1, 0.1, 10));
 
@@ -127,21 +139,28 @@ class GameLevels {
         // Example of stream:
         //return GameLevels.parseLevel(GameLevels.stream(['2s'], 0.5, 0.5, 1, 0.1, 50));
 
-        // return GameLevels.parseLevel(GameLevels.splitCsv('1s:0:0.5, 2s:0:0.5, 3s:0:0.5'));
-        // //return GameLevels.parseLevel(GameLevels.splitCsv('3s:0:0.9, 3m:0:0.7, 3l:0:0.5,  3l:40:0.5, 3m:0:0.7, 3l:0:0.5,  3l:40:0.5, 3m:0:0.7, 3l:0:0.5,  3l:40:0.5, 3m:0:0.7, 3l:0:0.5,  3l:40:0.5, 3m:0:0.7, 3l:0:0.5,  3l:40:0.5, 3m:0:0.7, 3l:0:0.5,  3l:40:0.5, 3m:0:0.7, 3l:0:0.5,  3l:40:0.5'));
+        // Example of random:
+        //return GameLevels.parseLevel(GameLevels.random(['2s'], 1, 0.5, 10));
 
-        // //return GameLevels.parseLevel(GameLevels.splitCsv('3s:0:0.9, , 3l:0:0.5, 3l:0:10'));
-        // return GameLevels.parseLevel(GameLevels.splitCsv('3l:0, 3s:0, 3l:0, 3l:0, 3l:0.1, 3l:0.1, 3l:0.1, 3l:0.5, 3l:0.5, 3l:0.5, 3l:1, 3l:1, 3l:1.5, 3l:2, 3l:2, 3l:3'));
+        if (level == 0) {
+            return GameLevels.parseLevel(_.flatten([
+                GameLevels.cluster(['1s'], 0.5, 0.1, 1, 0.25, 10),
+                GameLevels.cluster(['1s'], 0.1, 0.1, 6, 0.25, 10),
+                GameLevels.cluster(['1s'], 0.8, 0.1, 11, 0.15, 15)                
+            ]));
+        }
 
-        // var initialLevels = [
-        //     GameLevels.splitCsv('1s:1, 2m:1.2, 3l:3'),
-        //     GameLevels.splitCsv('1s:1, 1s:1, 1m:3, 1m:3, 1s:3, 1m:7, 1s:8')
-        // ];
+        if (level == 1) {
+            return GameLevels.parseLevel(_.flatten([
+                GameLevels.sineWave(['1s', '2s'], 0.5, 0.5, 1, 1, 15),
+                GameLevels.random(['1m'], 1, 0.5, 15)
+            ]));
+        }
 
-        // if (levelIndex < initialLevels.length) {
-        //     return GameLevels.parseLevel(initialLevels[levelIndex]);
-        // }
+        // TODO        
 
-        // return GameLevels.parseLevel('3l:0, 3l:0, 3s:0, 3l:0, 3l:0.1, 3l:0.1, 3l:0.1, 3l:0.5, 3l:0.5, 3l:0.5, 3l:1, 3l:1, 3l:1.5, 3l:2, 3l:2, 3l:3');
+        return GameLevels.parseLevel(
+            GameLevels.cluster(['1s', '1m', '1l', '2s', '2m', '2l', '3s', '3m', '3l',], 0.5, 0.5, 0.5, 0.5, level * 5)
+        );
     }
 }

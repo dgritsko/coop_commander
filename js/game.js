@@ -56,7 +56,7 @@
         gameState.initialMoney = gameState.money;
 
         gameState.inactiveRats = [];
-        gameState.activeRats = GameLevels.level(gameState.level);
+        gameState.activeRats = GameLevels.create(gameState.level) || [];
 
         if (gameState.money <= 0) {
             mode = Modes.Intro;
