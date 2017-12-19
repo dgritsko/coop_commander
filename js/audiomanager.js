@@ -261,15 +261,15 @@ AudioManager.prototype.play = function(id) {
             break;
         case AudioEvents.WOODEN_TRAP_RESET:
             this.fxCrunch.play();
-            this.fxSpeedup00.play();
+            // TODO: Play more appropriate sound here?
             break;
         case AudioEvents.SNAP_TRAP_RESET:
             this.fxSnap00.play();
-            this.fxSpeedup00.play();
+            // TODO: Play more appropriate sound here?
             break;
         case AudioEvents.HUMANE_TRAP_RESET:
             this.fxSnap01.play();
-            this.fxSpeedup00.play();
+            // TODO: Play more appropriate sound here?
             break;
     }
 }
