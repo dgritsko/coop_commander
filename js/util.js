@@ -81,7 +81,7 @@ class Util {
 
         // var sun = game.add.sprite(500, 500, 'sun');
         // sun.anchor.setTo(0.5, 0.5);
-        sun.x = 500;
+        sun.x = 400;
         sun.y = 500;
 
         // Sun tint

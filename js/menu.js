@@ -29,7 +29,7 @@
 
         game.audio.playMusic(MusicEvents.MAIN_MENU);
 
-        sun = game.add.sprite(500, 500, 'sun');
+        sun = game.add.sprite(400, 500, 'sun');
         sun.anchor.setTo(0.5, 0.5);
 
         clouds = Util.drawClouds(game);
