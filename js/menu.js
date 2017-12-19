@@ -22,14 +22,14 @@
 
     function create() {
         game.audio.playMusic(MusicEvents.MAIN_MENU);
-        
+
         isStarting = false;
 
         game.camera.flash('#000000', 250);
         
         game.stage.backgroundColor = 0xa7d9ff;
 
-        sun = game.add.sprite(400, 500, 'sun');
+        sun = game.add.sprite(500, 500, 'sun');
         sun.anchor.setTo(0.5, 0.5);
 
         clouds = Util.drawClouds(game);
@@ -148,7 +148,7 @@
         }
         isStarting = true;
 
-        Util.drawSunset(sun, game, function() {
+        Util.drawSunset(sun, game, new Phaser.Point(500, 500), function() {
             game.audio.playMusic(MusicEvents.GAME_STARTING);
             
             game.camera.fade('#000000', 250);
@@ -164,7 +164,7 @@
         }
         isStarting = true;
 
-        Util.drawSunset(sun, game, function() {
+        Util.drawSunset(sun, game, new Phaser.Point(500, 500), function() {
             game.camera.fade('#000000', 250);
             game.camera.onFadeComplete.add(function() { 
                 game.state.start('Intro');

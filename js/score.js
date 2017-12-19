@@ -18,11 +18,11 @@
     function create() {
         isDone = false;
 
-        game.audio.playMusic(MusicEvents.SCORE_STARTING, CoopDefender.Score.Args.level);
-
         game.stage.backgroundColor = 0x001933;
 
         var args = CoopDefender.Score.args;
+
+        game.audio.playMusic(MusicEvents.SCORE_STARTING, CoopDefender.Score.args.level);
 
         var gameOverText = game.add.bitmapText(game.world.centerX, game.world.centerY - 130, 'blackOpsOne', 'Game Over', 34);
         gameOverText.anchor.setTo(0.5, 0.5);
@@ -179,7 +179,7 @@
 
         isDone = true;
 
-        game.audio.playMusic(MusicEvents.SCORE_ENDING, CoopDefender.Score.Args.level);
+        game.audio.playMusic(MusicEvents.SCORE_ENDING, CoopDefender.Score.args.level);
         
         var score = CoopDefender.Score.args.score || 0;
         var level = CoopDefender.Score.args.level || 0;

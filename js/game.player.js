@@ -192,3 +192,11 @@ Player.prototype.increaseSpeed = function() {
 Player.prototype.resetSpeed = function() {
     this.speed = 200;
 }
+
+Player.prototype.getBounds = function() {
+    var playerBounds = this.sprite.getBounds();
+    var originalWidth = playerBounds.width;
+    var originalHeight = playerBounds.height;
+
+    return playerBounds.scale(0.5, 0.75).offset(originalWidth * 0.25, originalHeight * 0.25);
+}

@@ -45,11 +45,11 @@
 
             game.time.events.add(extraDelay + 1500, drawPredator, this)
 
-            game.time.events.add(extraDelay + 6000, function() { Util.drawSunset(sun, game); }, this);
+            game.time.events.add(extraDelay + 6000, function() { Util.drawSunset(sun, game, new Phaser.Point(400, 500)); }, this);
 
             game.time.events.add(extraDelay + 8000, nextLevel, this);
         } else {
-            game.time.events.add(extraDelay + 1000, function() { Util.drawSunset(sun, game); }, this);
+            game.time.events.add(extraDelay + 1000, function() { Util.drawSunset(sun, game, new Phaser.Point(400, 500)); }, this);
             
             game.time.events.add(extraDelay + 3000, nextLevel, this);
         }

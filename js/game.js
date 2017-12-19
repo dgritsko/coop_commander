@@ -306,11 +306,7 @@
             return false;
             });
 
-        var playerBounds = player.sprite.getBounds();
-        var originalWidth = playerBounds.width;
-        var originalHeight = playerBounds.height;
-
-        playerBounds = playerBounds.scale(0.5, 0.75).offset(originalWidth * 0.25, originalHeight * 0.25);
+        var playerBounds = player.getBounds();
 
         for (var i = 0; i < powerups.length; i++) {
             var powerup = powerups[i];
@@ -418,6 +414,21 @@
         });
     }
 
+    function resetItems() {
+        var playerBounds = player.getBounds();
+
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+
+            var itemBounds = item.sprite.getBounds();
+            if (Phaser.Rectangle.intersects(playerBounds, itemBounds)) {
+                if (item.reset) {
+                    item.reset();
+                }
+            }
+        }
+    }
+
     function createRat(type, x, y) {
         rats.push(new Rat(rodents, type, gameState.level, x, y));
         game.audio.play(AudioEvents.RAT_SPAWN);
@@ -439,6 +450,7 @@
             gameState.swingCount += 1;
             game.audio.play(AudioEvents.SWING_SHOVEL);
             player.attack(game);
+            resetItems();
         }, this);
 
         var fKey = game.input.keyboard.addKey(Phaser.Keyboard.F);

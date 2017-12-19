@@ -71,7 +71,7 @@ class Util {
         t4.start();
     }
 
-    static drawSunset(sun, game, callback) {
+    static drawSunset(sun, game, position, callback) {
         // Sky color
         var t1 = Util.backgroundColor(0xa7d9ff, 0xfb9fa4, 1000, Phaser.Easing.Cubic.Out, game);
         var t2 = Util.backgroundColor(0xfb9fa4, 0x001933, 500, Phaser.Easing.Quartic.InOut, game);
@@ -81,8 +81,8 @@ class Util {
 
         // var sun = game.add.sprite(500, 500, 'sun');
         // sun.anchor.setTo(0.5, 0.5);
-        sun.x = 400;
-        sun.y = 500;
+        sun.x = position.x;
+        sun.y = position.y;
 
         // Sun tint
         var t3 = Util.tweenColor(0x00ffffff, 0xD55446, 750, Phaser.Easing.Linear.None, function(color) {
