@@ -107,6 +107,18 @@ TrapItem.prototype.intersects = function(rat) {
     // return Phaser.Rectangle.intersects(trapBounds, ratBounds);
 }
 
+TrapItem.prototype.showBlood = function(gameState) {
+    if (gameState.blood) {
+         var emitter = game.add.emitter(this.sprite.x - this.sprite.width / 2, this.sprite.y, 10);
+        emitter.particleDrag = new Phaser.Point(100, 50);
+
+        emitter.setXSpeed(-250, -20);
+        emitter.setYSpeed(-50, 0);
+        emitter.makeParticles('blood', [0,1,2,3,4]);
+        emitter.start(true, 350, null, 10);
+    }
+}
+
 class Poison extends TrapItem {
     constructor(info, isCurrent, x, y) {
         super(info, isCurrent, x, y);
@@ -186,6 +198,7 @@ BasicTrap.prototype.affectRat = function(rat, gameState) {
 
     game.audio.play(AudioEvents.WOODEN_TRAP_CLOSED);
     rat.kill(RatStates.KILLED_BY_BASIC_TRAP, gameState);
+    this.showBlood(gameState);
 }
 
 class StrongTrap extends TrapItem {
@@ -230,6 +243,7 @@ StrongTrap.prototype.affectRat = function(rat, gameState) {
 
     game.audio.play(AudioEvents.WOODEN_TRAP_CLOSED);
     rat.kill(RatStates.KILLED_BY_STRONG_TRAP, gameState);
+    this.showBlood(gameState);
 }
 
 class SnapTrap extends TrapItem {
@@ -259,6 +273,7 @@ SnapTrap.prototype.affectRat = function(rat, gameState) {
 
     game.audio.play(AudioEvents.SNAP_TRAP_CLOSED);
     rat.kill(RatStates.KILLED_BY_SNAP_TRAP, gameState);
+    this.showBlood(gameState);
 }
 
 class HumaneTrap extends TrapItem {
@@ -517,4 +532,17 @@ John.prototype.affectRat = function(rat, gameState) {
 
     game.audio.play(AudioEvents.JOHN_KILL_RAT);
     rat.kill(RatStates.KILLED_BY_JOHN, gameState);
+    this.showBlood(gameState, rat);
+}
+
+John.prototype.showBlood = function(gameState, rat) {
+    if (gameState.blood) {
+         var emitter = game.add.emitter(rat.sprite.x, rat.sprite.y, 10);
+        emitter.particleDrag = new Phaser.Point(100, 50);
+
+        emitter.setXSpeed(-250, 250);
+        emitter.setYSpeed(-250, 50);
+        emitter.makeParticles('blood', [0,1,2,3,4]);
+        emitter.start(true, 350, null, 10);
+    }
 }
