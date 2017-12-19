@@ -337,17 +337,40 @@ Store.prototype.update = function() {
     }
     this.doneLabel.text = 'Done (' + remainingSeconds + ')';
 
+    var didClick = false;
+    if (game.input.activePointer.isDown) {
+        this.pointerDown = true;
+    } else if (this.pointerDown) {
+        this.pointerDown = false;
+        didClick = true;
+    }
+
+
     if (!this.currItem) {
+        if (didClick) {
+            var cursorPosition = new Phaser.Point(game.input.x, game.input.y);
+
+            var clickedItems = _.filter(this.placedItems, function(i) { 
+                return i.sprite.getBounds().contains(cursorPosition.x, cursorPosition.y);
+            });
+
+            if (clickedItems.length == 1) {
+                this.selectedItem = clickedItems[0];
+                this.cancelLabel.text = 'Remove';
+                game.audio.play(AudioEvents.MENU_CLICK);
+                this.selection.visible = false;
+            } else {
+                this.selectedItem = null;
+                this.cancelLabel.text = '';
+            }
+        }
+
         return;
     }
 
     this.currItem.move();
 
-    if (game.input.activePointer.isDown) {
-        this.pointerDown = true;
-    } else if (this.pointerDown) {
-        this.pointerDown = false;
-
+    if (didClick) {
         if (!this.currItem.canPlace()) {
             return;
         }
@@ -397,8 +420,20 @@ Store.prototype.cancel = function() {
         this.currItem.kill();
         this.selection.visible = false;
         this.currItem = null;
+        
         game.audio.play(AudioEvents.MENU_CLICK);
-        this.pointerDown = false;
-        this.cancelLabel.text = '';
+    } else if (this.selectedItem) {
+        this.selectedItem.kill();
+
+        var selectedItem = this.selectedItem;
+        this.placedItems = _.filter(this.placedItems, function(i) { return i !== selectedItem; } );
+
+        this.selectedItem = null;
+
+        game.audio.play(AudioEvents.MENU_CLICK);
+        this.updateItemLabels();
     }
+
+    this.pointerDown = false;
+    this.cancelLabel.text = '';
 }
