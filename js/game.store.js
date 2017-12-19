@@ -23,7 +23,7 @@ var Items = [
     {
         id: ItemTypes.BASIC,
         name: 'Basic Wooden Trap',
-        description: 'Just a humble rat trap.\nCatches 1 small rat per night.',
+        description: 'Just a humble rat trap.\nCatches 1 small rat at a time.\nCan be reset up to 3 times per night.',
         cost: 10,
         minLevel: 1,
         max: -1,
@@ -34,7 +34,7 @@ var Items = [
     {
         id: ItemTypes.STRONG,
         name: 'Strong Wooden Trap',
-        description: 'Better, faster, stronger.\nCatches 1 small or medium rat per night.',
+        description: 'Better, faster, stronger.\nCatches 1 small or medium rat at a time.\nCan be reset up to 3 times per night.',
         cost: 20,
         minLevel: 2,
         max: -1,
@@ -45,7 +45,7 @@ var Items = [
     {
         id: ItemTypes.SNAP,
         name: 'Heavy-Duty Snap Trap',
-        description: 'Quick killing. 100% effective.\nCatches 1 rat of any size per night.',
+        description: 'Quick killing. 100% effective.\nCatches 1 rat of any size at a time.\nCan be reset up to 3 times per night.',
         cost: 25,
         minLevel: 4,
         max: -1,
@@ -56,7 +56,7 @@ var Items = [
     {
         id: ItemTypes.HUMANE,
         name: '"Catch \'em Alive" Trap',
-        description: 'This "humane" trap is non-lethal -- you\'ll have to finish the job.\nCatches up to 5 rats of any size per night.',
+        description: 'This "humane" trap is non-lethal -- you\'ll have to finish the job.\nCatches up to 5 rats of any size at a time.\nCan be reset up to 3 times per night (once full).',
         cost: 50,
         minLevel: 5,
         max: -1,
