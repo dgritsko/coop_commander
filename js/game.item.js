@@ -318,10 +318,6 @@ class SnapTrap extends TrapItem {
 }
 
 SnapTrap.prototype.affectRat = function(rat, gameState) {
-    if (this.remainingResets <= 0) {
-        return;
-    }
-
     if (!this.isActive) {
         return;
     }
@@ -342,6 +338,10 @@ SnapTrap.prototype.affectRat = function(rat, gameState) {
 }
 
 SnapTrap.prototype.reset = function() {
+    if (this.remainingResets <= 0) {
+        return;
+    }
+
     if (this.deadRats.length == 0) {
         return;
     }
@@ -489,6 +489,7 @@ class Cat extends Item {
 
         this.sprite = game.add.sprite(x, y, 'cat00', downFrames[0]);
         this.sprite.anchor.setTo(0.5, 0.5);
+        this.sprite.scale.setTo(1.5, 1.5);
         game.physics.arcade.enable(this.sprite);
 
         this.sprite.animations.add('down', downFrames, 10, true);
