@@ -203,7 +203,7 @@
         game.camera.onFadeComplete.add(function() { 
             gameState.currentRatInfo = GameUtil.getRatInfos(gameState.inactiveRats);
 
-            var itemInfos = _.map(items, function(i) { return { id: i.info.id, x: i.position.x, y: i.position.y }; })
+            var itemInfos = _.map(items, function(i) { return { id: i.info.id, x: i.position.x, y: i.position.y, level: i.level }; })
             gameState.currentItemInfo = itemInfos;
 
             game.state.start('Score', true, false, state);

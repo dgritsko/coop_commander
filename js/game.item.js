@@ -1,7 +1,8 @@
 class Item {
-    constructor(info, isCurrent, x, y) {
+    constructor(info, isCurrent, x, y, level) {
         this.isActive = true;
         this.isCurrent = isCurrent;
+        this.level = level;
 
         if (isCurrent) {
             x = x || game.input.x;
@@ -68,8 +69,8 @@ Item.prototype.canPlace = function() {
 }
 
 class TrapItem extends Item {
-    constructor(info, isCurrent, x, y) {
-        super(info, isCurrent, x, y);
+    constructor(info, isCurrent, x, y, level) {
+        super(info, isCurrent, x, y, level);
     }
 }
 
@@ -125,8 +126,8 @@ TrapItem.prototype.showBlood = function(gameState) {
 }
 
 class Poison extends TrapItem {
-    constructor(info, isCurrent, x, y) {
-        super(info, isCurrent, x, y);
+    constructor(info, isCurrent, x, y, level) {
+        super(info, isCurrent, x, y, level);
 
         this.setup(275);
 
@@ -163,8 +164,8 @@ Poison.prototype.affectRat = function(rat, gameState) {
 }
 
 class BasicTrap extends TrapItem {
-    constructor(info, isCurrent, x, y) {
-        super(info, isCurrent, x, y);
+    constructor(info, isCurrent, x, y, level) {
+        super(info, isCurrent, x, y, level);
 
         this.setup(250);
 
@@ -231,8 +232,8 @@ BasicTrap.prototype.reset = function() {
 }
 
 class StrongTrap extends TrapItem {
-    constructor(info, isCurrent, x, y) {
-        super(info, isCurrent, x, y);
+    constructor(info, isCurrent, x, y, level) {
+        super(info, isCurrent, x, y, level);
 
         this.setup(225);
 
@@ -302,8 +303,8 @@ StrongTrap.prototype.reset = function() {
 }
 
 class SnapTrap extends TrapItem {
-    constructor(info, isCurrent, x, y) {
-        super(info, isCurrent, x, y);
+    constructor(info, isCurrent, x, y, level) {
+        super(info, isCurrent, x, y, level);
 
         this.setup(200);
 
@@ -357,8 +358,8 @@ SnapTrap.prototype.reset = function() {
 }
 
 class HumaneTrap extends TrapItem {
-    constructor(info, isCurrent, x, y) {
-        super(info, isCurrent, x, y);
+    constructor(info, isCurrent, x, y, level) {
+        super(info, isCurrent, x, y, level);
 
         this.setup(175);
 
@@ -456,8 +457,8 @@ HumaneTrap.prototype.reset = function() {
 }
 
 class Cat extends Item {
-    constructor(info, isCurrent, x, y) {
-        super(info, isCurrent, x, y);
+    constructor(info, isCurrent, x, y, level) {
+        super(info, isCurrent, x, y, level);
 
         var types = {
             whiteAndGray: { x: 0, y: 0 },
@@ -576,8 +577,8 @@ Cat.prototype.update = function() {
 }
 
 class John extends Item {
-    constructor(info, isCurrent, x, y) {
-        super(info, isCurrent, x, y);
+    constructor(info, isCurrent, x, y, level) {
+        super(info, isCurrent, x, y, level);
 
         this.graphics = game.add.graphics(x || 0, 0);
         this.graphics.lineStyle(2, 0xffd900, 1);

@@ -16,6 +16,7 @@ var Items = [
         cost: 10,
         minLevel: 1,
         max: -1,
+        lifetime: 0,
         menuSprite: 'poison',
         menuScale: 0.8,
         create: function(info, isCurrent, x, y) { return new Poison(info, isCurrent, x, y); }
@@ -27,6 +28,7 @@ var Items = [
         cost: 10,
         minLevel: 1,
         max: -1,
+        lifetime: -1,
         menuSprite: 'simpletrap',
         menuScale: 0.5,
         create: function(info, isCurrent, x, y) { return new BasicTrap(info, isCurrent, x, y); }
@@ -38,6 +40,7 @@ var Items = [
         cost: 20,
         minLevel: 2,
         max: -1,
+        lifetime: -1,
         menuSprite: 'simpletrap',
         menuScale: 0.9,
         create: function(info, isCurrent, x, y) { return new StrongTrap(info, isCurrent, x, y); }
@@ -49,6 +52,7 @@ var Items = [
         cost: 25,
         minLevel: 4,
         max: -1,
+        lifetime: -1,
         menuSprite: 'snaptrap',
         menuScale: 1,
         create: function(info, isCurrent, x, y) { return new SnapTrap(info, isCurrent, x, y); }
@@ -60,6 +64,7 @@ var Items = [
         cost: 50,
         minLevel: 5,
         max: -1,
+        lifetime: -1,
         menuSprite: 'humanetrap',
         menuScale: 0.5,
         create: function(info, isCurrent, x, y) { return new HumaneTrap(info, isCurrent, x, y); }
@@ -71,6 +76,7 @@ var Items = [
         cost: 50,
         minLevel: 6,
         max: 2,
+        lifetime: -1,
         menuSprite: 'cat00',
         menuScale: 1,
         create: function(info, isCurrent, x, y) { return new Cat(info, isCurrent, x, y); }
@@ -82,6 +88,7 @@ var Items = [
         cost: 100,
         minLevel: 7,
         max: 1,
+        lifetime: -1,
         menuSprite: 'john',
         menuScale: 1,
         create: function(info, isCurrent, x, y) { return new John(info, isCurrent, x, y); }
@@ -206,14 +213,16 @@ Store.prototype.setupInput = function() {
 
 Store.prototype.addExistingItems = function(existingItems) {
     // Poison does not persist between levels
+    // TODO: Handle all item lifetimes here
     existingItems = _.filter((existingItems || []), function(i) { return i.id != ItemTypes.POISON; });
     
     for (var i = 0; i < existingItems.length; i++) {
-        var info = Items[existingItems[i]['id']];
-        var x = existingItems[i]['x'];
-        var y = existingItems[i]['y'];
+        var info = Items[existingItems[i].id];
+        var x = existingItems[i].x;
+        var y = existingItems[i].y;
+        var level = existingItems[i].level;
         
-        this.placedItems.push(info.create(info, false, x, y));
+        this.placedItems.push(info.create(info, false, x, y, level));
     }
 }
 
@@ -260,6 +269,7 @@ Store.prototype.selectItem = function(index, silent) {
 
     this.cancelLabel.text = 'Cancel';
     this.currItem = info.create(info, true);
+    this.currItem.level = this.level;
 }
 
 Store.prototype.updateItemLabels = function() {
