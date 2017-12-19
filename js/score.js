@@ -17,6 +17,9 @@
 
     function create() {
         isDone = false;
+
+        game.audio.playMusic(MusicEvents.SCORE_STARTING, CoopDefender.Score.Args.level);
+
         game.stage.backgroundColor = 0x001933;
 
         var args = CoopDefender.Score.args;
@@ -175,12 +178,15 @@
         }
 
         isDone = true;
+
+        game.audio.playMusic(MusicEvents.SCORE_ENDING, CoopDefender.Score.Args.level);
         
         var score = CoopDefender.Score.args.score || 0;
         var level = CoopDefender.Score.args.level || 0;
         var kills = CoopDefender.Score.args.allDeadRats.length || 0;
+        var name = playerName || 'Anonymous';
 
-        $.post('http://gritsko.com/coop_defender/api/scores?name=' + playerName + '&score=' + score + '&level=' + level + '&kills=' + kills).always(function() {
+        $.post('http://gritsko.com/coop_defender/api/scores?name=' + name + '&score=' + score + '&level=' + level + '&kills=' + kills).always(function() {
             game.camera.fade('#000000', 250);
             game.camera.onFadeComplete.add(function() { 
                 game.state.start('Menu');

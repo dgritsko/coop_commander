@@ -10,7 +10,7 @@
     }
 
     function create() {
-        game.audio.playMusic(MusicEvents.INTRO_START);
+        game.audio.playMusic(MusicEvents.INTRO_STARTING);
 
         var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(function() {

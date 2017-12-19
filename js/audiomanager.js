@@ -39,8 +39,17 @@ AudioEvents = {
 
 MusicEvents = {
     MAIN_MENU: 0,
-    GAME_START: 1,
-    INTRO_START: 2
+    INTRO_STARTING: 1,
+    GAME_STARTING: 2,
+    GAME_ENDING: 3,
+    LEVEL_STARTING: 4,
+    LEVEL_ENDING: 5,
+    CUTSCENE_STARTING: 6,
+    CUTSCENE_ENDING: 7,
+    SCORE_STARTING: 8,
+    SCORE_ENDING: 9,
+    STORE_STARTING: 10,
+    STORE_ENDING: 11
 }
 
 class AudioManager {
@@ -250,7 +259,9 @@ AudioManager.prototype.play = function(id) {
     }
 }
 
-AudioManager.prototype.playMusic = function(id) {
+AudioManager.prototype.playMusic = function(id, level) {
+    console.log('Called playMusic with Event ' + id + ' for level ' + level || 'N/A');
+
     switch (id) {
         case MusicEvents.MAIN_MENU:
             this.musicSandman.stop();
@@ -260,15 +271,32 @@ AudioManager.prototype.playMusic = function(id) {
 
             this.currentMusic = this.menuMusic;
             break;
-        case MusicEvents.GAME_START:
-            this.menuMusic.stop();
-
-            break;
-        case MusicEvents.INTRO_START:
+        case MusicEvents.INTRO_STARTING:
             this.menuMusic.stop();
             if (!this.musicSandman.isPlaying) {
                 this.musicSandman.play();
-            }     
+            }    
+            break;
+        case MusicEvents.GAME_STARTING:
+            this.menuMusic.stop();
+            break;
+        case MusicEvents.GAME_ENDING:
+            break;
+        case MusicEvents.LEVEL_STARTING:
+            break;
+        case MusicEvents.LEVEL_ENDING:
+            break;
+        case MusicEvents.CUTSCENE_STARTING: 
+            break;
+        case MusicEvents.CUTSCENE_ENDING:
+            break;
+        case MusicEvents.SCORE_STARING: 
+            break;
+        case MusicEvents.SCORE_ENDING: 
+            break;
+        case MusicEvents.STORE_STARTING: 
+            break;
+        case MusicEvents.STORE_ENDING:
             break;
     }
 }

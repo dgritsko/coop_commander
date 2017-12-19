@@ -123,6 +123,8 @@ class Store {
         this.descriptionLabel = game.add.bitmapText(145, 38, 'blackOpsOne', '', 24);
         this.instructionsLabel = game.add.bitmapText(game.world.centerX, game.world.height - 40, 'blackOpsOne', 'Purchase Items', 34);
         this.instructionsLabel.anchor.setTo(0.5, 0.5);
+
+        game.audio.playMusic(MusicEvents.STORE_STARTING, this.level);
     }
 }
 
@@ -317,6 +319,8 @@ Store.prototype.done = function() {
     this.state = StoreStates.DONE;
 
     game.audio.play(AudioEvents.STORE_DONE);
+
+    game.audio.playMusic(MusicEvents.STORE_ENDING, this.level);
 }
 
 Store.prototype.error = function() {

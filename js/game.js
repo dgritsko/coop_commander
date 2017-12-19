@@ -110,6 +110,8 @@
     }
 
     function beginGame() {
+        game.audio.playMusic(MusicEvents.LEVEL_STARTING, gameState.level);
+
         var ratSpawns = _.pluck(gameState.activeRats, 'spawn');
         spawnPowerups(ratSpawns);
 
@@ -159,6 +161,8 @@
     }
 
     function beginOutro() {
+        game.audio.playMusic(MusicEvents.LEVEL_ENDING, gameState.level);
+
         mode = Modes.Outro;
 
         chickens.forEach(function(c) { c.stop(); });
@@ -192,6 +196,8 @@
         var currentRatInfo = GameUtil.getRatInfos(gameState.inactiveRats);
         var currentDeadRats = _.where(currentRatInfo, { isDead: true });
         state.allDeadRats = (gameState.allDeadRats || []).concat(currentDeadRats);
+
+        game.audio.playMusic(MusicEvents.GAME_ENDING, gameState.level);
 
         game.camera.fade('#000000', 1500);
         game.camera.onFadeComplete.add(function() { 

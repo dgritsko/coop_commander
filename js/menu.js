@@ -21,13 +21,13 @@
     }
 
     function create() {
+        game.audio.playMusic(MusicEvents.MAIN_MENU);
+        
         isStarting = false;
 
         game.camera.flash('#000000', 250);
         
         game.stage.backgroundColor = 0xa7d9ff;
-
-        game.audio.playMusic(MusicEvents.MAIN_MENU);
 
         sun = game.add.sprite(400, 500, 'sun');
         sun.anchor.setTo(0.5, 0.5);
@@ -149,7 +149,7 @@
         isStarting = true;
 
         Util.drawSunset(sun, game, function() {
-            game.audio.playMusic(MusicEvents.GAME_START);
+            game.audio.playMusic(MusicEvents.GAME_STARTING);
             
             game.camera.fade('#000000', 250);
             game.camera.onFadeComplete.add(function() { 

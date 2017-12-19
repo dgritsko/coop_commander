@@ -17,6 +17,8 @@
     }
 
     function create() {
+        game.audio.playMusic(MusicEvents.CUTSCENE_STARTING, gameState.level);
+
         var scoreAdjustments = createScoreAdjustments(gameState);
 
         updateGameState(gameState);
@@ -76,6 +78,8 @@
     }
 
     function nextLevel() {
+        game.audio.playMusic(MusicEvents.CUTSCENE_ENDING, gameState.level);
+
         game.camera.fade('#000000', 250);
         game.camera.onFadeComplete.add(function() {
             game.state.start('Game', true, false, { previousState: gameState });
