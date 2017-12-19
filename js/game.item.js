@@ -388,6 +388,8 @@ class Cat extends Item {
         this.patrolGraphics = game.add.graphics(x, y);
         this.patrolGraphics.lineStyle(2, 0x333333, 1);
         this.patrolGraphics.drawCircle(0, 0, this.patrolRadius * 2);
+        
+        this.lastMeow = -1;
     }
 }
 
@@ -425,7 +427,7 @@ Cat.prototype.update = function() {
         point.setMagnitude(Math.random() * this.patrolRadius);
         this.destination = Phaser.Point.add(this.position, point);
 
-        game.physics.arcade.moveToXY(this.sprite, this.destination.x, this.destination.y);        
+        game.physics.arcade.moveToXY(this.sprite, this.destination.x, this.destination.y);
     }
 
     this.graphics.x = this.sprite.x;
@@ -448,7 +450,8 @@ Cat.prototype.update = function() {
     }
 
     // Occasionally play a meow.
-    if (Math.random() < 0.0005) {
+    if (Math.random() < 0.0005 && game.time.now > (this.lastMeow + 5000)) {
+        this.lastMeow = game.time.now;
         game.audio.play(AudioEvents.MEOW);
     }
 }
