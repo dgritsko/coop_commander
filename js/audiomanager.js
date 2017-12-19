@@ -119,6 +119,7 @@ AudioManager.prototype.setupSounds = function() {
     this.fxSplat01 = setupSound(this, 'splat01');
     this.fxMeow00 = setupSound(this, 'meow00', 0.5);
     this.fxRoar = setupSound(this, 'roar');
+    this.fxRaccoon = setupSound(this, 'raccoon');
 }
 
 AudioManager.prototype.setupMusic = function() {
@@ -177,7 +178,8 @@ AudioManager.prototype.play = function(id) {
             this.fxSqueak.play();
             break;
         case AudioEvents.RAT_HIT:
-            this.fxBang.play();
+            //this.fxBang.play();
+            this.fxSplat01.play();
             break;
         case AudioEvents.SCREAM:
             this.fxScream.play();
@@ -243,8 +245,7 @@ AudioManager.prototype.play = function(id) {
             this.fxRoar.play();
             break;
         case AudioEvents.RACCOON:
-            // TODO: Unique audio for raccoon?
-            this.fxFoxSay.play();
+            this.fxRaccoon.play();
             break;
     }
 }
