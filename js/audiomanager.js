@@ -34,7 +34,10 @@ AudioEvents = {
     MEOW: 32,
     JOHN_KILL_RAT: 33,
     BEAR: 34,
-    RACCOON: 35
+    RACCOON: 35,
+    WOODEN_TRAP_RESET: 36,
+    SNAP_TRAP_RESET: 37,
+    HUMANE_TRAP_RESET: 38
 };
 
 MusicEvents = {
@@ -255,6 +258,18 @@ AudioManager.prototype.play = function(id) {
             break;
         case AudioEvents.RACCOON:
             this.fxRaccoon.play();
+            break;
+        case AudioEvents.WOODEN_TRAP_RESET:
+            this.fxCrunch.play();
+            this.fxSpeedup00.play();
+            break;
+        case AudioEvents.SNAP_TRAP_RESET:
+            this.fxSnap00.play();
+            this.fxSpeedup00.play();
+            break;
+        case AudioEvents.HUMANE_TRAP_RESET:
+            this.fxSnap01.play();
+            this.fxSpeedup00.play();
             break;
     }
 }

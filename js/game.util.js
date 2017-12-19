@@ -202,7 +202,7 @@ class GameUtil {
             var spaceKey = GameUtil.drawKey(game, game.world.centerX - keySize * 2.5, keyY + keySize + keySeparator, keySize * 5, keySize);
             items.push(spaceKey);
 
-            var attackLabel = game.add.bitmapText(keyX + 68, keyY + 108, 'blackOpsOne', 'Attack/Set Trap', 28);
+            var attackLabel = game.add.bitmapText(keyX + 68, keyY + 108, 'blackOpsOne', 'Attack/Reset Trap', 28);
             attackLabel.anchor.setTo(0.5, 0.5);
             items.push(attackLabel);
         });

@@ -559,7 +559,7 @@
         var rightKey = GameUtil.drawKey(game, keyX + keySize * 2 + keySeparator * 2, keyY + keySeparator + keySize, keySize, keySize, '→');
         menu.addChild(rightKey); 
         
-        drawLabel(spaceKey.centerX, spaceKey.y + spaceKey.height + 16, 'Attack/Set Trap');
+        drawLabel(spaceKey.centerX, spaceKey.y + spaceKey.height + 16, 'Attack/Reset Trap');
         drawLabel(downKey.centerX, downKey.y + downKey.height + 16, 'Move');
         drawLabel(pauseKey.centerX, pauseKey.y + pauseKey.height + 16, 'Pause');  
         drawLabel(flashlightKey.centerX, flashlightKey.y + flashlightKey.height + 16, 'Flashlight'); 

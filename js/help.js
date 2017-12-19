@@ -227,7 +227,7 @@
         
         var rightKey = GameUtil.drawKey(game, keyX + keySize * 2 + keySeparator * 2, keyY + keySeparator + keySize, keySize, keySize, '→');
         
-        var attackLabel = addText('Attack/Set Trap', spaceKey.centerX, spaceKey.y + spaceKey.height + 16);
+        var attackLabel = addText('Attack/Reset Trap', spaceKey.centerX, spaceKey.y + spaceKey.height + 16);
         centerAnchor(attackLabel);        
 
         var moveLabel = addText('Move', downKey.centerX, downKey.y + downKey.height + 16);

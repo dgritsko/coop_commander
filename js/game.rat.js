@@ -268,11 +268,7 @@ Rat.prototype.kill = function(newState, gameState) {
             this.sprite.animations.stop();
             break;
         default:
-            this.sprite.body.stop();
-            this.sprite.animations.stop();
-
-            this.sprite.kill();
-            this.group.remove(this.sprite);
+            this.destroy();
             break;
     }
 
@@ -281,6 +277,14 @@ Rat.prototype.kill = function(newState, gameState) {
     }
 
     gameState.inactiveRats.push(this);
+}
+
+Rat.prototype.destroy = function() {
+    this.sprite.body.stop();
+    this.sprite.animations.stop();
+
+    this.sprite.kill();
+    this.group.remove(this.sprite);
 }
 
 Rat.prototype.shouldEat = function() {
