@@ -168,6 +168,9 @@ Store.prototype.setupStoreMenu = function() {
             addItem(Items[i], this);
         }
     }
+
+    this.cancelLabel = GameUtil.drawTextButton(game, menuX - 10, this.getIndexY(this.availableItems.length) + 30, 'Cancel', this.cancel, this);
+    this.cancelLabel.text = '';
 }
 
 Store.prototype.setupInput = function() {
@@ -197,8 +200,6 @@ Store.prototype.setupInput = function() {
     escKey.onDown.add(function() {
         this.done();
     }, this);
-
-
 }
 
 Store.prototype.addExistingItems = function(existingItems) {
@@ -226,6 +227,7 @@ Store.prototype.selectItem = function(index, silent) {
 
     if (this.currItem) {
         this.currItem.kill();
+        this.currItem = null;
     }
 
     this.selection.visible = true;
@@ -254,6 +256,7 @@ Store.prototype.selectItem = function(index, silent) {
         return;
     }
 
+    this.cancelLabel.text = 'Cancel';
     this.currItem = info.create(info, true);
 }
 
@@ -309,7 +312,8 @@ Store.prototype.done = function() {
     this.descriptionLabel.kill();
 
     this.instructionsLabel.kill();
-    
+    this.cancelLabel.kill();
+
     this.state = StoreStates.DONE;
 
     game.audio.play(AudioEvents.STORE_DONE);
@@ -372,6 +376,8 @@ Store.prototype.update = function() {
 
             game.audio.play(AudioEvents.PLACE_ITEM);
 
+            this.cancelLabel.text = '';
+
             for (var i = 0; i < this.itemAddedCallbacks.length; i++) {
                 this.itemAddedCallbacks[i]();
             }
@@ -384,4 +390,15 @@ Store.prototype.update = function() {
 
 Store.prototype.newItemCallback = function(f) {
     this.itemAddedCallbacks.push(f);
+}
+
+Store.prototype.cancel = function() {
+    if (this.currItem) {
+        this.currItem.kill();
+        this.selection.visible = false;
+        this.currItem = null;
+        game.audio.play(AudioEvents.MENU_CLICK);
+        this.pointerDown = false;
+        this.cancelLabel.text = '';
+    }
 }
