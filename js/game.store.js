@@ -12,7 +12,8 @@ var Items = [
     {
         id: ItemTypes.POISON,
         name: 'Rat-X Poison',
-        description: 'Cheap and effective, but frowned upon by the Geneva Conventions.\nLasts for 1 night, killing up to 10 rats. Be forewarned -- using it comes with consequences.',
+        description: 'Cheap and effective, but frowned upon by the Geneva Conventions. Be forewarned -- using it comes with consequences.',
+        stats: ['Capacity: 10', 'Duration: 1 night', 'Resettable: N/A', 'Max: Unlimited'],
         cost: 10,
         minLevel: 1,
         max: -1,
@@ -24,11 +25,12 @@ var Items = [
     {
         id: ItemTypes.BASIC,
         name: 'Basic Wooden Trap',
-        description: 'Just a humble rat trap.\nCatches 1 small rat at a time.\nCan be reset up to 3 times per night.',
+        description: 'Just a humble rat trap.',
+        stats: ['Capacity: 1 small rat', 'Duration: 3 nights', 'Resettable: 3x / night', 'Max: Unlimited'],
         cost: 10,
         minLevel: 1,
         max: -1,
-        lifetime: -1,
+        lifetime: 3,
         menuSprite: 'simpletrap',
         menuScale: 0.5,
         create: function(info, isCurrent, x, y, level) { return new BasicTrap(info, isCurrent, x, y, level); }
@@ -36,11 +38,12 @@ var Items = [
     {
         id: ItemTypes.STRONG,
         name: 'Strong Wooden Trap',
-        description: 'Better, faster, stronger.\nCatches 1 small or medium rat at a time.\nCan be reset up to 3 times per night.',
+        description: 'Better, faster, stronger.',
+        stats: ['Capacity: 1 small/medium rat', 'Duration: 4 nights', 'Resettable: 3x / night', 'Max: Unlimited'],
         cost: 20,
         minLevel: 2,
         max: -1,
-        lifetime: -1,
+        lifetime: 4,
         menuSprite: 'simpletrap',
         menuScale: 0.9,
         create: function(info, isCurrent, x, y, level) { return new StrongTrap(info, isCurrent, x, y, level); }
@@ -48,11 +51,12 @@ var Items = [
     {
         id: ItemTypes.SNAP,
         name: 'Heavy-Duty Snap Trap',
-        description: 'Quick killing. 100% effective.\nCatches 1 rat of any size at a time.\nCan be reset up to 3 times per night.',
+        description: 'Quick killing. 100% effective.',
+        stats: ['Capacity: 1 rat (any size)', 'Duration: 5 nights', 'Resettable: 3x / night', 'Max: Unlimited'],
         cost: 25,
         minLevel: 4,
         max: -1,
-        lifetime: -1,
+        lifetime: 5,
         menuSprite: 'snaptrap',
         menuScale: 1,
         create: function(info, isCurrent, x, y, level) { return new SnapTrap(info, isCurrent, x, y, level); }
@@ -60,11 +64,12 @@ var Items = [
     {
         id: ItemTypes.HUMANE,
         name: '"Catch \'em Alive" Trap',
-        description: 'This "humane" trap is non-lethal -- you\'ll have to finish the job.\nCatches up to 5 rats of any size at a time.\nCan be reset up to 3 times per night (once full).',
+        description: 'This "humane" trap is non-lethal -- you\'ll have to finish the job.',
+        stats: ['Capacity: 5 rats (any size)', 'Duration: 5 nights', 'Resettable: 3x / night (when full)', 'Max: Unlimited'],
         cost: 50,
         minLevel: 5,
         max: -1,
-        lifetime: -1,
+        lifetime: 5,
         menuSprite: 'humanetrap',
         menuScale: 0.5,
         create: function(info, isCurrent, x, y, level) { return new HumaneTrap(info, isCurrent, x, y, level); }
@@ -73,6 +78,7 @@ var Items = [
         id: ItemTypes.CAT,
         name: 'Cat',
         description: 'Nature\'s own rat repellent.\nRats will avoid cats at all costs.',
+        stats: ['Duration: Permanent', 'Max: 2', 'Force Field: Yes'],
         cost: 50,
         minLevel: 6,
         max: 2,
@@ -85,6 +91,7 @@ var Items = [
         id: ItemTypes.JOHN,
         name: 'John',
         description: 'The Tonto to your Lone Ranger, the Robin to your Batman.\nJohn will "take care" of any rats he encounters.',
+        stats: ['Duration: Permanent', 'Max: 1', 'Finna Be: Lit'],
         cost: 100,
         minLevel: 7,
         max: 1,
@@ -130,6 +137,8 @@ class Store {
         this.descriptionLabel = game.add.bitmapText(145, 38, 'blackOpsOne', '', 24);
         this.instructionsLabel = game.add.bitmapText(game.world.centerX, game.world.height - 40, 'blackOpsOne', 'Purchase Items', 34);
         this.instructionsLabel.anchor.setTo(0.5, 0.5);
+
+        this.statsLabels = [];
 
         game.audio.playMusic(MusicEvents.STORE_STARTING, this.level);
     }
@@ -251,6 +260,8 @@ Store.prototype.selectItem = function(index, silent) {
         this.currItem = null;
     }
 
+    this.statsLabels.forEach(function(l) { l.destroy(); });
+
     this.selection.visible = true;
 
     this.selection.y = y;
@@ -260,10 +271,19 @@ Store.prototype.selectItem = function(index, silent) {
     this.nameLabel.text = info.name;
     this.descriptionLabel.text = info.description;
 
-    if (info.max > 0) {
-        this.descriptionLabel.text += '\nMax: ' + info.max;
-    } else {
-        this.descriptionLabel.text += '\nMax: Unlimited';
+    var descriptionLines = (info.description.match(/\n/g)||[]).length
+
+    for (var i = 0; i < info.stats.length; i++) {
+        var row = i % 2;
+        var column = Math.floor(i / 2);
+
+        var fontSize = 22;
+
+        var x = 145 + 300 * column;
+        var y = 75 + (descriptionLines * 24) + (row * fontSize);
+
+        var statLabel = game.add.bitmapText(x, y, 'blackOpsOne', info.stats[i], fontSize);
+        this.statsLabels.push(statLabel);
     }
 
     if (!silent) {
@@ -332,6 +352,8 @@ Store.prototype.done = function() {
     }
     this.nameLabel.kill();
     this.descriptionLabel.kill();
+
+    this.statsLabels.forEach(function(l) { l.destroy(); });
 
     this.instructionsLabel.kill();
     this.cancelLabel.kill();
