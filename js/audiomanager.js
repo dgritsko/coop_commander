@@ -15,29 +15,30 @@ AudioEvents = {
     RAT_HIT: 13,
     SCREAM: 14,
     RAT_EAT: 15,
-    PLACE_ITEM: 16, 
-    STORE_ERROR: 17,
-    STORE_DONE: 18,
-    MENU_CLICK: 19,
-    FLASHLIGHT: 20,
-    NO_FLASHLIGHTS: 21,
-    POWERUP_SPAWN: 22,
-    POWERUP_EGG_PICKUP: 23,
-    POWERUP_BOOTS_PICKUP: 24,
-    POWERUP_MONEY_PICKUP: 25,
-    POWERUP_FLASHLIGHT_PICKUP: 26,
-    CHICKEN_CLUCK: 27,
-    RAT_POISONED: 28,
-    WOODEN_TRAP_CLOSED: 29,
-    SNAP_TRAP_CLOSED: 30,
-    HUMANE_TRAP_CLOSED: 31,
-    MEOW: 32,
-    JOHN_KILL_RAT: 33,
-    BEAR: 34,
-    RACCOON: 35,
-    WOODEN_TRAP_RESET: 36,
-    SNAP_TRAP_RESET: 37,
-    HUMANE_TRAP_RESET: 38
+    PLACE_ITEM: 16,
+    SELL_ITEM: 17, 
+    STORE_ERROR: 18,
+    STORE_DONE: 19,
+    MENU_CLICK: 20,
+    FLASHLIGHT: 21,
+    NO_FLASHLIGHTS: 22,
+    POWERUP_SPAWN: 23,
+    POWERUP_EGG_PICKUP: 24,
+    POWERUP_BOOTS_PICKUP: 25,
+    POWERUP_MONEY_PICKUP: 26,
+    POWERUP_FLASHLIGHT_PICKUP: 27,
+    CHICKEN_CLUCK: 28,
+    RAT_POISONED: 29,
+    WOODEN_TRAP_CLOSED: 30,
+    SNAP_TRAP_CLOSED: 31,
+    HUMANE_TRAP_CLOSED: 32,
+    MEOW: 33,
+    JOHN_KILL_RAT: 34,
+    BEAR: 35,
+    RACCOON: 36,
+    WOODEN_TRAP_RESET: 37,
+    SNAP_TRAP_RESET: 38,
+    HUMANE_TRAP_RESET: 39
 };
 
 MusicEvents = {
@@ -201,6 +202,9 @@ AudioManager.prototype.play = function(id) {
             break;
         case AudioEvents.PLACE_ITEM:
             this.fxPop00.play();
+            break;
+        case AudioEvents.SELL_ITEM:
+            this.fxCash.play();
             break;    
         case AudioEvents.STORE_ERROR:
             this.fxError01.play();

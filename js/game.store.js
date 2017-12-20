@@ -243,10 +243,17 @@ Store.prototype.addExistingItems = function(existingItems) {
         
         var existingItem = info.create(info, false, x, y, level);
 
-        if (existingItem.lifetimeLabel && info.lifetime != -1) {
+        if (info.lifetime == -1) {
+            existingItem.resaleValue = Math.floor(info.cost * 0.5);
+        } else {
             var age = currentLevel - existingItems[i].level;
             var remaining = info.lifetime - age;
-            existingItem.lifetimeLabel.text = remaining == 1 ? '1 night' : remaining + ' nights';
+
+            existingItem.resaleValue = Math.floor(info.cost * (remaining / info.lifetime));
+
+            if (existingItem.lifetimeLabel) {
+                existingItem.lifetimeLabel.text = remaining == 1 ? '1 night' : remaining + ' nights';
+            }
         }
 
         this.placedItems.push(existingItem);
@@ -409,7 +416,7 @@ Store.prototype.update = function() {
 
             if (clickedItems.length == 1) {
                 this.selectedItem = clickedItems[0];
-                this.cancelLabel.text = 'Remove';
+                this.cancelLabel.text = 'Sell ($' + this.selectedIndex.resaleValue + ')';
                 game.audio.play(AudioEvents.MENU_CLICK);
                 this.selection.visible = false;
             } else {
@@ -478,13 +485,19 @@ Store.prototype.cancel = function() {
     } else if (this.selectedItem) {
         this.selectedItem.kill();
 
+        this.money += this.selectedItem.resaleValue;
+
         var selectedItem = this.selectedItem;
         this.placedItems = _.filter(this.placedItems, function(i) { return i !== selectedItem; } );
 
         this.selectedItem = null;
 
-        game.audio.play(AudioEvents.MENU_CLICK);
+        game.audio.play(AudioEvents.SELL_ITEM);
         this.updateItemLabels();
+
+        for (var i = 0; i < this.itemAddedCallbacks.length; i++) {
+            this.itemAddedCallbacks[i]();
+        }
     }
 
     this.pointerDown = false;

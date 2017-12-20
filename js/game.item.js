@@ -29,6 +29,8 @@ class Item {
         this.position = new Phaser.Point(x, y);
 
         this.info = info;
+
+        this.resaleValue = info.cost;
     }
 }
 
