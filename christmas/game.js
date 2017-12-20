@@ -21,7 +21,7 @@
         game.load.image('arcadecabinet', 'arcadecabinet.jpg');
         game.load.image('screenshot', 'screenshot.png');
 
-        game.load.audio('christmas', 'music/christmas.mp3');
+        game.load.audio('christmas', '../assets/sound/music/christmas.mp3');
         game.load.audio('success03', 'success03.wav');
         game.load.audio('shake', 'shake.wav');
     }
