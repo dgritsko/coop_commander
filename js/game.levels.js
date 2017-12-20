@@ -127,6 +127,16 @@ class GameLevels {
     }
 
     static create(level) {
+        var small = ['1s', '2s', '3s'];
+        var medium = ['1m', '2m', '3m'];
+        var large = ['1l', '2l', '3l'];
+        var class1 = ['1s', '1m', '1l'];
+        var class2 = ['2s', '2m', '2l'];
+        var class3 = ['3s', '3m', '3l'];
+        var all = _.flatten([small, medium, large]);
+
+        console.log(all);
+
         // Example of linear wave:
         //return GameLevels.parseLevel(GameLevels.linearWave(['3s'], 0.5, 0, 1, 0.1, 10));
 
@@ -160,7 +170,7 @@ class GameLevels {
         // TODO        
 
         return GameLevels.parseLevel(
-            GameLevels.cluster(['1s', '1m', '1l', '2s', '2m', '2l', '3s', '3m', '3l',], 0.5, 0.5, 0.5, 0.5, level * 5)
+            GameLevels.cluster(all, 0.5, 0.5, 0.5, 0.5, level * 5)
         );
     }
 }
