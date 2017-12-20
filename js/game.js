@@ -22,6 +22,8 @@
     var mode = Modes.Setup;
     var pauseMenu;
 
+    var lastSqueak = -1;
+
     function init(args) {
         hud = {};
         rats = [];
@@ -432,6 +434,13 @@
 
     function createRat(type, x, y, speed) {
         rats.push(new Rat(rodents, type, gameState.level, x, y, speed));
+
+        if (lastSqueak > (game.time.now - 1000)) {
+            return;
+        }
+
+        lastSqueak = game.time.now;
+
         game.audio.play(AudioEvents.RAT_SPAWN);
     }
 
