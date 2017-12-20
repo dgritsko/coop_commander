@@ -12,12 +12,12 @@ var Items = [
     {
         id: ItemTypes.POISON,
         name: 'Rat-X Poison',
-        description: 'Cheap and effective, but frowned upon by the Geneva Conventions. Be forewarned -- using it comes with consequences.',
+        description: 'Cheap and effective, but frowned upon by the Geneva Conventions.\nBe forewarned -- using it comes with consequences.',
         stats: ['Capacity: 10', 'Duration: 1 night', 'Resettable: N/A', 'Max: Unlimited'],
         cost: 10,
         minLevel: 1,
         max: -1,
-        lifetime: 0,
+        lifetime: 1,
         menuSprite: 'poison',
         menuScale: 0.8,
         create: function(info, isCurrent, x, y, level) { return new Poison(info, isCurrent, x, y, level); }
@@ -241,7 +241,15 @@ Store.prototype.addExistingItems = function(existingItems) {
         var y = existingItems[i].y;
         var level = existingItems[i].level;
         
-        this.placedItems.push(info.create(info, false, x, y, level));
+        var existingItem = info.create(info, false, x, y, level);
+
+        if (existingItem.lifetimeLabel && info.lifetime != -1) {
+            var age = currentLevel - existingItems[i].level;
+            var remaining = info.lifetime - age;
+            existingItem.lifetimeLabel.text = remaining == 1 ? '1 night' : remaining + ' nights';
+        }
+
+        this.placedItems.push(existingItem);
     }
 }
 
@@ -298,8 +306,7 @@ Store.prototype.selectItem = function(index, silent) {
     }
 
     this.cancelLabel.text = 'Cancel';
-    this.currItem = info.create(info, true);
-    this.currItem.level = this.level;
+    this.currItem = info.create(info, true, 0, 0, this.level);
 }
 
 Store.prototype.updateItemLabels = function() {
@@ -339,8 +346,8 @@ Store.prototype.done = function() {
     });
 
     _.each(this.placedItems, function(i) {
-        if (i.destroyGraphics) {
-            i.destroyGraphics();
+        if (i.finishSetup) {
+            i.finishSetup();
         } else if (i.graphics) {
             i.graphics.destroy();
         }

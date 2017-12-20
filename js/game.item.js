@@ -74,8 +74,8 @@ Item.prototype.kill = function() {
         this.sprite.destroy();
     }
 
-    if (this.destroyGraphics) {
-        this.destroyGraphics();
+    if (this.finishSetup) {
+        this.finishSetup();
     } else if (this.graphics) {
         this.graphics.destroy();
     }
@@ -97,6 +97,21 @@ TrapItem.prototype.setup = function(radius) {
     this.graphics = game.add.graphics(this.position.x, this.position.y);
     this.graphics.lineStyle(2, 0xffd900, 1);
     this.graphics.drawCircle(0, 0, this.radius * 2);
+
+    var lifetimeText = '';
+    if (this.info.lifetime > -1) {
+        lifetimeText = this.info.lifetime == 1 ? '1 night' : this.info.lifetime + ' nights';
+    }
+
+    this.lifetimeLabel = game.add.bitmapText(0, 0, 'blackOpsOne', lifetimeText, 20);
+    this.lifetimeLabel.anchor.setTo(0.5, 0.5);
+    this.lifetimeLabel.scale.setTo(1/this.sprite.scale.x, 1/this.sprite.scale.y);
+    this.sprite.addChild(this.lifetimeLabel);
+}
+
+TrapItem.prototype.finishSetup = function() {
+    this.graphics.kill();
+    this.lifetimeLabel.kill();
 }
 
 TrapItem.prototype.calculateVector = function(rat) {
@@ -146,11 +161,11 @@ class Poison extends TrapItem {
     constructor(info, isCurrent, x, y, level) {
         super(info, isCurrent, x, y, level);
 
-        this.setup(ItemParams.POISON_RADIUS);
-
         this.sprite = game.add.sprite(x, y, 'poison');
         this.sprite.anchor.setTo(0.5, 0.5);
         this.sprite.scale.setTo(0.6);
+
+        this.setup(ItemParams.POISON_RADIUS);
 
         this.capacity = ItemParams.POISON_CAPACITY;
     }
@@ -184,11 +199,11 @@ class BasicTrap extends TrapItem {
     constructor(info, isCurrent, x, y, level) {
         super(info, isCurrent, x, y, level);
 
-        this.setup(ItemParams.BASIC_RADIUS);
-
         this.sprite = game.add.sprite(x, y, 'simpletrap');
         this.sprite.anchor.setTo(0.5, 0.5);
         this.sprite.scale.setTo(0.5);
+
+        this.setup(ItemParams.BASIC_RADIUS);
        
         this.sprite.animations.add('snap', [0, 1, 2, 3], 30, false);
         this.deadRats = [];
@@ -252,14 +267,12 @@ class StrongTrap extends TrapItem {
     constructor(info, isCurrent, x, y, level) {
         super(info, isCurrent, x, y, level);
 
-        this.setup(ItemParams.STRONG_RADIUS);
-
         this.sprite = game.add.sprite(x, y, 'simpletrap');
         this.sprite.anchor.setTo(0.5, 0.5);
-
         this.sprite.scale.setTo(0.8);
-        
         this.sprite.animations.add('snap', [0, 1, 2, 3], 30, false);
+
+        this.setup(ItemParams.STRONG_RADIUS);
 
         this.deadRats = [];
 
@@ -323,11 +336,11 @@ class SnapTrap extends TrapItem {
     constructor(info, isCurrent, x, y, level) {
         super(info, isCurrent, x, y, level);
 
-        this.setup(ItemParams.SNAP_RADIUS);
-
         this.sprite = game.add.sprite(x, y, 'snaptrap');
         this.sprite.anchor.setTo(0.5, 0.5);
         this.sprite.frame = 0;
+
+        this.setup(ItemParams.SNAP_RADIUS);
 
         this.deadRats = [];
 
@@ -378,12 +391,11 @@ class HumaneTrap extends TrapItem {
     constructor(info, isCurrent, x, y, level) {
         super(info, isCurrent, x, y, level);
 
-        this.setup(ItemParams.HUMANE_RADIUS);
-
         this.sprite = game.add.sprite(x, y, 'humanetrap');
         this.sprite.anchor.setTo(0.5, 0.5);
-
         this.sprite.frame = 1;
+
+        this.setup(ItemParams.HUMANE_RADIUS);
 
         this.remainingCapacity = ItemParams.HUMANE_CAPACITY;
         this.initialCapacity = ItemParams.HUMANE_CAPACITY;
@@ -543,7 +555,7 @@ Cat.prototype.calculateVector = function(rat) {
     }
 }
 
-Cat.prototype.destroyGraphics = function() {
+Cat.prototype.finishSetup = function() {
     this.graphics.destroy();
     this.patrolGraphics.destroy();
 }
