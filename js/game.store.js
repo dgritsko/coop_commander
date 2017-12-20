@@ -19,7 +19,7 @@ var Items = [
         lifetime: 0,
         menuSprite: 'poison',
         menuScale: 0.8,
-        create: function(info, isCurrent, x, y) { return new Poison(info, isCurrent, x, y); }
+        create: function(info, isCurrent, x, y, level) { return new Poison(info, isCurrent, x, y, level); }
     },
     {
         id: ItemTypes.BASIC,
@@ -31,7 +31,7 @@ var Items = [
         lifetime: -1,
         menuSprite: 'simpletrap',
         menuScale: 0.5,
-        create: function(info, isCurrent, x, y) { return new BasicTrap(info, isCurrent, x, y); }
+        create: function(info, isCurrent, x, y, level) { return new BasicTrap(info, isCurrent, x, y, level); }
     },
     {
         id: ItemTypes.STRONG,
@@ -43,7 +43,7 @@ var Items = [
         lifetime: -1,
         menuSprite: 'simpletrap',
         menuScale: 0.9,
-        create: function(info, isCurrent, x, y) { return new StrongTrap(info, isCurrent, x, y); }
+        create: function(info, isCurrent, x, y, level) { return new StrongTrap(info, isCurrent, x, y, level); }
     },
     {
         id: ItemTypes.SNAP,
@@ -55,7 +55,7 @@ var Items = [
         lifetime: -1,
         menuSprite: 'snaptrap',
         menuScale: 1,
-        create: function(info, isCurrent, x, y) { return new SnapTrap(info, isCurrent, x, y); }
+        create: function(info, isCurrent, x, y, level) { return new SnapTrap(info, isCurrent, x, y, level); }
     },
     {
         id: ItemTypes.HUMANE,
@@ -67,7 +67,7 @@ var Items = [
         lifetime: -1,
         menuSprite: 'humanetrap',
         menuScale: 0.5,
-        create: function(info, isCurrent, x, y) { return new HumaneTrap(info, isCurrent, x, y); }
+        create: function(info, isCurrent, x, y, level) { return new HumaneTrap(info, isCurrent, x, y, level); }
     },
     {
         id: ItemTypes.CAT,
@@ -79,7 +79,7 @@ var Items = [
         lifetime: -1,
         menuSprite: 'cat00',
         menuScale: 1,
-        create: function(info, isCurrent, x, y) { return new Cat(info, isCurrent, x, y); }
+        create: function(info, isCurrent, x, y, level) { return new Cat(info, isCurrent, x, y, level); }
     },
     {
         id: ItemTypes.JOHN,
@@ -91,7 +91,7 @@ var Items = [
         lifetime: -1,
         menuSprite: 'john',
         menuScale: 1,
-        create: function(info, isCurrent, x, y) { return new John(info, isCurrent, x, y); }
+        create: function(info, isCurrent, x, y, level) { return new John(info, isCurrent, x, y, level); }
     },
 ];
 
@@ -212,9 +212,19 @@ Store.prototype.setupInput = function() {
 }
 
 Store.prototype.addExistingItems = function(existingItems) {
-    // Poison does not persist between levels
-    // TODO: Handle all item lifetimes here
-    existingItems = _.filter((existingItems || []), function(i) { return i.id != ItemTypes.POISON; });
+    var currentLevel = this.level;
+
+    existingItems = _.filter((existingItems || []), function(i) { 
+        var info = Items[i.id];
+
+        if (info.lifetime == -1) {
+            return true;
+        }
+        
+        var age = currentLevel - i.level;
+
+        return age < info.lifetime;
+    });
     
     for (var i = 0; i < existingItems.length; i++) {
         var info = Items[existingItems[i].id];
