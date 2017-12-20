@@ -260,15 +260,18 @@ AudioManager.prototype.play = function(id) {
             this.fxRaccoon.play();
             break;
         case AudioEvents.WOODEN_TRAP_RESET:
-            this.fxCrunch.play();
+            //this.fxCrunch.play();
+            this.fxPop00.play();
             // TODO: Play more appropriate sound here?
             break;
         case AudioEvents.SNAP_TRAP_RESET:
-            this.fxSnap00.play();
+            //this.fxSnap00.play();
+            this.fxPop00.play();
             // TODO: Play more appropriate sound here?
             break;
         case AudioEvents.HUMANE_TRAP_RESET:
-            this.fxSnap01.play();
+            //this.fxSnap01.play();
+            this.fxPop00.play();
             // TODO: Play more appropriate sound here?
             break;
     }
