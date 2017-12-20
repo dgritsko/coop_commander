@@ -59,10 +59,11 @@
         gameState.inactiveRats = [];
         gameState.activeRats = GameLevels.create(gameState.level) || [];
 
-        if (gameState.money <= 0) {
-            mode = Modes.Intro;
-        } else {
+        if (gameState.money > 0 || (gameState.currentItemInfo || []).length > 0) {
             mode = Modes.Setup;
+            
+        } else {
+            mode = Modes.Intro;
         }
     }
 
