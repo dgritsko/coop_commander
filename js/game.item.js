@@ -1,3 +1,20 @@
+ItemParams = {
+    POISON_RADIUS: 200,
+    POISON_CAPACITY: 10,
+    BASIC_RADIUS: 50,
+    BASIC_RESETS: 3,
+    STRONG_RADIUS: 100,
+    STRONG_RESETS: 3,
+    SNAP_RADIUS: 125,
+    SNAP_RESETS: 3,
+    HUMANE_RADIUS: 175,
+    HUMANE_CAPACITY: 5,
+    HUMANE_RESETS: 3,
+    CAT_RADIUS: 100,
+    CAT_PATROL_RADIUS: 200,
+    JOHN_SPEED: 100
+}
+
 class Item {
     constructor(info, isCurrent, x, y, level) {
         this.isActive = true;
@@ -129,13 +146,13 @@ class Poison extends TrapItem {
     constructor(info, isCurrent, x, y, level) {
         super(info, isCurrent, x, y, level);
 
-        this.setup(275);
+        this.setup(ItemParams.POISON_RADIUS);
 
         this.sprite = game.add.sprite(x, y, 'poison');
         this.sprite.anchor.setTo(0.5, 0.5);
         this.sprite.scale.setTo(0.6);
 
-        this.capacity = 10;
+        this.capacity = ItemParams.POISON_CAPACITY;
     }
 }
 
@@ -167,7 +184,7 @@ class BasicTrap extends TrapItem {
     constructor(info, isCurrent, x, y, level) {
         super(info, isCurrent, x, y, level);
 
-        this.setup(250);
+        this.setup(ItemParams.BASIC_RADIUS);
 
         this.sprite = game.add.sprite(x, y, 'simpletrap');
         this.sprite.anchor.setTo(0.5, 0.5);
@@ -175,7 +192,7 @@ class BasicTrap extends TrapItem {
        
         this.sprite.animations.add('snap', [0, 1, 2, 3], 30, false);
         this.deadRats = [];
-        this.remainingResets = 3;
+        this.remainingResets = ItemParams.BASIC_RESETS;
     }
 }
 
@@ -235,7 +252,7 @@ class StrongTrap extends TrapItem {
     constructor(info, isCurrent, x, y, level) {
         super(info, isCurrent, x, y, level);
 
-        this.setup(225);
+        this.setup(ItemParams.STRONG_RADIUS);
 
         this.sprite = game.add.sprite(x, y, 'simpletrap');
         this.sprite.anchor.setTo(0.5, 0.5);
@@ -246,7 +263,7 @@ class StrongTrap extends TrapItem {
 
         this.deadRats = [];
 
-        this.remainingResets = 3;
+        this.remainingResets = ItemParams.STRONG_RESETS;
     }
 }
 
@@ -306,7 +323,7 @@ class SnapTrap extends TrapItem {
     constructor(info, isCurrent, x, y, level) {
         super(info, isCurrent, x, y, level);
 
-        this.setup(200);
+        this.setup(ItemParams.SNAP_RADIUS);
 
         this.sprite = game.add.sprite(x, y, 'snaptrap');
         this.sprite.anchor.setTo(0.5, 0.5);
@@ -314,7 +331,7 @@ class SnapTrap extends TrapItem {
 
         this.deadRats = [];
 
-        this.remainingResets = 3;
+        this.remainingResets = ItemParams.SNAP_RESETS;
     }
 }
 
@@ -361,15 +378,15 @@ class HumaneTrap extends TrapItem {
     constructor(info, isCurrent, x, y, level) {
         super(info, isCurrent, x, y, level);
 
-        this.setup(175);
+        this.setup(ItemParams.HUMANE_RADIUS);
 
         this.sprite = game.add.sprite(x, y, 'humanetrap');
         this.sprite.anchor.setTo(0.5, 0.5);
 
         this.sprite.frame = 1;
 
-        this.remainingCapacity = 5;
-        this.initialCapacity = 5;
+        this.remainingCapacity = ItemParams.HUMANE_CAPACITY;
+        this.initialCapacity = ItemParams.HUMANE_CAPACITY;
 
         this.capacityText = game.add.bitmapText(48, 22, 'blackOpsOne', '0/' + this.initialCapacity, 18);
         this.capacityText.anchor.setTo(1, 0.5);
@@ -377,7 +394,7 @@ class HumaneTrap extends TrapItem {
 
         this.trappedRats = [];
 
-        this.remainingResets = 3;
+        this.remainingResets = ItemParams.HUMANE_RESETS;
     }
 }
 
@@ -498,8 +515,8 @@ class Cat extends Item {
         this.sprite.animations.add('right', rightFrames, 10, true);
         this.sprite.animations.add('up', upFrames, 10, true);
 
-        this.radius = 100;
-        this.patrolRadius = 200;
+        this.radius = ItemParams.CAT_RADIUS;
+        this.patrolRadius = ItemParams.CAT_PATROL_RADIUS;
 
         this.graphics = game.add.graphics(x, y);
         this.graphics.lineStyle(2, 0xff0000, 1);
@@ -612,7 +629,7 @@ John.prototype.updateGraphics = function(isVisible) {
 
 John.prototype.update = function() {
     if (this.sprite.body.velocity.y == 0) {
-        this.sprite.body.velocity.y = this.sprite.y > game.world.centerY ? -100 : 100;
+        this.sprite.body.velocity.y = this.sprite.y > game.world.centerY ? -ItemParams.JOHN_SPEED : ItemParams.JOHN_SPEED;
     }
 
     if (this.sprite.body.velocity.y > 0) {
