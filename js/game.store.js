@@ -13,7 +13,7 @@ var Items = [
         id: ItemTypes.POISON,
         name: 'Rat-X Poison',
         description: 'Cheap and effective, but frowned upon by the Geneva Conventions.\nBe forewarned -- using it comes with consequences.',
-        stats: ['Capacity: 10', 'Duration: 1 night', 'Resettable: N/A', 'Max: Unlimited'],
+        stats: ['Capacity: 10 rats (any size)', 'Duration: 1 night', 'Resettable: N/A', 'Max: Unlimited'],
         cost: 10,
         minLevel: 1,
         max: -1,
