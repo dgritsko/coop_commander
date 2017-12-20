@@ -157,22 +157,27 @@ class GameLevels {
                 GameLevels.cluster(['1s'], 0.1, 0.1, 6, 0.25, 10),
                 GameLevels.cluster(['1s'], 0.8, 0.1, 11, 0.15, 15)                
             ]));
+            GameLevels.setSpeeds(results, level);
         } else if (level == 1) {
             results = GameLevels.parseLevel(_.flatten([
                 GameLevels.sineWave(['1s', '2s'], 0.5, 0.5, 1, 1, 15),
                 GameLevels.random(['1m'], 1, 0.5, 15)
             ]));
+            GameLevels.setSpeeds(results, level);
         } else {
             results = GameLevels.parseLevel(
                 GameLevels.cluster(all, 0.5, 0.5, 0.5, 0.5, level * 5)
             );
+            GameLevels.setSpeeds(results, level);
         }
 
+        return results;
+    }
+
+    static setSpeeds(results, level) {
         results.forEach(function(r) {
             r.speed = GameLevels.getSpeed(r.class, r.size, level);
         });
-
-        return results;
     }
 
     static getSpeed(ratClass, ratSize, level) {
