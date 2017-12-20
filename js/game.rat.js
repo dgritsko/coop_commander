@@ -97,43 +97,7 @@ class Rat {
         return scale;
     }
 
-    static getSpeed(type, level) {
-        var baseSpeed = 0.5;
-        
-        var levelSpeed = level / 3;
-
-        var classSpeed = 0;
-
-        switch (type.class) {
-            case 1:
-                classSpeed = 0.1;
-                break;
-            case 2:
-                classSpeed = 0.2;
-                break;
-            case 3:
-                classSpeed = 0.3;
-                break;
-        }
-
-        var sizeSpeed = 0;
-
-        switch (type.size) {
-            case 'small':
-                sizeSpeed = 0.05;
-                break;
-            case 'medium':
-                sizeSpeed = 0.1;
-                break;
-            case 'large':
-                sizeSpeed = 0.15;
-                break;
-        }
-
-        return baseSpeed + levelSpeed + classSpeed + sizeSpeed;
-    }
-
-    constructor(group, type, level, x, y) {
+    constructor(group, type, level, x, y, speed) {
         this.group = group;
         this.type = Object.assign({}, type);
         this.level = level;
@@ -145,7 +109,7 @@ class Rat {
         
         this.setupSprite(game, x, y);
 
-        this.speed = Rat.getSpeed(this.type, this.level);
+        this.speed = speed;
     }
 }
 

@@ -135,8 +135,6 @@ class GameLevels {
         var class3 = ['3s', '3m', '3l'];
         var all = _.flatten([small, medium, large]);
 
-        console.log(all);
-
         // Example of linear wave:
         //return GameLevels.parseLevel(GameLevels.linearWave(['3s'], 0.5, 0, 1, 0.1, 10));
 
@@ -151,26 +149,65 @@ class GameLevels {
 
         // Example of random:
         //return GameLevels.parseLevel(GameLevels.random(['2s'], 1, 0.5, 10));
+        var results = [];
 
         if (level == 0) {
-            return GameLevels.parseLevel(_.flatten([
+            results = GameLevels.parseLevel(_.flatten([
                 GameLevels.cluster(['1s'], 0.5, 0.1, 1, 0.25, 10),
                 GameLevels.cluster(['1s'], 0.1, 0.1, 6, 0.25, 10),
                 GameLevels.cluster(['1s'], 0.8, 0.1, 11, 0.15, 15)                
             ]));
-        }
-
-        if (level == 1) {
-            return GameLevels.parseLevel(_.flatten([
+        } else if (level == 1) {
+            results = GameLevels.parseLevel(_.flatten([
                 GameLevels.sineWave(['1s', '2s'], 0.5, 0.5, 1, 1, 15),
                 GameLevels.random(['1m'], 1, 0.5, 15)
             ]));
+        } else {
+            results = GameLevels.parseLevel(
+                GameLevels.cluster(all, 0.5, 0.5, 0.5, 0.5, level * 5)
+            );
         }
 
-        // TODO        
+        results.forEach(function(r) {
+            r.speed = GameLevels.getSpeed(r.class, r.size, level);
+        });
 
-        return GameLevels.parseLevel(
-            GameLevels.cluster(all, 0.5, 0.5, 0.5, 0.5, level * 5)
-        );
+        return results;
+    }
+
+    static getSpeed(ratClass, ratSize, level) {
+        var baseSpeed = 0.5;
+        
+        var levelSpeed = level / 3;
+
+        var classSpeed = 0;
+
+        switch (ratClass) {
+            case 1:
+                classSpeed = 0.1;
+                break;
+            case 2:
+                classSpeed = 0.2;
+                break;
+            case 3:
+                classSpeed = 0.3;
+                break;
+        }
+
+        var sizeSpeed = 0;
+
+        switch (ratSize) {
+            case 'small':
+                sizeSpeed = 0.05;
+                break;
+            case 'medium':
+                sizeSpeed = 0.1;
+                break;
+            case 'large':
+                sizeSpeed = 0.15;
+                break;
+        }
+
+        return baseSpeed + levelSpeed + classSpeed + sizeSpeed;
     }
 }

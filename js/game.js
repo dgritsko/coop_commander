@@ -137,7 +137,7 @@
             if (ratTypes.length == 1) {
                 var spawnTime = r.spawn * 1000;
                 game.time.events.add(spawnTime, function() {
-                    createRat(ratTypes[0], r.x, r.y);
+                    createRat(ratTypes[0], r.x, r.y, r.speed);
                 });
             } else {
                 console.log('error: couldn\'t find correct rat info for ', r, ratTypes);
@@ -429,8 +429,8 @@
         }
     }
 
-    function createRat(type, x, y) {
-        rats.push(new Rat(rodents, type, gameState.level, x, y));
+    function createRat(type, x, y, speed) {
+        rats.push(new Rat(rodents, type, gameState.level, x, y, speed));
         game.audio.play(AudioEvents.RAT_SPAWN);
     }
 
