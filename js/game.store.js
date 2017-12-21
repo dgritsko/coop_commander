@@ -8,12 +8,33 @@ var ItemTypes = {
     JOHN: 6
 }
 
+ItemParams = {
+    POISON_RADIUS: 200,
+    POISON_CAPACITY: 10,
+    BASIC_RADIUS: 50,
+    BASIC_RESETS: 3,
+    BASIC_LIFETIME: 5,
+    STRONG_RADIUS: 100,
+    STRONG_RESETS: 3,
+    STRONG_LIFETIME: 7,
+    SNAP_RADIUS: 125,
+    SNAP_RESETS: 3,
+    SNAP_LIFETIME: 10,
+    HUMANE_RADIUS: 175,
+    HUMANE_CAPACITY: 5,
+    HUMANE_RESETS: 3,
+    HUMANE_LIFETIME: 10,
+    CAT_RADIUS: 100,
+    CAT_PATROL_RADIUS: 200,
+    JOHN_SPEED: 100
+}
+
 var Items = [
     {
         id: ItemTypes.POISON,
         name: 'Rat-X Poison',
         description: 'Cheap and effective, but frowned upon by the Geneva Conventions.\nBe forewarned -- using it comes with consequences.',
-        stats: ['Capacity: 10 rats (any size)', 'Duration: 1 night', 'Resettable: N/A', 'Max: Unlimited'],
+        stats: ['Capacity: ' + ItemParams.POISON_CAPACITY + ' rats (any size)', 'Duration: 1 night', 'Resettable: N/A', 'Max: Unlimited'],
         cost: 10,
         minLevel: 1,
         max: -1,
@@ -26,11 +47,11 @@ var Items = [
         id: ItemTypes.BASIC,
         name: 'Basic Wooden Trap',
         description: 'Just a humble rat trap.',
-        stats: ['Capacity: 1 small rat', 'Duration: 3 nights', 'Resettable: 3x / night', 'Max: Unlimited'],
+        stats: ['Capacity: 1 small rat', 'Duration: ' + ItemParams.BASIC_LIFETIME + ' nights', 'Resettable: ' + ItemParams.BASIC_RESETS + 'x / night', 'Max: Unlimited'],
         cost: 10,
         minLevel: 1,
         max: -1,
-        lifetime: 5,
+        lifetime: ItemParams.BASIC_LIFETIME,
         menuSprite: 'simpletrap',
         menuScale: 0.5,
         create: function(info, isCurrent, x, y, level) { return new BasicTrap(info, isCurrent, x, y, level); }
@@ -39,11 +60,11 @@ var Items = [
         id: ItemTypes.STRONG,
         name: 'Strong Wooden Trap',
         description: 'Better, faster, stronger.',
-        stats: ['Capacity: 1 small/medium rat', 'Duration: 4 nights', 'Resettable: 3x / night', 'Max: Unlimited'],
+        stats: ['Capacity: 1 small/medium rat', 'Duration: ' + ItemParams.STRONG_LIFETIME + ' nights', 'Resettable: ' + ItemParams.STRONG_RESETS + 'x / night', 'Max: Unlimited'],
         cost: 20,
         minLevel: 2,
         max: -1,
-        lifetime: 7,
+        lifetime: ItemParams.STRONG_LIFETIME,
         menuSprite: 'simpletrap',
         menuScale: 0.9,
         create: function(info, isCurrent, x, y, level) { return new StrongTrap(info, isCurrent, x, y, level); }
@@ -52,11 +73,11 @@ var Items = [
         id: ItemTypes.SNAP,
         name: 'Heavy-Duty Snap Trap',
         description: 'Quick killing. 100% effective.',
-        stats: ['Capacity: 1 rat (any size)', 'Duration: 5 nights', 'Resettable: 3x / night', 'Max: Unlimited'],
+        stats: ['Capacity: 1 rat (any size)', 'Duration: ' + ItemParams.SNAP_LIFETIME + ' nights', 'Resettable: ' + ItemParams.SNAP_RESETS + 'x / night', 'Max: Unlimited'],
         cost: 25,
         minLevel: 4,
         max: -1,
-        lifetime: 10,
+        lifetime: ItemParams.SNAP_LIFETIME,
         menuSprite: 'snaptrap',
         menuScale: 1,
         create: function(info, isCurrent, x, y, level) { return new SnapTrap(info, isCurrent, x, y, level); }
@@ -65,11 +86,11 @@ var Items = [
         id: ItemTypes.HUMANE,
         name: '"Catch \'em Alive" Trap',
         description: 'This "humane" trap is non-lethal -- you\'ll have to finish the job.',
-        stats: ['Capacity: 5 rats (any size)', 'Duration: 5 nights', 'Resettable: 3x / night (when full)', 'Max: Unlimited'],
+        stats: ['Capacity: ' + ItemParams.HUMANE_CAPACITY + ' rats (any size)', 'Duration: ' + ItemParams.HUMANE_LIFETIME + ' nights', 'Resettable: ' + ItemParams.HUMANE_RESETS + 'x / night (when full)', 'Max: Unlimited'],
         cost: 50,
         minLevel: 5,
         max: -1,
-        lifetime: 10,
+        lifetime: ItemParams.HUMANE_LIFETIME,
         menuSprite: 'humanetrap',
         menuScale: 0.5,
         create: function(info, isCurrent, x, y, level) { return new HumaneTrap(info, isCurrent, x, y, level); }

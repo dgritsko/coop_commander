@@ -1,20 +1,3 @@
-ItemParams = {
-    POISON_RADIUS: 200,
-    POISON_CAPACITY: 10,
-    BASIC_RADIUS: 50,
-    BASIC_RESETS: 3,
-    STRONG_RADIUS: 100,
-    STRONG_RESETS: 3,
-    SNAP_RADIUS: 125,
-    SNAP_RESETS: 3,
-    HUMANE_RADIUS: 175,
-    HUMANE_CAPACITY: 5,
-    HUMANE_RESETS: 3,
-    CAT_RADIUS: 100,
-    CAT_PATROL_RADIUS: 200,
-    JOHN_SPEED: 100
-}
-
 class Item {
     constructor(info, isCurrent, x, y, level) {
         this.isActive = true;
