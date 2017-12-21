@@ -416,7 +416,7 @@ Store.prototype.update = function() {
 
             if (clickedItems.length == 1) {
                 this.selectedItem = clickedItems[0];
-                this.cancelLabel.text = 'Sell ($' + this.selectedIndex.resaleValue + ')';
+                this.cancelLabel.text = 'Sell ($' + this.selectedItem.resaleValue + ')';
                 game.audio.play(AudioEvents.MENU_CLICK);
                 this.selection.visible = false;
             } else {
