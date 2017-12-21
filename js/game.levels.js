@@ -1,3 +1,37 @@
+class LevelInfo {
+    constructor(level) {
+        this.level = level;
+        this.rats = [];
+    }
+}
+
+LevelInfo.prototype.add = function(toAdd, speed) {
+    var items = [];
+
+    if (typeof(toAdd) == 'string') {
+        items = items.concat(GameLevels.splitCsv(toAdd));
+    } else if (Array.isArray(toAdd)) {
+        items = items.concat(toAdd);
+    } else {
+        console.error('LevelInfo.add: parameter not supported:', toAdd);
+    }
+
+    var parsedItems = GameLevels.parseLevel(items);
+
+    if (typeof(speed) == 'undefined') {
+        GameLevels.setSpeeds(parsedItems, this.level)
+    } else {
+        parsedItems.forEach(function(i) { 
+            i.speed = speed;
+        });
+    }
+
+    this.rats = this.rats.concat(parsedItems);
+
+    return this;
+}
+
+
 class GameLevels {
     static parseSize(s) {
         if (s == 'm') {
@@ -149,29 +183,24 @@ class GameLevels {
 
         // Example of random:
         //return GameLevels.parseLevel(GameLevels.random(['2s'], 1, 0.5, 10));
-        var results = [];
+        var levelInfo = new LevelInfo(level);
 
         if (level == 0) {
-            results = GameLevels.parseLevel(_.flatten([
-                GameLevels.cluster(['1s'], 0.5, 0.1, 1, 0.25, 10),
-                GameLevels.cluster(['1s'], 0.1, 0.1, 6, 0.25, 10),
-                GameLevels.cluster(['1s'], 0.8, 0.1, 11, 0.15, 15)                
-            ]));
+            levelInfo
+                .add(GameLevels.cluster(['1s'], 0.5, 0.1, 1, 0.25, 10))
+                .add(GameLevels.cluster(['1s'], 0.1, 0.1, 6, 0.25, 10))
+                .add(GameLevels.cluster(['1s'], 0.8, 0.1, 11, 0.15, 15));
             GameLevels.setSpeeds(results, level);
         } else if (level == 1) {
-            results = GameLevels.parseLevel(_.flatten([
-                GameLevels.sineWave(['1s', '2s'], 0.5, 0.5, 1, 1, 15),
-                GameLevels.random(['1m'], 1, 0.5, 15)
-            ]));
-            GameLevels.setSpeeds(results, level);
+            levelInfo
+                .add(GameLevels.sineWave(['1s', '2s'], 0.5, 0.5, 1, 1, 15))
+                .add(GameLevels.random(['1m'], 1, 0.5, 15));
         } else {
-            results = GameLevels.parseLevel(
-                GameLevels.cluster(all, 0.5, 0.5, 0.5, 0.5, level * 5)
-            );
-            GameLevels.setSpeeds(results, level);
+            levelInfo
+                .add(GameLevels.cluster(all, 0.5, 0.5, 0.5, 0.5, level * 5));
         }
 
-        return results;
+        return levelInfo.rats;
     }
 
     static setSpeeds(results, level) {
