@@ -160,6 +160,13 @@ class GameLevels {
         return result;
     }
 
+    static vFormation(types, startY, size, startTime, interval, total) {
+        return _.flatten([
+            GameLevels.linearWave(types, startY, startY - size, startTime, interval, total / 2),
+            GameLevels.linearWave(types, startY, startY + size, startTime, interval, total / 2)
+        ]);
+    }
+
     static create(level) {
         var small = ['1s', '2s', '3s'];
         var medium = ['1m', '2m', '3m'];
@@ -183,24 +190,58 @@ class GameLevels {
 
         // Example of random:
         //return GameLevels.parseLevel(GameLevels.random(['2s'], 1, 0.5, 10));
+
+        // Example of "V" formation:
+        //return GameLevels.parseLevel(GameLevels.vFormation(['3s'], 0.5, 0.2, 1, 0.1, 10));
+
         var levelInfo = new LevelInfo(level);
 
-        if (level == 0) {
+        if (level == 1) {
             levelInfo
-                .add(GameLevels.cluster(['1s'], 0.5, 0.1, 1, 0.25, 10))
-                .add(GameLevels.cluster(['1s'], 0.1, 0.1, 6, 0.25, 10))
-                .add(GameLevels.cluster(['1s'], 0.8, 0.1, 11, 0.15, 15));
-            GameLevels.setSpeeds(results, level);
-        } else if (level == 1) {
+                .add(GameLevels.cluster(['1s'], Math.random(), 0.1, 1, 0.25, 10))
+                .add(GameLevels.cluster(['1m'], Math.random(), 0.1, 7, 0.25, 10))
+                .add(GameLevels.cluster(['1s'], Math.random(), 0.1, 10, 0.2, 10))
+                .add(GameLevels.random(['1l'], 12, 0.5, 5), 2)
+        } else if (level == 2) {
             levelInfo
-                .add(GameLevels.sineWave(['1s', '2s'], 0.5, 0.5, 1, 1, 15))
-                .add(GameLevels.random(['1m'], 1, 0.5, 15));
+                .add(GameLevels.random(['1s'], 1, 0.25, 15))
+                .add(GameLevels.random(['1m'], 7, 0.25, 10))
+                .add(GameLevels.stream(['1l'], 0.5, 0.3, 5, 0.5, 10), 2.1)
+        } else if (level == 3) { 
+            levelInfo
+                .add(GameLevels.vFormation(['1s'], 0.5, 0.5, 1, 1, 20))
+                .add(GameLevels.vFormation(['1m'], 0.5, 0.25, 7, 0.5, 10))
+                .add('1l:10:0.5')
+        } else if (level == 4) {
+            levelInfo  
+                .add(GameLevels.linearWave(class1, 0, 1, 1, 0.15, 20))
+                .add(GameLevels.cluster(['2s'], Math.random(), 0.1, 5, 0.4, 10), 1.8)
+                .add(GameLevels.cluster(['2m'], Math.random(), 0.1, 7, 0.3, 5), 2.3)
+                .add('2l:10', 2.5)
+        } else if (level == 5) {
+            levelInfo
+                .add(GameLevels.random(class1, 1, 0.5, 30))
+                .add(GameLevels.random(['2s'], 5, 1, 10))
+                .add(GameLevels.random(['2m'], 11, 0.7, 10), 2.2)
+                .add(GameLevels.random(['2l'], 14, 0.5, 5), 2.6)
+        } else if (level == 6) {
+            levelInfo
+                .add(GameLevels.random(['3s'], 5, .8, 20), 2.5)
+                .add(GameLevels.random(['3m'], 10, 1.4, 10), 2.7)
+                .add(GameLevels.random(['3l'], 14, 1.2, 10), 3.1)
+        } else if (level == 7) {
+            levelInfo
+                .add(GameLevels.sineWave(['2m'], 0.2, 0.2, 1, 0.25, 20))
+                .add(GameLevels.sineWave(['2m'], 0.8, 0.2, 1, 0.25, 20))
+                .add(GameLevels.linearWave(['1s'], 1, 0, 5, 0.5, 10))
+                .add(GameLevels.linearWave(['1s'], 0, 1, 5, 0.5, 10))
+                .add(GameLevels.stream(large, 0.5, 0.5, 10, 0.5, 10), 3.2)
         } else {
             levelInfo
                 .add(GameLevels.cluster(all, 0.5, 0.5, 0.5, 0.5, level * 5));
         }
 
-        return levelInfo.rats;
+        return levelInfo;
     }
 
     static setSpeeds(results, level) {

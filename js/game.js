@@ -59,7 +59,7 @@
         gameState.initialMoney = gameState.money;
 
         gameState.inactiveRats = [];
-        gameState.activeRats = GameLevels.create(gameState.level) || [];
+        gameState.activeRats = GameLevels.create(gameState.level).rats;
 
         if (gameState.money > 0 || (gameState.currentItemInfo || []).length > 0) {
             mode = Modes.Setup;

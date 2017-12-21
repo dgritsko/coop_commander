@@ -30,7 +30,7 @@ var Items = [
         cost: 10,
         minLevel: 1,
         max: -1,
-        lifetime: 3,
+        lifetime: 5,
         menuSprite: 'simpletrap',
         menuScale: 0.5,
         create: function(info, isCurrent, x, y, level) { return new BasicTrap(info, isCurrent, x, y, level); }
@@ -43,7 +43,7 @@ var Items = [
         cost: 20,
         minLevel: 2,
         max: -1,
-        lifetime: 4,
+        lifetime: 7,
         menuSprite: 'simpletrap',
         menuScale: 0.9,
         create: function(info, isCurrent, x, y, level) { return new StrongTrap(info, isCurrent, x, y, level); }
@@ -56,7 +56,7 @@ var Items = [
         cost: 25,
         minLevel: 4,
         max: -1,
-        lifetime: 5,
+        lifetime: 10,
         menuSprite: 'snaptrap',
         menuScale: 1,
         create: function(info, isCurrent, x, y, level) { return new SnapTrap(info, isCurrent, x, y, level); }
@@ -69,7 +69,7 @@ var Items = [
         cost: 50,
         minLevel: 5,
         max: -1,
-        lifetime: 5,
+        lifetime: 10,
         menuSprite: 'humanetrap',
         menuScale: 0.5,
         create: function(info, isCurrent, x, y, level) { return new HumaneTrap(info, isCurrent, x, y, level); }
