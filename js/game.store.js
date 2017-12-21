@@ -197,6 +197,13 @@ Store.prototype.setupStoreMenu = function() {
             that.selectItem(index);
         }, this);
 
+        l.inputEnabled = true;
+        var margin = 2;
+        l.hitArea = new Phaser.Rectangle(-margin, -margin, l.width + margin * 2, l.height + margin * 2);                
+        l.events.onInputDown.add(function() {
+            that.selectItem(index);
+        }, this);
+
         that.availableItems.push(t);
         that.itemLabels.push(l);
         that.quantityLabels.push(q);
