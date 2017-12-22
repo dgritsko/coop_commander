@@ -42,18 +42,19 @@ AudioEvents = {
 };
 
 MusicEvents = {
-    MAIN_MENU: 0,
-    INTRO_STARTING: 1,
-    GAME_STARTING: 2,
-    GAME_ENDING: 3,
-    LEVEL_STARTING: 4,
-    LEVEL_ENDING: 5,
-    CUTSCENE_STARTING: 6,
-    CUTSCENE_ENDING: 7,
-    SCORE_STARTING: 8,
-    SCORE_ENDING: 9,
-    STORE_STARTING: 10,
-    STORE_ENDING: 11
+    BOOT: 0,
+    MAIN_MENU: 1,
+    INTRO_STARTING: 2,
+    GAME_STARTING: 3,
+    GAME_ENDING: 4,
+    LEVEL_STARTING: 5,
+    LEVEL_ENDING: 6,
+    CUTSCENE_STARTING: 7,
+    CUTSCENE_ENDING: 8,
+    SCORE_STARTING: 9,
+    SCORE_ENDING: 10,
+    STORE_STARTING: 11,
+    STORE_ENDING: 12
 }
 
 class AudioManager {
@@ -159,15 +160,11 @@ AudioManager.prototype.setupSounds = function() {
 }
 
 AudioManager.prototype.setupMusic = function() {
-    this.menuMusic = [
-        new Track('music00', 0.1, 0.1, true)
-    ];
-    this.introMusic = [
-        new Track('sandman', 0.5, 0.2)
-    ];
-    this.gameMusic = [
-        new Track('africa', 1, 0.5),
-        new Track('radioactive', 1, 0.5)
+    this.music = [
+        new Track('music00', 0.1, 0.1, ['menu']),
+        new Track('sandman', 0.4, 0.2, ['intro']),
+        new Track('africa', 1, 0.5, ['game']),
+        new Track('radioactive', 1, 0.5, ['game'])
     ];
 }
 
@@ -321,61 +318,92 @@ AudioManager.prototype.play = function(id) {
     }
 }
 
+AudioManager.prototype.ensureMusic = function(preferredTags, allowedTags) {
+    var isPreferred = function(t) {
+        var tagIntersection = _.intersection(t.tags, preferredTags);
+        return tagIntersection.length > 0;
+    }
+
+    var isAllowed = function(t) {
+        var tagIntersection = _.intersection(t.tags, allowedTags || []);
+        return tagIntersection.length > 0;
+    }
+
+    var isPlaying = _.filter(this.music, function(t) { return t.isPlaying(); });
+
+    // If we are already playing a track that matches our preferred or allowed tags, bail out
+    if (_.filter(isPlaying, function(t) { return isPreferred(t) || isAllowed(t); }).length > 0) {
+        return;
+    }
+
+    // Otherwise, fade out all currently playing music
+    isPlaying.forEach(function(t) { 
+        t.fadeOut(); 
+    });
+
+    // Next, find a track that matches our preferred tags and play it
+    var tracks = _.filter(this.music, isPreferred);
+
+    if (tracks.length == 0) {
+        return;
+    }
+
+    Phaser.ArrayUtils.getRandomItem(tracks).play();
+}
+
+AudioManager.prototype.fadeOut = function() {
+    this.music.forEach(function(t) {
+        t.fadeOut();
+    });
+}
+
+AudioManager.prototype.fadeToBackground = function() {
+    this.music.forEach(function(t) {
+        t.fadeToBackground();
+    });
+}
+
+AudioManager.prototype.fadeToForeground = function() {
+    this.music.forEach(function(t) {
+        t.fadeToForeground();
+    });
+}
+
 AudioManager.prototype.playMusic = function(id, level) {
-    var that = this;
-    function stopCurrentMusic() {
-        if (that.currentMusic) {
-            var previousMusic = that.currentMusic;
-            previousMusic.sound.fadeOut(250);
-        }
-    }
-
-    function startCurrentMusic(music) {
-        if (that.currentMusic == music && that.currentMusic.sound.isPlaying) {
-            return;
-        }
-
-        that.currentMusic = music;
-        that.currentMusic.sound.play();
-    }
-
     switch (id) {
+        case MusicEvents.BOOT:
+            this.ensureMusic(['menu']);
+            break;
         case MusicEvents.MAIN_MENU:
-            stopCurrentMusic();
-            startCurrentMusic(Phaser.ArrayUtils.getRandomItem(this.menuMusic));
+            this.ensureMusic(['menu'], ['score']);
             break;
         case MusicEvents.INTRO_STARTING:
-            stopCurrentMusic();
-            startCurrentMusic(Phaser.ArrayUtils.getRandomItem(this.introMusic));
+            this.ensureMusic(['intro']);
             break;
         case MusicEvents.GAME_STARTING:
-            stopCurrentMusic();
-            game.time.events.add(250, function() {
-                startCurrentMusic(Phaser.ArrayUtils.getRandomItem(this.gameMusic));
-            }, this);
+            this.fadeOut();
             break;
         case MusicEvents.GAME_ENDING:
-            if (this.currentMusic) {
-                this.currentMusic.sound.fadeOut(250);
-            }
+            this.fadeOut();
             break;
         case MusicEvents.LEVEL_STARTING:
+            this.ensureMusic(['game'], ['intro']);
             break;
         case MusicEvents.LEVEL_ENDING:
             break;
         case MusicEvents.CUTSCENE_STARTING: 
-            this.currentMusic.sound.fadeTo(250, this.currentMusic.backgroundVolume);
+            this.fadeToBackground();            
             break;
         case MusicEvents.CUTSCENE_ENDING:
-            this.currentMusic.sound.fadeTo(250, this.currentMusic.mainVolume);
+            this.fadeToForeground();
             break;
         case MusicEvents.SCORE_STARTING:
-            // TODO: Start death music
+            this.ensureMusic(['score']);
             break;
         case MusicEvents.SCORE_ENDING:
-            // TODO: End death music?
             break;
         case MusicEvents.STORE_STARTING: 
+            this.ensureMusic(['game'], ['intro']);
             break;
         case MusicEvents.STORE_ENDING:
             break;
@@ -389,13 +417,67 @@ AudioManager.prototype.stopSounds = function() {
 }
 
 class Track {
-    constructor(key, mainVolume, backgroundVolume, loop) {
+    constructor(key, mainVolume, backgroundVolume, tags, duration) {
         this.key = key;
         this.sound = game.add.sound(key);
-        this.sound.loop = loop || false;
         this.sound.volume = mainVolume;
         this.mainVolume = mainVolume;
         this.backgroundVolume = backgroundVolume;
-        //this.playUntil = playUntil || -1;
+        this.tags = tags;
+
+        if (duration) {
+            this.sound.addMarker('selectedPortion', 0, duration);
+            this.sound.onMarkerComplete.add(function() {
+                // TODO: Wat do?
+                
+            }, this);
+        } else {
+            this.sound.onStop.add(function() {
+                // TODO: Wat do?
+                
+            }, this);
+        }
     }
+}
+
+Track.prototype.isPlaying = function() {
+    return this.sound.isPlaying;
+}
+
+Track.prototype.play = function() {
+    for (k in this.sound.markers) {
+        this.sound.play(k, 0, this.mainVolume);
+        return;
+    }
+
+    this.sound.volume = this.mainVolume;
+    this.sound.play();
+}
+
+Track.prototype.stop = function() {
+    this.sound.stop();
+}
+
+Track.prototype.fadeOut = function() {
+    if (!this.isPlaying()) {
+        return;
+    }
+
+    this.sound.fadeOut(250);
+}
+
+Track.prototype.fadeToBackground = function() {
+    if (!this.isPlaying()) {
+        return;
+    }
+
+    this.sound.fadeTo(250, this.backgroundVolume);
+}
+
+Track.prototype.fadeToForeground = function() {
+    if (!this.isPlaying()) {
+        return;
+    }
+
+    this.sound.fadeTo(250, this.mainVolume);
 }

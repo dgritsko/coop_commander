@@ -131,6 +131,7 @@
 
     function create() {
         game.audio = new AudioManager(game);
+        game.audio.playMusic(MusicEvents.BOOT);
         game.state.start('Menu');
     }
 
