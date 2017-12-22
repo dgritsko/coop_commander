@@ -133,6 +133,17 @@ AudioManager.prototype.setupSounds = function() {
     this.fxMeow00 = setupSound(this, 'meow00', 0.5);
     this.fxRoar = setupSound(this, 'roar');
     this.fxRaccoon = setupSound(this, 'raccoon');
+
+    this.fxJohn00 = setupSound(this, 'john00');
+    this.fxJohn01 = setupSound(this, 'john01');
+    this.fxJohn02 = setupSound(this, 'john02');
+    this.fxJohn03 = setupSound(this, 'john03');
+    this.fxJohn04 = setupSound(this, 'john04');
+    this.fxJohn05 = setupSound(this, 'john05');
+    this.fxJohn06 = setupSound(this, 'john06');
+    this.fxJohn07 = setupSound(this, 'john07');
+    this.fxJohn08 = setupSound(this, 'john08');
+    this.fxJohn09 = setupSound(this, 'john09');
 }
 
 AudioManager.prototype.setupMusic = function() {
@@ -255,6 +266,18 @@ AudioManager.prototype.play = function(id) {
             this.fxMeow00.play();
             break;
         case AudioEvents.JOHN_KILL_RAT:
+            Phaser.ArrayUtils.getRandomItem([
+                this.fxJohn00,
+                this.fxJohn01,
+                this.fxJohn02,
+                this.fxJohn03,
+                this.fxJohn04,
+                this.fxJohn05,
+                this.fxJohn06,
+                this.fxJohn07,
+                this.fxJohn08,
+                this.fxJohn09
+            ]).play();
             this.fxSplat01.play();
             break;
         case AudioEvents.BEAR:

@@ -90,6 +90,16 @@
         game.load.audio('meow00', 'assets/sound/fx/meow00.mp3');
         game.load.audio('roar', 'assets/sound/fx/roar.wav');
         game.load.audio('raccoon', 'assets/sound/fx/raccoon.mp3');
+        game.load.audio('john00', 'assets/sound/fx/john00.mp3');
+        game.load.audio('john01', 'assets/sound/fx/john01.mp3');
+        game.load.audio('john02', 'assets/sound/fx/john02.mp3');
+        game.load.audio('john03', 'assets/sound/fx/john03.mp3');
+        game.load.audio('john04', 'assets/sound/fx/john04.mp3');
+        game.load.audio('john05', 'assets/sound/fx/john05.mp3');
+        game.load.audio('john06', 'assets/sound/fx/john06.mp3');
+        game.load.audio('john07', 'assets/sound/fx/john07.mp3');
+        game.load.audio('john08', 'assets/sound/fx/john08.mp3');
+        game.load.audio('john09', 'assets/sound/fx/john09.mp3');
         
         // Music
         game.load.audio('music00', 'assets/sound/music/Rolemusic_-_Keiken_soku.mp3');
