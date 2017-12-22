@@ -97,6 +97,31 @@ TrapItem.prototype.setup = function(radius) {
 TrapItem.prototype.finishSetup = function() {
     this.graphics.kill();
     this.lifetimeLabel.kill();
+
+    this.resetIndicators = [];
+    for (var i = 0; i < this.remainingResets; i++) {
+        var resetIndicator = game.add.graphics(this.position.x + this.sprite.width / 2 + 4, this.position.y - 4 + i * 5);
+        resetIndicator.beginFill(0xF76512);
+        resetIndicator.drawCircle(0,0,4);
+        resetIndicator.endFill();
+        resetIndicator.visible = false;
+        this.resetIndicators.push(resetIndicator);
+    } 
+}
+
+TrapItem.prototype.showResetIndicators = function() {
+    this.resetIndicators.slice(0, this.remainingResets).forEach(function(r) { r.visible = true; });
+}
+
+TrapItem.prototype.hideResetIndicators = function() {
+    this.resetIndicators[this.remainingResets].visible = false;
+    game.time.events.add(1500, function() {
+        if ((this.deadRats || []).length > 0 || (this.trappedRats || []).length > 0) {
+            return;
+        }
+
+        this.resetIndicators.forEach(function(r) { r.visible = false; });
+    }, this);
 }
 
 TrapItem.prototype.calculateVector = function(rat) {
@@ -224,7 +249,9 @@ BasicTrap.prototype.affectRat = function(rat, gameState) {
     game.audio.play(AudioEvents.WOODEN_TRAP_CLOSED);
     rat.kill(RatStates.KILLED_BY_BASIC_TRAP, gameState);
     this.showBlood(gameState);
-    this.deadRats = [rat];    
+    this.deadRats = [rat];
+
+    this.showResetIndicators();
 }
 
 BasicTrap.prototype.reset = function() {
@@ -246,6 +273,8 @@ BasicTrap.prototype.reset = function() {
     this.sprite.animations.stop();
     this.sprite.frame = 0;    
     this.remainingResets -= 1;
+
+    this.hideResetIndicators();
 }
 
 class StrongTrap extends TrapItem {
@@ -294,6 +323,8 @@ StrongTrap.prototype.affectRat = function(rat, gameState) {
     rat.kill(RatStates.KILLED_BY_STRONG_TRAP, gameState);
     this.showBlood(gameState);
     this.deadRats = [rat];    
+
+    this.showResetIndicators();
 }
 
 StrongTrap.prototype.reset = function() {
@@ -315,6 +346,8 @@ StrongTrap.prototype.reset = function() {
     this.sprite.animations.stop();
     this.sprite.frame = 0;    
     this.remainingResets -= 1;
+
+    this.hideResetIndicators();
 }
 
 class SnapTrap extends TrapItem {
@@ -349,8 +382,9 @@ SnapTrap.prototype.affectRat = function(rat, gameState) {
     game.audio.play(AudioEvents.SNAP_TRAP_CLOSED);
     rat.kill(RatStates.KILLED_BY_SNAP_TRAP, gameState);
     this.showBlood(gameState);
-    this.deadRats = [rat];
-    this.remainingResets -= 1;    
+    this.deadRats = [rat];   
+
+    this.showResetIndicators();
 }
 
 SnapTrap.prototype.reset = function() {
@@ -369,7 +403,10 @@ SnapTrap.prototype.reset = function() {
     game.audio.play(AudioEvents.SNAP_TRAP_RESET);
     this.deadRats = [];
     this.isActive = true;
-    this.sprite.frame = 0;    
+    this.sprite.frame = 0;   
+    this.remainingResets -= 1; 
+    
+    this.hideResetIndicators();
 }
 
 class HumaneTrap extends TrapItem {
@@ -446,6 +483,8 @@ HumaneTrap.prototype.affectRat = function(rat, gameState) {
         this.sprite.frame = 0;
     
         game.audio.play(AudioEvents.HUMANE_TRAP_CLOSED);
+
+        this.showResetIndicators();
     }
 }
 
@@ -468,6 +507,8 @@ HumaneTrap.prototype.reset = function() {
     this.sprite.frame = 1;
     this.remainingResets -= 1;
     this.capacityText.text = (this.initialCapacity - this.remainingCapacity) + '/' + this.initialCapacity;
+
+    this.hideResetIndicators();
 }
 
 class Cat extends Item {
