@@ -129,11 +129,6 @@ TrapItem.prototype.calculateVector = function(rat) {
         return;
     }
 
-    // This could happen if the player resets a trap that the rat has already passed - maybe unnecessary?
-    if (rat.sprite.x > (this.sprite.position.x + 10)) {
-        return;
-    }
-
     var dist = rat.sprite.position.distance(this.sprite.position);
 
     if (dist <= this.radius) {
