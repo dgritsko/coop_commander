@@ -60,7 +60,6 @@ class AudioManager {
     constructor(game) {
         this.game = game;
         this.sounds = [];
-        this.music = [];
 
         this.setupSounds();
         this.setupMusic();
@@ -118,6 +117,19 @@ AudioManager.prototype.setupSounds = function() {
     this.fxSmash = setupSound(this, 'smash00', 0.25);
     this.fxFoxSay = setupSound(this, 'foxsay');
 
+    this.fxFoxSay.onPlay.add(function() {
+        if (this.currentMusic) {
+            this.currentMusic.sound.fadeTo(250, this.currentMusic.backgroundVolume);
+        }
+
+        this.fxFoxSay.onStop.add(function() {
+            this.fxFoxSay.onStop.removeAll();
+            if (this.currentMusic) {
+                this.currentMusic.sound.fadeTo(250, this.currentMusic.mainVolume);
+            }
+        }, this);
+    }, this);
+
     this.fxAlert = setupSound(this, 'alert00');
     this.fxBonus = setupSound(this, 'bonus00', 0.5);
     this.fxCash = setupSound(this, 'cash');
@@ -147,11 +159,16 @@ AudioManager.prototype.setupSounds = function() {
 }
 
 AudioManager.prototype.setupMusic = function() {
-    this.menuMusic = game.add.sound('music00');
-    this.menuMusic.volume = 0.1;
-    this.menuMusic.loop = true;
-
-    this.musicSandman = game.add.sound('sandman');
+    this.menuMusic = [
+        new Track('music00', 0.1, 0.1, true)
+    ];
+    this.introMusic = [
+        new Track('sandman', 0.5, 0.2)
+    ];
+    this.gameMusic = [
+        new Track('africa', 1, 0.5),
+        new Track('radioactive', 1, 0.5)
+    ];
 }
 
 AudioManager.prototype.toggleMute = function() {
@@ -305,39 +322,58 @@ AudioManager.prototype.play = function(id) {
 }
 
 AudioManager.prototype.playMusic = function(id, level) {
-    console.log('Called playMusic with Event ' + id + ' for level ' + level || 'N/A');
+    var that = this;
+    function stopCurrentMusic() {
+        if (that.currentMusic) {
+            var previousMusic = that.currentMusic;
+            previousMusic.sound.fadeOut(250);
+        }
+    }
+
+    function startCurrentMusic(music) {
+        if (that.currentMusic == music && that.currentMusic.sound.isPlaying) {
+            return;
+        }
+
+        that.currentMusic = music;
+        that.currentMusic.sound.play();
+    }
 
     switch (id) {
         case MusicEvents.MAIN_MENU:
-            this.musicSandman.stop();
-            if (!this.menuMusic.isPlaying) {
-                this.menuMusic.play();
-            }
-
-            this.currentMusic = this.menuMusic;
+            stopCurrentMusic();
+            startCurrentMusic(Phaser.ArrayUtils.getRandomItem(this.menuMusic));
             break;
         case MusicEvents.INTRO_STARTING:
-            this.menuMusic.stop();
-            if (!this.musicSandman.isPlaying) {
-                this.musicSandman.play();
-            }    
+            stopCurrentMusic();
+            startCurrentMusic(Phaser.ArrayUtils.getRandomItem(this.introMusic));
             break;
         case MusicEvents.GAME_STARTING:
-            this.menuMusic.stop();
+            stopCurrentMusic();
+            game.time.events.add(250, function() {
+                startCurrentMusic(Phaser.ArrayUtils.getRandomItem(this.gameMusic));
+            }, this);
             break;
         case MusicEvents.GAME_ENDING:
+            if (this.currentMusic) {
+                this.currentMusic.sound.fadeOut(250);
+            }
             break;
         case MusicEvents.LEVEL_STARTING:
             break;
         case MusicEvents.LEVEL_ENDING:
             break;
         case MusicEvents.CUTSCENE_STARTING: 
+            this.currentMusic.sound.fadeTo(250, this.currentMusic.backgroundVolume);
             break;
         case MusicEvents.CUTSCENE_ENDING:
+            this.currentMusic.sound.fadeTo(250, this.currentMusic.mainVolume);
             break;
-        case MusicEvents.SCORE_STARING: 
+        case MusicEvents.SCORE_STARTING:
+            // TODO: Start death music
             break;
-        case MusicEvents.SCORE_ENDING: 
+        case MusicEvents.SCORE_ENDING:
+            // TODO: End death music?
             break;
         case MusicEvents.STORE_STARTING: 
             break;
@@ -352,8 +388,14 @@ AudioManager.prototype.stopSounds = function() {
     });
 }
 
-AudioManager.prototype.stopMusic = function() {
-    this.music.forEach(function(m) {
-        m.stop();
-    });
+class Track {
+    constructor(key, mainVolume, backgroundVolume, loop) {
+        this.key = key;
+        this.sound = game.add.sound(key);
+        this.sound.loop = loop || false;
+        this.sound.volume = mainVolume;
+        this.mainVolume = mainVolume;
+        this.backgroundVolume = backgroundVolume;
+        //this.playUntil = playUntil || -1;
+    }
 }
