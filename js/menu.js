@@ -68,6 +68,11 @@
             showHelp();
         });
 
+        addMenuItem('Scoreboard', menuItems, function() {
+            game.audio.play(AudioEvents.MENU_CLICK);
+            showScoreboard();
+        });
+
         menuArrow = game.add.sprite(menuMinX - 16, 0, 'menu_arrow');
         menuArrow.scale.setTo(0.5, 0.5);
         menuArrow.anchor.setTo(0.5, 0.5);
@@ -176,6 +181,13 @@
         game.camera.fade('#000000', 250);
         game.camera.onFadeComplete.add(function() { 
             game.state.start('Help');
+        }, this);
+    }
+
+    function showScoreboard() {
+        game.camera.fade('#000000', 250);
+        game.camera.onFadeComplete.add(function() { 
+            game.state.start('Scoreboard');
         }, this);
     }
 
