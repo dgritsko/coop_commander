@@ -402,6 +402,7 @@
 
                 var emitter = game.add.emitter(rat.sprite.position.x, rat.sprite.position.y, 10);
                 emitter.particleDrag = new Phaser.Point(400, 400);
+                emitter.angularDrag = 400;
                 var maxVelocity = 500;
 
                 var xVal = maxVelocity * vector.x;
