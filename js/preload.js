@@ -102,9 +102,7 @@
         game.load.audio('john09', 'assets/sound/fx/john09.mp3');
         
         // Music
-        game.load.audio('music00', 'assets/sound/music/Rolemusic_-_Keiken_soku.mp3');
-        game.load.audio('music01', 'assets/sound/music/sawsquarenoise_-_01_-_Interstellar.mp3');
-
+        game.load.audio('menu00', 'assets/sound/music/menu00.mp3');
         game.load.audio('sandman', 'assets/sound/music/sandman.mp3');
     }
 

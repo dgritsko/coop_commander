@@ -64,6 +64,8 @@ class AudioManager {
 
         this.setupSounds();
         this.setupMusic();
+
+        this.musicLoader = new Phaser.Loader(game);
     }
 }
 
@@ -160,11 +162,29 @@ AudioManager.prototype.setupSounds = function() {
 }
 
 AudioManager.prototype.setupMusic = function() {
+    // Export as Variable, 7, Joint Stereo
+
     this.music = [
-        new Track('music00', 0.1, 0.1, ['menu']),
+        new Track('menu00', 0.4, 0.2, ['menu']),
+        // new Track('menu01', 1, 0.5, ['menu']),
         new Track('sandman', 0.4, 0.2, ['intro']),
-        new Track('africa', 1, 0.5, ['game']),
-        new Track('radioactive', 1, 0.5, ['game'])
+        new Track('assets/sound/music/africa.mp3', 1, 0.5, ['game']),
+        new Track('assets/sound/music/beforeiforget.mp3', 1, 0.5, ['game']),
+        //new Track('assets/sound/music/christmas.mp3', 1, 0.5, ['game']),
+        new Track('assets/sound/music/crawling.mp3', 1, 0.5, ['score']),
+        new Track('assets/sound/music/cydonia.mp3', 1, 0.5, ['game']),
+        new Track('assets/sound/music/everybreath.mp3', 1, 0.5, ['score']),
+        new Track('assets/sound/music/immigrantsong.mp3', 1, 0.5, ['game']),
+        new Track('assets/sound/music/intheend.mp3', 1, 0.5, ['score']),
+        new Track('assets/sound/music/mysharona.mp3', 1, 0.5, ['game']),
+        new Track('assets/sound/music/numb.mp3', 1, 0.5, ['score']),
+        new Track('assets/sound/music/radioactive.mp3', 1, 0.5, ['game']),
+        new Track('assets/sound/music/silence.mp3', 1, 0.5, ['score']),
+        new Track('assets/sound/music/takeonme.mp3', 1, 0.5, ['game']),
+        new Track('assets/sound/music/thriller.mp3', 1, 0.5, ['game']),
+        new Track('assets/sound/music/toxicity.mp3', 1, 0.5, ['game']),
+        new Track('assets/sound/music/tubthumping.mp3', 1, 0.5, ['score']),
+        new Track('assets/sound/music/whativedone.mp3', 1, 0.5, ['score'])
     ];
 }
 
@@ -417,34 +437,66 @@ AudioManager.prototype.stopSounds = function() {
 }
 
 class Track {
-    constructor(key, mainVolume, backgroundVolume, tags, duration) {
-        this.key = key;
-        this.sound = game.add.sound(key);
-        this.sound.volume = mainVolume;
+    constructor(keyOrPath, mainVolume, backgroundVolume, tags, duration) {
+        var isPath = keyOrPath.indexOf('/') != -1;
+
         this.mainVolume = mainVolume;
         this.backgroundVolume = backgroundVolume;
         this.tags = tags;
+        this.duration = duration;
 
-        if (duration) {
-            this.sound.addMarker('selectedPortion', 0, duration);
-            this.sound.onMarkerComplete.add(function() {
-                // TODO: Wat do?
-                
-            }, this);
+        this.isLoaded = !isPath;
+        this.key = keyOrPath;
+
+        if (isPath) {
+
         } else {
-            this.sound.onStop.add(function() {
-                // TODO: Wat do?
-                
-            }, this);
+            this.createSound();
         }
     }
 }
 
+Track.prototype.createSound = function() {
+    this.sound = game.add.sound(this.key);
+    this.sound.volume = this.mainVolume;
+
+    if (this.duration) {
+        this.sound.addMarker('selectedPortion', 0, this.duration);
+        this.sound.onMarkerComplete.add(function() {
+            // TODO: Wat do?
+            
+        }, this);
+    } else {
+        this.sound.onStop.add(function() {
+            // TODO: Wat do?
+            
+        }, this);
+    }
+}
+
 Track.prototype.isPlaying = function() {
-    return this.sound.isPlaying;
+    return this.isLoaded && this.sound.isPlaying;
 }
 
 Track.prototype.play = function() {
+    if (!this.isLoaded) {
+        // if (game.audio.musicLoader.isLoading) {
+        //     return;
+        // }
+
+        game.audio.musicLoader.audio(this.key, this.key);
+        game.audio.musicLoader.onFileComplete.add(function(arg1, arg2) {
+            if (arg2 == this.key) {
+                this.isLoaded = true;
+                this.createSound();
+                this.play();
+            }
+        }, this);
+
+        game.audio.musicLoader.start();
+        return;
+    }
+
     for (k in this.sound.markers) {
         this.sound.play(k, 0, this.mainVolume);
         return;
@@ -455,10 +507,18 @@ Track.prototype.play = function() {
 }
 
 Track.prototype.stop = function() {
+    if (!this.isLoaded) {
+        return;
+    }
+
     this.sound.stop();
 }
 
 Track.prototype.fadeOut = function() {
+    if (!this.isLoaded) {
+        return;
+    }
+
     if (!this.isPlaying()) {
         return;
     }
@@ -467,14 +527,22 @@ Track.prototype.fadeOut = function() {
 }
 
 Track.prototype.fadeToBackground = function() {
+    if (!this.isLoaded) {
+        return;
+    }
+
     if (!this.isPlaying()) {
         return;
     }
 
-    this.sound.fadeTo(250, this.backgroundVolume);
+    this.sound.fadeTo(250, 0.1);
 }
 
 Track.prototype.fadeToForeground = function() {
+    if (!this.isLoaded) {
+        return;
+    }
+
     if (!this.isPlaying()) {
         return;
     }
