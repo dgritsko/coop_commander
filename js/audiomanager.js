@@ -463,13 +463,11 @@ Track.prototype.createSound = function() {
     if (this.duration) {
         this.sound.addMarker('selectedPortion', 0, this.duration);
         this.sound.onMarkerComplete.add(function() {
-            // TODO: Wat do?
-            
+            game.audio.ensureMusic(this.tags);
         }, this);
     } else {
         this.sound.onStop.add(function() {
-            // TODO: Wat do?
-            
+            game.audio.ensureMusic(this.tags);
         }, this);
     }
 }
