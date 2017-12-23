@@ -53,6 +53,11 @@
             
             game.time.events.add(extraDelay + 3000, nextLevel, this);
         }
+
+        escKey = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
+        escKey.onDown.add(function() { 
+            nextLevel();
+        }, this);
     }
 
     function update() {
