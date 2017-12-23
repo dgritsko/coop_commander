@@ -154,6 +154,7 @@ TrapItem.prototype.showBlood = function(gameState) {
     if (gameState.blood) {
          var emitter = game.add.emitter(this.sprite.x - this.sprite.width / 2, this.sprite.y, 10);
         emitter.particleDrag = new Phaser.Point(100, 50);
+        emitter.angularDrag = 400;
 
         emitter.setXSpeed(-250, -20);
         emitter.setYSpeed(-50, 0);
