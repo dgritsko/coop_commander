@@ -164,27 +164,30 @@ AudioManager.prototype.setupSounds = function() {
 AudioManager.prototype.setupMusic = function() {
     // Export as Variable, 7, Joint Stereo
 
+    var defaultMainVolume = 0.5;
+    var defaultBackgroundVolume = 0.1;
+
     this.music = [
-        new Track('menu00', 0.4, 0.2, ['menu']),
-        // new Track('menu01', 0.5, 0.1, ['menu']),
-        new Track('sandman', 0.4, 0.2, ['intro']),
-        new Track('assets/sound/music/africa.mp3', 0.5, 0.1, ['game']),
-        new Track('assets/sound/music/beforeiforget.mp3', 0.5, 0.1, ['game']),
-        //new Track('assets/sound/music/christmas.mp3', 0.5, 0.1, ['game']),
-        new Track('assets/sound/music/crawling.mp3', 0.5, 0.1, ['score']),
-        new Track('assets/sound/music/cydonia.mp3', 0.5, 0.1, ['game']),
-        new Track('assets/sound/music/everybreath.mp3', 0.5, 0.1, ['score']),
-        new Track('assets/sound/music/immigrantsong.mp3', 0.5, 0.1, ['game']),
-        new Track('assets/sound/music/intheend.mp3', 0.5, 0.1, ['score']),
-        new Track('assets/sound/music/mysharona.mp3', 0.5, 0.1, ['game']),
-        new Track('assets/sound/music/numb.mp3', 0.5, 0.1, ['score']),
-        new Track('assets/sound/music/radioactive.mp3', 0.5, 0.1, ['game']),
-        new Track('assets/sound/music/silence.mp3', 0.5, 0.1, ['score']),
-        new Track('assets/sound/music/takeonme.mp3', 0.5, 0.1, ['game']),
-        new Track('assets/sound/music/thriller.mp3', 0.5, 0.1, ['game']),
-        new Track('assets/sound/music/toxicity.mp3', 0.5, 0.1, ['game']),
-        new Track('assets/sound/music/tubthumping.mp3', 0.5, 0.1, ['score']),
-        new Track('assets/sound/music/whativedone.mp3', 0.5, 0.1, ['score'])
+        new Track('menu00', defaultMainVolume, defaultBackgroundVolume, ['menu']),
+        // new Track('menu01', defaultMainVolume, defaultBackgroundVolume, ['menu']),
+        new Track('sandman', 0.4, defaultBackgroundVolume, ['intro']),
+        new Track('assets/sound/music/africa.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
+        new Track('assets/sound/music/beforeiforget.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
+        //new Track('assets/sound/music/christmas.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
+        new Track('assets/sound/music/crawling.mp3', defaultMainVolume, defaultBackgroundVolume, ['score']),
+        new Track('assets/sound/music/cydonia.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
+        new Track('assets/sound/music/everybreath.mp3', defaultMainVolume, defaultBackgroundVolume, ['score']),
+        new Track('assets/sound/music/immigrantsong.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
+        new Track('assets/sound/music/intheend.mp3', defaultMainVolume, defaultBackgroundVolume, ['score']),
+        new Track('assets/sound/music/mysharona.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
+        new Track('assets/sound/music/numb.mp3', defaultMainVolume, defaultBackgroundVolume, ['score']),
+        new Track('assets/sound/music/radioactive.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
+        new Track('assets/sound/music/silence.mp3', defaultMainVolume, defaultBackgroundVolume, ['score']),
+        new Track('assets/sound/music/takeonme.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
+        new Track('assets/sound/music/thriller.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
+        new Track('assets/sound/music/toxicity.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
+        new Track('assets/sound/music/tubthumping.mp3', defaultMainVolume, defaultBackgroundVolume, ['score']),
+        new Track('assets/sound/music/whativedone.mp3', defaultMainVolume, defaultBackgroundVolume, ['score'])
     ];
 }
 
@@ -448,9 +451,7 @@ class Track {
         this.isLoaded = !isPath;
         this.key = keyOrPath;
 
-        if (isPath) {
-
-        } else {
+        if (!isPath) {
             this.createSound();
         }
     }
@@ -463,11 +464,15 @@ Track.prototype.createSound = function() {
     if (this.duration) {
         this.sound.addMarker('selectedPortion', 0, this.duration);
         this.sound.onMarkerComplete.add(function() {
-            game.audio.ensureMusic(this.tags);
+            if (this.shouldContinue) {
+                game.audio.ensureMusic(this.tags);
+            }
         }, this);
     } else {
         this.sound.onStop.add(function() {
-            game.audio.ensureMusic(this.tags);
+            if (this.shouldContinue) {
+                game.audio.ensureMusic(this.tags);
+            }
         }, this);
     }
 }
@@ -495,6 +500,8 @@ Track.prototype.play = function() {
         return;
     }
 
+    this.shouldContinue = true;
+
     for (k in this.sound.markers) {
         this.sound.play(k, 0, this.mainVolume);
         return;
@@ -509,6 +516,8 @@ Track.prototype.stop = function() {
         return;
     }
 
+    this.shouldContinue = false;
+
     this.sound.stop();
 }
 
@@ -520,6 +529,8 @@ Track.prototype.fadeOut = function() {
     if (!this.isPlaying()) {
         return;
     }
+
+    this.shouldContinue = false;
 
     this.sound.fadeOut(250);
 }
