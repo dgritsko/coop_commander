@@ -174,20 +174,24 @@ AudioManager.prototype.setupMusic = function() {
         new Track('assets/sound/music/africa.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
         new Track('assets/sound/music/beforeiforget.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
         //new Track('assets/sound/music/christmas.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
-        new Track('assets/sound/music/crawling.mp3', defaultMainVolume, defaultBackgroundVolume, ['score']),
         new Track('assets/sound/music/cydonia.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
-        new Track('assets/sound/music/everybreath.mp3', defaultMainVolume, defaultBackgroundVolume, ['score']),
         new Track('assets/sound/music/immigrantsong.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
-        new Track('assets/sound/music/intheend.mp3', defaultMainVolume, defaultBackgroundVolume, ['score']),
         new Track('assets/sound/music/mysharona.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
-        new Track('assets/sound/music/numb.mp3', defaultMainVolume, defaultBackgroundVolume, ['score']),
         new Track('assets/sound/music/radioactive.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
-        new Track('assets/sound/music/silence.mp3', defaultMainVolume, defaultBackgroundVolume, ['score']),
         new Track('assets/sound/music/takeonme.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
         new Track('assets/sound/music/thriller.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
         new Track('assets/sound/music/toxicity.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
+        new Track('assets/sound/music/ironman.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
+        new Track('assets/sound/music/doom.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
+        new Track('assets/sound/music/tomsawyer.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
+        new Track('assets/sound/music/sevennation.mp3', defaultMainVolume, defaultBackgroundVolume, ['game']),
+        new Track('assets/sound/music/intheend.mp3', defaultMainVolume, defaultBackgroundVolume, ['score']),
+        new Track('assets/sound/music/numb.mp3', defaultMainVolume, defaultBackgroundVolume, ['score']),
+        new Track('assets/sound/music/everybreath.mp3', defaultMainVolume, defaultBackgroundVolume, ['score']),
+        new Track('assets/sound/music/crawling.mp3', defaultMainVolume, defaultBackgroundVolume, ['score']),
         new Track('assets/sound/music/tubthumping.mp3', defaultMainVolume, defaultBackgroundVolume, ['score']),
-        new Track('assets/sound/music/whativedone.mp3', defaultMainVolume, defaultBackgroundVolume, ['score'])
+        new Track('assets/sound/music/whativedone.mp3', defaultMainVolume, defaultBackgroundVolume, ['score']),
+        new Track('assets/sound/music/silence.mp3', defaultMainVolume, defaultBackgroundVolume, ['score'])
     ];
 }
 
