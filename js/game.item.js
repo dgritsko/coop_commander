@@ -95,7 +95,7 @@ TrapItem.prototype.setup = function(radius) {
 }
 
 TrapItem.prototype.finishSetup = function() {
-    this.graphics.kill();
+    this.graphics.destroy();
     this.lifetimeLabel.kill();
 
     this.resetIndicators = [];
