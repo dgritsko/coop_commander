@@ -2,6 +2,7 @@ class LevelInfo {
     constructor(level) {
         this.level = level;
         this.rats = [];
+        this.size = 0;
     }
 }
 
@@ -27,6 +28,8 @@ LevelInfo.prototype.add = function(toAdd, speed) {
     }
 
     this.rats = this.rats.concat(parsedItems);
+
+    this.size = this.rats.length;
 
     return this;
 }
@@ -162,8 +165,8 @@ class GameLevels {
 
     static vFormation(types, startY, size, startTime, interval, total) {
         return _.flatten([
-            GameLevels.linearWave(types, startY, startY - size, startTime, interval, total / 2),
-            GameLevels.linearWave(types, startY, startY + size, startTime, interval, total / 2)
+            GameLevels.linearWave(types, startY, startY - size, startTime, interval, Math.ceil(total / 2)),
+            GameLevels.linearWave(types, startY, startY + size, startTime, interval, Math.floor(total / 2))
         ]);
     }
 
@@ -242,18 +245,23 @@ class GameLevels {
 
                 var currentChunkSize = chunkSize;
 
+                var spawnTime = game.rnd.realInRange(1, duration);
+
                 switch (choice) {
                     case 0:
-                        levelInfo.add(GameLevels.sineWave(types, Math.random(), game.rnd.realInRange(0.1, 0.3), game.rnd.realInRange(1, duration), 0.3, currentChunkSize));
+                        levelInfo.add(GameLevels.sineWave(types, Math.random(), game.rnd.realInRange(0.05, 0.15), spawnTime, 0.3, currentChunkSize));
                         break;
                     case 1:
-                        levelInfo.add(GameLevels.linearWave(types, Math.random(), Math.random(), game.rnd.realInRange(1, duration), 0.3, currentChunkSize));
+                        var startY = Math.random();
+                        var endY = startY + game.rnd.realInRange(-0.2, 0.2);
+
+                        levelInfo.add(GameLevels.linearWave(types, startY, endY, spawnTime, 0.3, currentChunkSize));
                         break;
                     case 2:
-                        levelInfo.add(GameLevels.vFormation(types, game.rnd.realInRange(0.3, 0.7), game.rnd.realInRange(0.15, 0.3), game.rnd.realInRange(1, duration), 0.3, currentChunkSize));
+                        levelInfo.add(GameLevels.vFormation(types, game.rnd.realInRange(0.3, 0.7), game.rnd.realInRange(0.05, 0.15), spawnTime, 0.2, currentChunkSize));
                         break;
                     case 3: 
-                        levelInfo.add(GameLevels.cluster(types, Math.random(), 0.2, game.rnd.realInRange(1, duration), 0.3, currentChunkSize));
+                        levelInfo.add(GameLevels.cluster(types, Math.random(), 0.2, spawnTime, 0.3, currentChunkSize));
                         break;
                 }
             }
