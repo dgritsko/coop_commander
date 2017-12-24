@@ -11,21 +11,27 @@ var ItemTypes = {
 ItemParams = {
     POISON_RADIUS: 200,
     POISON_CAPACITY: 10,
-    BASIC_RADIUS: 50,
+
+    BASIC_RADIUS: 75,
     BASIC_RESETS: 3,
-    BASIC_LIFETIME: 5,
+    BASIC_LIFETIME: 3,
+
     STRONG_RADIUS: 100,
     STRONG_RESETS: 3,
-    STRONG_LIFETIME: 7,
+    STRONG_LIFETIME: 4,
+
     SNAP_RADIUS: 125,
     SNAP_RESETS: 3,
-    SNAP_LIFETIME: 10,
-    HUMANE_RADIUS: 175,
+    SNAP_LIFETIME: 5,
+
+    HUMANE_RADIUS: 150,
     HUMANE_CAPACITY: 5,
     HUMANE_RESETS: 3,
-    HUMANE_LIFETIME: 10,
+    HUMANE_LIFETIME: 5,
+
     CAT_RADIUS: 100,
     CAT_PATROL_RADIUS: 200,
+
     JOHN_SPEED: 100
 }
 
@@ -87,7 +93,7 @@ var Items = [
         name: '"Catch \'em Alive" Trap',
         description: 'This "humane" trap is non-lethal -- you\'ll have to finish the job.',
         stats: ['Capacity: ' + ItemParams.HUMANE_CAPACITY + ' rats (any size)', 'Duration: ' + ItemParams.HUMANE_LIFETIME + ' nights', 'Resettable: ' + ItemParams.HUMANE_RESETS + 'x / night (when full)', 'Max: Unlimited'],
-        cost: 50,
+        cost: 100,
         minLevel: 5,
         max: -1,
         lifetime: ItemParams.HUMANE_LIFETIME,
@@ -100,7 +106,7 @@ var Items = [
         name: 'Cat',
         description: 'Nature\'s own rat repellent.\nRats will avoid cats at all costs.',
         stats: ['Duration: Permanent', 'Max: 2', 'Force Field: Yes'],
-        cost: 50,
+        cost: 125,
         minLevel: 6,
         max: 2,
         lifetime: -1,
@@ -113,7 +119,7 @@ var Items = [
         name: 'John',
         description: 'The Tonto to your Lone Ranger, the Robin to your Batman.\nJohn will "take care" of any rats he encounters.',
         stats: ['Duration: Permanent', 'Max: 1', 'Finna Be: Lit'],
-        cost: 100,
+        cost: 150,
         minLevel: 7,
         max: 1,
         lifetime: -1,
