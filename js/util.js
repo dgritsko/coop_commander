@@ -6,6 +6,12 @@ class Util {
         mKey.onDown.add(function() {
             game.audio.toggleMute();
         }, this);
+
+        var nKey = game.input.keyboard.addKey(Phaser.Keyboard.N);
+        nKey.onDown.add(function() {
+            game.audio.stopMusic();
+            game.audio.ensureMusic([]);
+        }, this);
     }
 
     static shutdownState(game) {

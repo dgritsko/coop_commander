@@ -344,7 +344,7 @@ AudioManager.prototype.play = function(id) {
 AudioManager.prototype.ensureMusic = function(preferredTags, allowedTags) {
     var isPreferred = function(t) {
         var tagIntersection = _.intersection(t.tags, preferredTags);
-        return tagIntersection.length > 0;
+        return preferredTags.length == 0 || tagIntersection.length > 0;
     }
 
     var isAllowed = function(t) {
