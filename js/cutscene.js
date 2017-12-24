@@ -247,7 +247,14 @@
             drawRaccoon
         ];
 
-        predators[Math.floor(Math.random() * predators.length)](duration);
+        var index = Math.floor(Math.random() * predators.length);
+
+        // Ensure that we don't see the same predator two levels in a row
+        if (typeof(lastPredatorIndex) != 'undefined' && index == lastPredatorIndex) {
+            index = (index + 1) % predators.length;
+        }
+        lastPredatorIndex = index;
+        predators[index](duration);
     }
 
     function drawVulture(duration) {
