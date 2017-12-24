@@ -196,50 +196,114 @@ class GameLevels {
 
         var levelInfo = new LevelInfo(level);
 
-        if (level == 1) {
-            levelInfo
-                .add(GameLevels.cluster(['1s'], Math.random(), 0.1, 1, 0.25, 10))
-                .add(GameLevels.cluster(['1m'], Math.random(), 0.1, 7, 0.25, 10))
-                .add(GameLevels.cluster(['1s'], Math.random(), 0.1, 10, 0.2, 10))
-                .add(GameLevels.random(['1l'], 12, 0.5, 5), 2)
-        } else if (level == 2) {
-            levelInfo
-                .add(GameLevels.random(['1s'], 1, 0.25, 15))
-                .add(GameLevels.random(['1m'], 7, 0.25, 10))
-                .add(GameLevels.stream(['1l'], 0.5, 0.3, 5, 0.5, 10), 2.1)
-        } else if (level == 3) { 
-            levelInfo
-                .add(GameLevels.vFormation(['1s'], 0.5, 0.5, 1, 1, 20))
-                .add(GameLevels.vFormation(['1m'], 0.5, 0.25, 7, 0.5, 10))
-                .add('1l:10:0.5')
-        } else if (level == 4) {
-            levelInfo  
-                .add(GameLevels.linearWave(class1, 0, 1, 1, 0.15, 20))
-                .add(GameLevels.cluster(['2s'], Math.random(), 0.1, 5, 0.4, 10), 1.8)
-                .add(GameLevels.cluster(['2m'], Math.random(), 0.1, 7, 0.3, 5), 2.3)
-                .add('2l:10', 2.5)
-        } else if (level == 5) {
-            levelInfo
-                .add(GameLevels.random(class1, 1, 0.5, 30))
-                .add(GameLevels.random(['2s'], 5, 1, 10))
-                .add(GameLevels.random(['2m'], 11, 0.7, 10), 2.2)
-                .add(GameLevels.random(['2l'], 14, 0.5, 5), 2.6)
-        } else if (level == 6) {
-            levelInfo
-                .add(GameLevels.random(['3s'], 5, .8, 20), 2.5)
-                .add(GameLevels.random(['3m'], 10, 1.4, 10), 2.7)
-                .add(GameLevels.random(['3l'], 14, 1.2, 10), 3.1)
-        } else if (level == 7) {
-            levelInfo
-                .add(GameLevels.sineWave(['2m'], 0.2, 0.2, 1, 0.25, 20))
-                .add(GameLevels.sineWave(['2m'], 0.8, 0.2, 1, 0.25, 20))
-                .add(GameLevels.linearWave(['1s'], 1, 0, 5, 0.5, 10))
-                .add(GameLevels.linearWave(['1s'], 0, 1, 5, 0.5, 10))
-                .add(GameLevels.stream(large, 0.5, 0.5, 10, 0.5, 10), 3.2)
-        } else {
-            levelInfo
-                .add(GameLevels.cluster(all, 0.5, 0.5, 0.5, 0.5, level * 5));
+        var types = ['1s'];
+        if (level > 1) {
+            types.push('2s');   
         }
+        if (level > 2) {
+            types.push('3s');
+        } 
+        if (level > 3) {
+            types.push('1m');
+        }
+        if (level > 4) {
+            types.push('2m');
+        }
+        if (level > 5) {
+            types.push('3m');
+        }
+        if (level > 6) {
+            types.push('1l');
+        }
+        if (level > 7) {
+            types.push('2l');
+        }
+        if (level > 8) {
+            types.push('3l');
+        }
+
+        var total = (level + 1) * 10;
+        var duration = 1 + level * 2 + 10;
+
+        if (level % 3 == 0) {
+            // Every 3rd level is completely random
+            levelInfo.add(GameLevels.random(types, 1, duration / total, total));
+        } else {
+
+            // Half is a stream
+            levelInfo.add(GameLevels.stream(types, 0.5, 0.7, 1, duration / total, total / 2));
+
+            var chunkSize = Phaser.Math.clamp(level / 5, 5, 10);
+
+            var chunks = Math.ceil((total / 2) / chunkSize);
+
+            for (var i = 0; i < chunks; i++) {
+                var choice = game.rnd.integerInRange(0, 3);
+
+                var currentChunkSize = chunkSize;
+
+                switch (choice) {
+                    case 0:
+                        levelInfo.add(GameLevels.sineWave(types, Math.random(), game.rnd.realInRange(0.1, 0.3), game.rnd.realInRange(1, duration), 0.3, currentChunkSize));
+                        break;
+                    case 1:
+                        levelInfo.add(GameLevels.linearWave(types, Math.random(), Math.random(), game.rnd.realInRange(1, duration), 0.3, currentChunkSize));
+                        break;
+                    case 2:
+                        levelInfo.add(GameLevels.vFormation(types, game.rnd.realInRange(0.3, 0.7), game.rnd.realInRange(0.15, 0.3), game.rnd.realInRange(1, duration), 0.3, currentChunkSize));
+                        break;
+                    case 3: 
+                        levelInfo.add(GameLevels.cluster(types, Math.random(), 0.2, game.rnd.realInRange(1, duration), 0.3, currentChunkSize));
+                        break;
+                }
+            }
+
+        }
+
+        // if (level == 1) {
+        //     levelInfo
+        //         .add(GameLevels.cluster(['1s'], Math.random(), 0.1, 1, 0.25, 10))
+        //         .add(GameLevels.cluster(['1m'], Math.random(), 0.1, 7, 0.25, 10))
+        //         .add(GameLevels.cluster(['1s'], Math.random(), 0.1, 10, 0.2, 10))
+        //         .add(GameLevels.random(['1l'], 12, 0.5, 5), 2)
+        // } else if (level == 2) {
+        //     levelInfo
+        //         .add(GameLevels.random(['1s'], 1, 0.25, 15))
+        //         .add(GameLevels.random(['1m'], 7, 0.25, 10))
+        //         .add(GameLevels.stream(['1l'], 0.5, 0.3, 5, 0.5, 10), 2.1)
+        // } else if (level == 3) { 
+        //     levelInfo
+        //         .add(GameLevels.vFormation(['1s'], 0.5, 0.5, 1, 1, 20))
+        //         .add(GameLevels.vFormation(['1m'], 0.5, 0.25, 7, 0.5, 10))
+        //         .add('1l:10:0.5')
+        // } else if (level == 4) {
+        //     levelInfo  
+        //         .add(GameLevels.linearWave(class1, 0, 1, 1, 0.15, 20))
+        //         .add(GameLevels.cluster(['2s'], Math.random(), 0.1, 5, 0.4, 10), 1.8)
+        //         .add(GameLevels.cluster(['2m'], Math.random(), 0.1, 7, 0.3, 5), 2.3)
+        //         .add('2l:10', 2.5)
+        // } else if (level == 5) {
+        //     levelInfo
+        //         .add(GameLevels.random(class1, 1, 0.5, 30))
+        //         .add(GameLevels.random(['2s'], 5, 1, 10))
+        //         .add(GameLevels.random(['2m'], 11, 0.7, 10), 2.2)
+        //         .add(GameLevels.random(['2l'], 14, 0.5, 5), 2.6)
+        // } else if (level == 6) {
+        //     levelInfo
+        //         .add(GameLevels.random(['3s'], 5, .8, 20), 2.5)
+        //         .add(GameLevels.random(['3m'], 10, 1.4, 10), 2.7)
+        //         .add(GameLevels.random(['3l'], 14, 1.2, 10), 3.1)
+        // } else if (level == 7) {
+        //     levelInfo
+        //         .add(GameLevels.sineWave(['2m'], 0.2, 0.2, 1, 0.25, 20))
+        //         .add(GameLevels.sineWave(['2m'], 0.8, 0.2, 1, 0.25, 20))
+        //         .add(GameLevels.linearWave(['1s'], 1, 0, 5, 0.5, 10))
+        //         .add(GameLevels.linearWave(['1s'], 0, 1, 5, 0.5, 10))
+        //         .add(GameLevels.stream(large, 0.5, 0.5, 10, 0.5, 10), 3.2)
+        // } else {
+        //     levelInfo
+        //         .add(GameLevels.cluster(all, 0.5, 0.5, 0.5, 0.5, level * 5));
+        // }
 
         return levelInfo;
     }
@@ -273,13 +337,13 @@ class GameLevels {
 
         switch (ratSize) {
             case 'small':
-                sizeSpeed = 0.05;
+                sizeSpeed = 0.00;
                 break;
             case 'medium':
-                sizeSpeed = 0.1;
+                sizeSpeed = 0.15;
                 break;
             case 'large':
-                sizeSpeed = 0.15;
+                sizeSpeed = 0.3;
                 break;
         }
 
