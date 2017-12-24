@@ -374,6 +374,12 @@ AudioManager.prototype.ensureMusic = function(preferredTags, allowedTags) {
     Phaser.ArrayUtils.getRandomItem(tracks).play();
 }
 
+AudioManager.prototype.stopMusic = function() {
+    this.music.forEach(function(t) {
+        t.stop();
+    });
+}
+
 AudioManager.prototype.fadeOut = function() {
     this.music.forEach(function(t) {
         t.fadeOut();
@@ -483,10 +489,6 @@ Track.prototype.isPlaying = function() {
 
 Track.prototype.play = function() {
     if (!this.isLoaded) {
-        // if (game.audio.musicLoader.isLoading) {
-        //     return;
-        // }
-
         game.audio.musicLoader.audio(this.key, this.key);
         game.audio.musicLoader.onFileComplete.add(function(arg1, arg2) {
             if (arg2 == this.key) {
@@ -501,6 +503,7 @@ Track.prototype.play = function() {
     }
 
     this.shouldContinue = true;
+    game.audio.stopMusic();
 
     for (k in this.sound.markers) {
         this.sound.play(k, 0, this.mainVolume);
