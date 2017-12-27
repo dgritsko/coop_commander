@@ -27,8 +27,6 @@ class Player {
         this.shovelHead.anchor.setTo(0.5, 0.5);
         this.shovel.addChild(this.shovelHead);
 
-
-
         game.physics.arcade.enable(this.shovel);
         game.physics.arcade.enable(this.shovelHead);
         game.physics.arcade.enable(this.sprite);

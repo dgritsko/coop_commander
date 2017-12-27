@@ -377,44 +377,57 @@
         updateHud();
     }
 
+    function attackRat(rodent) {
+        var rat = _.find(rats, function(r) { return r.id == rodent.id; });
+        
+        if (rodent.hitBySwing && rodent.hitBySwing >= gameState.swingCount) {
+            return false;
+        }
+
+        if (rat.isDead()) {
+            return false;
+        }
+
+        // Keep track of the last swing index that hit the rat... this seems like a crummy way to do this but it works
+        rodent.hitBySwing = gameState.swingCount;
+        game.audio.play(AudioEvents.RAT_HIT);
+        rat.kill(RatStates.KILLED_BY_SHOVEL, gameState);
+
+        if (gameState.blood) {
+            var vector = Phaser.Point.subtract(rat.sprite.position, player.sprite.position);
+            vector.normalize();
+
+            var emitter = game.add.emitter(rat.sprite.position.x, rat.sprite.position.y, 10);
+            emitter.particleDrag = new Phaser.Point(400, 400);
+            emitter.angularDrag = 400;
+            var maxVelocity = 500;
+
+            var xVal = maxVelocity * vector.x;
+            var yVal = maxVelocity * vector.y;
+
+            emitter.setXSpeed(Math.min(0, xVal), Math.max(0, xVal));
+            emitter.setYSpeed(Math.min(0, yVal), Math.max(0, yVal));
+            emitter.makeParticles('blood', [0,1,2,3,4]);
+            emitter.start(true, 1250, null, 10);
+        }
+
+        return false;  
+    }
+
     function handleAttacks() {
-        game.physics.arcade.collide(rodents, player.shovelHead, function(weapon, rodent) {
+        // Handle collisions just with shovel head
+        // game.physics.arcade.collide(rodents, player.shovelHead, function(weapon, rodent) {
             
-        }, function(weapon, rodent) {
-            var rat = _.find(rats, function(r) { return r.id == rodent.id; });
-            
-            if (rodent.hitBySwing && rodent.hitBySwing >= gameState.swingCount) {
-                return false;
+        // }, function(weapon, rodent) {
+        //     attackRat(rodent);
+        // }, this);
+
+        // Handle collisions with entire shovel (more forgiving)
+        var shovelBounds = player.shovel.getBounds();
+        rodents.forEach(function(rodent) {
+            if (Phaser.Rectangle.intersects(shovelBounds, rodent.getBounds())) {
+                attackRat(rodent);
             }
-
-            if (rat.isDead()) {
-                return false;
-            }
-
-            // Keep track of the last swing index that hit the rat... this seems like a crummy way to do this but it works
-            rodent.hitBySwing = gameState.swingCount;
-            game.audio.play(AudioEvents.RAT_HIT);
-            rat.kill(RatStates.KILLED_BY_SHOVEL, gameState);
-
-            if (gameState.blood) {
-                var vector = Phaser.Point.subtract(rat.sprite.position, player.sprite.position);
-                vector.normalize();
-
-                var emitter = game.add.emitter(rat.sprite.position.x, rat.sprite.position.y, 10);
-                emitter.particleDrag = new Phaser.Point(400, 400);
-                emitter.angularDrag = 400;
-                var maxVelocity = 500;
-
-                var xVal = maxVelocity * vector.x;
-                var yVal = maxVelocity * vector.y;
-
-                emitter.setXSpeed(Math.min(0, xVal), Math.max(0, xVal));
-                emitter.setYSpeed(Math.min(0, yVal), Math.max(0, yVal));
-                emitter.makeParticles('blood', [0,1,2,3,4]);
-                emitter.start(true, 1250, null, 10);
-            }
-
-            return false;         
         });
     }
 
