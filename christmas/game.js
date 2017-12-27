@@ -120,7 +120,7 @@
                     }, this);
                     
                     game.time.events.add(screenshotDuration + screenshotPauseDuration, function() {
-                        window.location.href = '../index.html';
+                        window.location.href = '../index.html?fullscreen=true';
                     }, this);
                 }, this);
 

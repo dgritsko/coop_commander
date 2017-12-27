@@ -120,7 +120,7 @@ var Items = [
         description: 'The Tonto to your Lone Ranger, the Robin to your Batman.\nJohn will "take care" of any rats he encounters.',
         stats: ['Duration: Permanent', 'Max: 1', 'Finna Be: Lit'],
         cost: 150,
-        minLevel: 7,
+        minLevel: 6,
         max: 1,
         lifetime: -1,
         menuSprite: 'john',
