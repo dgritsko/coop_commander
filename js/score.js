@@ -4,7 +4,7 @@
     }
 
     function preload() {
-        Util.preloadState(game);
+        game.stage.disableVisibilityChange = true;
     }
 
     var playerName;
