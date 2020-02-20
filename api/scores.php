@@ -1,64 +1,42 @@
 <?php
-include('api_key.php');
-
-// http://docs.mlab.com/data-api/
-
+include('connection_string.php');
+$manager = new MongoDB\Driver\Manager($CONNECTION_STRING);
 $method = $_SERVER['REQUEST_METHOD'];
 
-$url = 'https://api.mlab.com/api/1/databases/coopdefender/collections/scores?apiKey=' . $API_KEY;
-
 if ($method == 'GET') {
-	$url = $url . '&f={"_id":0,"date":0}&s={"score":-1}&l=10';
-		
-	// Initiate curl
-	$ch = curl_init();
-	// Disable SSL verification
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-	// Will return the response, if false it print the response
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_URL,$url);
-	$result=curl_exec($ch);
-	curl_close($ch);
+    $query = new MongoDB\Driver\Query(array(), array('limit' => 10, 'sort' => array('score' => -1), 'projection' => array('_id' => 0, 'date' => 0)));
 
-	header("Access-Control-Allow-Origin: *");
-	header('Content-Type: application/json');
+    $cursor = $manager->executeQuery('coopdefender.scores', $query);
 
-	echo $result;
+    header("Access-Control-Allow-Origin: *");
+    header('Content-Type: application/json');
+    echo(json_encode($cursor->toArray()));
 } else if ($method == 'POST') {
-	$score = $_GET['score'];
+    $score = $_GET['score'];
 	$name = $_GET['name'];
 	$level = $_GET['level'];
 	$kills = $_GET['kills'];
-		
-	if (empty($score) || empty($name) || empty($level)) {
+
+    if (empty($score) || empty($name) || empty($level)) {
 		header("Access-Control-Allow-Origin: *");
 		http_response_code(400);
 		die();
 	} else {
 		$date = substr(date('c', time()), 0, 19) . 'Z';
 		
-		$request = array(
+		$bulk = new MongoDB\Driver\BulkWrite;
+
+		$doc = [
 			'score' => (int)$score, 
 			'name' => $name,
 			'level' => (int)$level,
 			'date' => array('$date' => $date),
 			'kills' => (int)$kills
-			);
-		
-		$json = json_encode($request);
-		
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);  
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array(                                                                          
-			'Content-Type: application/json',                                                                                
-			'Content-Length: ' . strlen($json))                                                                       
-		); 
-		
-		curl_setopt($ch, CURLOPT_URL,$url);
-		$result=curl_exec($ch);
-		curl_close($ch);
+		];
+
+		$bulk->insert($doc);
+
+		$result = $manager->executeBulkWrite('coopdefender.scores', $bulk);
 		
 		header("Access-Control-Allow-Origin: *");
 		header('Content-Type: application/json');
